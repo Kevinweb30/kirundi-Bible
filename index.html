@@ -6,7 +6,9 @@
    Layout: sticky top nav (book/chapter pickers + prev/next) —
    scrolling reading column, comfortable measure — sticky bottom
    audio bar (safe-area aware), collapses to an unobtrusive
-   "no audio yet" strip when a chapter has none.
+   "no audio yet" strip when a chapter has none. A verse-action
+   toolbar and a dismissible daily-verse banner extend the same
+   visual language.
    ============================================================ */
 :root{
   --bg:#f6f4ef;           /* warm paper, not cream-cliché */
@@ -20,6 +22,10 @@
   --verse-active:#f4e9c9; /* warm highlight, lamp-lit page */
   --verse-active-ink:#241f1a;
   --danger:#8a3b2c;
+  --hl-y:rgba(230,180,50,.32);
+  --hl-g:rgba(90,175,120,.28);
+  --hl-b:rgba(90,150,210,.26);
+  --hl-p:rgba(210,110,160,.26);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
@@ -86,7 +92,7 @@ body{
 }
 .brand{
   display:flex;
-  align-items:baseline;
+  align-items:center;
   justify-content:space-between;
   gap:8px;
 }
@@ -97,13 +103,19 @@ body{
   margin:0;
   letter-spacing:.01em;
 }
-.brand button.icon-btn{
+.brand-actions{
+  display:flex;
+  align-items:center;
+  gap:2px;
+}
+button.icon-btn{
   background:none;border:none;color:var(--ink-dim);
   font-family:var(--font-ui);font-size:.8rem;
   display:flex;align-items:center;gap:4px;cursor:pointer;
-  padding:4px 6px;border-radius:6px;
+  padding:7px;border-radius:8px;
 }
-.brand button.icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
+button.icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
+button.icon-btn svg{width:18px;height:18px}
 
 .nav-row{
   display:flex;
@@ -147,6 +159,40 @@ select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .step-btn:hover{background:var(--accent-soft);border-color:var(--accent)}
 .step-btn:disabled{opacity:.35;cursor:default}
 .step-btn:disabled:hover{background:var(--bg)}
+
+/* ---------- daily verse banner ---------- */
+.daily-banner{
+  background:var(--accent-soft);
+  border-bottom:1px solid var(--rule);
+  padding:12px 16px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+.daily-banner .db-text{flex:1;min-width:0}
+.daily-banner .db-label{
+  font-family:var(--font-ui);font-size:.68rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 3px;
+}
+.daily-banner .db-verse{
+  font-family:var(--font-scripture);font-size:.92rem;line-height:1.5;
+  color:var(--ink);margin:0 0 4px;
+}
+.daily-banner .db-ref{
+  font-family:var(--font-ui);font-size:.74rem;color:var(--ink-dim);
+}
+.daily-banner .db-ref button{
+  background:none;border:none;color:var(--accent);font-weight:600;
+  font-family:var(--font-ui);font-size:.74rem;cursor:pointer;padding:0;
+  text-decoration:underline;
+}
+.daily-banner .db-close{
+  flex:none;background:none;border:none;color:var(--ink-dim);cursor:pointer;
+  padding:2px;border-radius:6px;
+}
+.daily-banner .db-close:hover{color:var(--ink)}
+.daily-banner .db-close svg{width:16px;height:16px}
 
 /* ---------- reading column ---------- */
 main{
@@ -192,13 +238,26 @@ main{
 .verse{
   cursor:pointer;
   border-radius:4px;
-  padding:.02em 0;
+  padding:.02em 2px;
   transition:background-color .15s ease, color .15s ease;
+  box-shadow:inset 0 0 0 0 transparent;
 }
 .verse:hover{background:var(--accent-soft)}
+.verse.hl-y{background:var(--hl-y)}
+.verse.hl-g{background:var(--hl-g)}
+.verse.hl-b{background:var(--hl-b)}
+.verse.hl-p{background:var(--hl-p)}
 .verse.active{
   background:var(--verse-active);
   color:var(--verse-active-ink);
+}
+.verse.flash{
+  animation:flashfade 2.2s ease-out;
+}
+@keyframes flashfade{
+  0%{background:var(--verse-active);color:var(--verse-active-ink)}
+  70%{background:var(--verse-active);color:var(--verse-active-ink)}
+  100%{background:inherit}
 }
 .vnum{
   font-family:var(--font-ui);
@@ -210,6 +269,13 @@ main{
   user-select:none;
 }
 .verse.active .vnum{color:inherit;opacity:.7}
+.mk-star, .mk-note{
+  font-size:.6em;
+  vertical-align:super;
+  margin-right:.1em;
+  opacity:.75;
+  user-select:none;
+}
 
 .empty-note{
   font-family:var(--font-ui);
@@ -265,6 +331,24 @@ main{
 }
 .speed-btn:hover{border-color:var(--accent);color:var(--accent)}
 .speed-btn:disabled{opacity:.3;cursor:default}
+.dl-btn{
+  grid-column:3;
+  justify-self:end;
+  flex:none;
+  width:34px;height:34px;
+  border-radius:50%;
+  border:1px solid var(--rule);
+  background:var(--bg);
+  color:var(--ink-dim);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  position:relative;
+}
+.dl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dl-btn.done{color:#4a9a6a;border-color:#4a9a6a}
+.dl-btn svg{width:16px;height:16px}
+.dl-btn.busy svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .skip-btn{
   flex:none;
   width:38px;height:38px;
@@ -342,7 +426,65 @@ main{
 .no-audio svg{width:15px;height:15px;flex:none;opacity:.6}
 [hidden]{display:none!important}
 
-/* ---------- about sheet ---------- */
+/* ---------- verse action toolbar ---------- */
+.verse-action-bar{
+  max-width:640px;
+  margin:0 auto 10px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:var(--accent-soft);
+  border-radius:12px;
+  padding:8px 8px 8px 12px;
+}
+.va-ref{
+  flex:1;
+  min-width:0;
+  font-family:var(--font-ui);
+  font-size:.76rem;
+  font-weight:600;
+  color:var(--accent);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.va-actions{display:flex;align-items:center;gap:2px;position:relative}
+.va-btn{
+  background:none;border:none;color:var(--ink-dim);cursor:pointer;
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.va-btn svg{width:18px;height:18px}
+.va-btn:hover{background:rgba(0,0,0,.06);color:var(--accent)}
+.va-btn.on{color:var(--accent)}
+.va-close{color:var(--ink-dim)}
+.hl-palette{
+  position:absolute;
+  bottom:42px;right:0;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:8px;
+  display:flex;
+  gap:6px;
+  box-shadow:0 4px 18px rgba(0,0,0,.18);
+}
+.hl-swatch{
+  width:26px;height:26px;border-radius:50%;
+  border:2px solid transparent;
+  cursor:pointer;
+}
+.hl-swatch.none{
+  background:var(--bg);
+  border:1px solid var(--rule);
+  position:relative;
+}
+.hl-swatch.none::after{
+  content:'';position:absolute;left:4px;right:4px;top:50%;height:1.5px;
+  background:var(--danger);transform:rotate(45deg);
+}
+
+/* ---------- sheets (generic bottom sheet system) ---------- */
 .sheet-backdrop{
   position:fixed;inset:0;
   background:rgba(0,0,0,.4);
@@ -354,7 +496,7 @@ main{
   color:var(--ink);
   width:100%;
   max-width:520px;
-  max-height:80vh;
+  max-height:84vh;
   overflow-y:auto;
   border-radius:16px 16px 0 0;
   padding:22px 22px calc(22px + env(safe-area-inset-bottom,0px));
@@ -375,6 +517,15 @@ main{
   border:none;border-radius:8px;padding:9px 18px;
   font-family:var(--font-ui);font-weight:600;font-size:.82rem;cursor:pointer;
 }
+.sheet button.secondary{
+  background:none;color:var(--accent);
+  border:1px solid var(--rule);border-radius:8px;padding:9px 18px;
+  font-family:var(--font-ui);font-weight:600;font-size:.82rem;cursor:pointer;
+}
+.sheet button.danger-link{
+  background:none;border:none;color:var(--danger);
+  font-family:var(--font-ui);font-size:.8rem;cursor:pointer;padding:0;
+}
 .credit-block{
   background:var(--accent-soft);
   border-radius:10px;
@@ -384,15 +535,98 @@ main{
   margin:14px 0;
 }
 .credit-block a{color:var(--accent)}
+
+/* menu list */
+.menu-list{list-style:none;margin:0;padding:0}
+.menu-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 2px;border-bottom:1px solid var(--rule);
+  cursor:pointer;
+}
+.menu-row:last-child{border-bottom:none}
+.menu-row svg.mi{width:19px;height:19px;color:var(--accent);flex:none}
+.menu-row .ml-label{flex:1;font-weight:500;color:var(--ink)}
+.menu-row svg.chev{width:16px;height:16px;color:var(--ink-dim);flex:none}
+
+/* search */
+.search-input-wrap{
+  position:sticky;top:0;background:var(--surface);
+  padding-bottom:10px;margin-bottom:6px;
+}
+#searchInput{
+  width:100%;
+  border:1px solid var(--rule);
+  background:var(--bg);
+  color:var(--ink);
+  border-radius:10px;
+  padding:11px 14px;
+  font-family:var(--font-ui);
+  font-size:.92rem;
+}
+#searchInput:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.search-status{color:var(--ink-dim);font-size:.8rem;padding:10px 2px}
+.search-result{
+  padding:11px 2px;border-bottom:1px solid var(--rule);cursor:pointer;
+}
+.search-result:last-child{border-bottom:none}
+.sr-ref{font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:2px}
+.sr-text{font-family:var(--font-scripture);font-size:.96rem;line-height:1.5;color:var(--ink)}
+.sr-text mark{background:var(--verse-active);color:var(--verse-active-ink);border-radius:2px}
+
+/* marks list */
+.mark-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 2px;border-bottom:1px solid var(--rule);
+}
+.mark-row:last-child{border-bottom:none}
+.mark-main{flex:1;min-width:0;cursor:pointer}
+.mark-badges{display:flex;gap:4px;margin-bottom:3px}
+.mark-badges span{font-size:.62rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent)}
+.mark-text{font-family:var(--font-scripture);font-size:.92rem;color:var(--ink);line-height:1.45}
+.mark-note-text{font-size:.78rem;color:var(--ink-dim);margin-top:4px;font-style:italic}
+.mark-del{flex:none;background:none;border:none;color:var(--ink-dim);cursor:pointer;padding:6px}
+.mark-del svg{width:16px;height:16px}
+.mark-del:hover{color:var(--danger)}
+
+/* note editor */
+#noteTextarea{
+  width:100%;min-height:120px;resize:vertical;
+  border:1px solid var(--rule);background:var(--bg);color:var(--ink);
+  border-radius:10px;padding:12px;font-family:var(--font-ui);font-size:.9rem;
+  line-height:1.5;
+}
+.sheet-actions-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+
+/* downloads */
+.dl-row{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--rule)}
+.dl-row:last-child{border-bottom:none}
+.dl-row .dl-main{flex:1;font-size:.88rem}
+.dl-row button.mark-del{flex:none}
+.storage-note{color:var(--ink-dim);font-size:.78rem;margin:4px 0 16px}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:100px;transform:translateX(-50%);
+  background:var(--ink);color:var(--bg);
+  padding:9px 16px;border-radius:999px;
+  font-family:var(--font-ui);font-size:.8rem;font-weight:500;
+  z-index:40;box-shadow:0 4px 14px rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.toast.show{opacity:1}
 </style>
 
 <div class="topbar">
   <div class="brand">
     <h1>Bibiliya</h1>
-    <button class="icon-btn" id="aboutBtn" aria-label="About">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor"/></svg>
-      About
-    </button>
+    <div class="brand-actions">
+      <button class="icon-btn" id="searchBtn" aria-label="Shakisha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="icon-btn" id="menuBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+      </button>
+    </div>
   </div>
   <div class="nav-row">
     <div class="picker">
@@ -404,6 +638,17 @@ main{
   </div>
 </div>
 
+<div class="daily-banner" id="dailyBanner" hidden>
+  <div class="db-text">
+    <p class="db-label">Ijambo ry'uyu musi</p>
+    <p class="db-verse" id="dbVerseText"></p>
+    <p class="db-ref"><span id="dbRefText"></span> &middot; <button id="dbReadBtn">Soma mu gitabu</button></p>
+  </div>
+  <button class="db-close" id="dbCloseBtn" aria-label="Funga">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
 <main>
   <div class="reading" id="reading">
     <p class="empty-note">Ndaragukira...</p>
@@ -411,6 +656,33 @@ main{
 </main>
 
 <div class="audiobar">
+  <div class="verse-action-bar" id="verseActionBar" hidden>
+    <span class="va-ref" id="vaRef"></span>
+    <div class="va-actions">
+      <button class="va-btn" id="vaBookmark" aria-label="Bika (bookmark)">
+        <svg id="vaBookmarkIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <button class="va-btn" id="vaHighlight" aria-label="Shiraho irangi (highlight)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15 16 5l3 3L9 18H6v-3z"/><path d="M4 21h5"/></svg>
+      </button>
+      <button class="va-btn" id="vaNote" aria-label="Andika icatwa (note)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      </button>
+      <button class="va-btn" id="vaShare" aria-label="Sangiza (share)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="va-btn va-close" id="vaClose" aria-label="Funga">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="hl-palette" id="hlPalette" hidden>
+        <div class="hl-swatch none" id="hlNone" title="Kuraho"></div>
+        <div class="hl-swatch" style="background:#e6b432" data-color="y"></div>
+        <div class="hl-swatch" style="background:#5aaf78" data-color="g"></div>
+        <div class="hl-swatch" style="background:#5a96d2" data-color="b"></div>
+        <div class="hl-swatch" style="background:#d26ea0" data-color="p"></div>
+      </div>
+    </div>
+  </div>
   <div class="audiobar-inner" id="audioControls" hidden>
     <div class="scrub-wrap">
       <span class="time" id="curTime">0:00</span>
@@ -442,6 +714,10 @@ main{
           </svg>
         </button>
       </div>
+      <button class="dl-btn" id="dlBtn" aria-label="Kuramo kugira wumve udafise internet">
+        <svg id="dlIconDown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+        <svg id="dlIconDone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M20 6 9 17l-5-5"/></svg>
+      </button>
     </div>
   </div>
   <div class="no-audio" id="noAudioNote">
@@ -450,25 +726,11 @@ main{
   </div>
 </div>
 
-<div class="sheet-backdrop" id="aboutBackdrop" hidden>
-  <div class="sheet">
-    <h2>Bibiliya Kirundi</h2>
-    <p class="sub">Ikirundi &middot; Kirundi audio scripture reader</p>
-    <p>This reader shows the full Bible text in Kirundi, synced verse-by-verse to audio recordings as they're added chapter by chapter.</p>
-    <div class="credit-block">
-      Bible text: <strong>Biblica® Open Kirundi Contemporary Bible</strong>, © 2021, 2025 Biblica, Inc.<br>
-      Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.<br>
-      The original work by Biblica, Inc. is available for free at
-      <a href="https://www.biblica.com" target="_blank" rel="noopener">biblica.com</a> and
-      <a href="https://open.bible" target="_blank" rel="noopener">open.bible</a>.
-      <br><br>
-      This reader is an independent, unofficial derivative work: the text has been
-      reformatted for verse-synced audio playback and combined with separately
-      produced audio recordings. It is not published or endorsed by Biblica, Inc.
-    </div>
-    <div class="close-row"><button class="done" id="aboutClose">Done</button></div>
-  </div>
+<div class="sheet-backdrop" id="sheetBackdrop" hidden>
+  <div class="sheet" id="sheet"></div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 (function(){
@@ -481,7 +743,11 @@ main{
     chapter: null,
     verses: [],
     activeVerseIdx: -1,
-    audioAvailable: false
+    audioAvailable: false,
+    selectedIdx: -1,
+    marks: {},
+    searchIndex: null,
+    searchIndexLoading: null
   };
 
   var els = {
@@ -503,9 +769,28 @@ main{
     scrub: document.getElementById('scrub'),
     scrubFill: document.getElementById('scrubFill'),
     scrubKnob: document.getElementById('scrubKnob'),
-    aboutBtn: document.getElementById('aboutBtn'),
-    aboutBackdrop: document.getElementById('aboutBackdrop'),
-    aboutClose: document.getElementById('aboutClose')
+    searchBtn: document.getElementById('searchBtn'),
+    menuBtn: document.getElementById('menuBtn'),
+    dailyBanner: document.getElementById('dailyBanner'),
+    dbVerseText: document.getElementById('dbVerseText'),
+    dbRefText: document.getElementById('dbRefText'),
+    dbReadBtn: document.getElementById('dbReadBtn'),
+    dbCloseBtn: document.getElementById('dbCloseBtn'),
+    verseActionBar: document.getElementById('verseActionBar'),
+    vaRef: document.getElementById('vaRef'),
+    vaBookmark: document.getElementById('vaBookmark'),
+    vaBookmarkIcon: document.getElementById('vaBookmarkIcon'),
+    vaHighlight: document.getElementById('vaHighlight'),
+    vaNote: document.getElementById('vaNote'),
+    vaShare: document.getElementById('vaShare'),
+    vaClose: document.getElementById('vaClose'),
+    hlPalette: document.getElementById('hlPalette'),
+    dlBtn: document.getElementById('dlBtn'),
+    dlIconDown: document.getElementById('dlIconDown'),
+    dlIconDone: document.getElementById('dlIconDone'),
+    sheetBackdrop: document.getElementById('sheetBackdrop'),
+    sheet: document.getElementById('sheet'),
+    toast: document.getElementById('toast')
   };
 
   var audio = new Audio();
@@ -531,18 +816,34 @@ main{
     try { localStorage.setItem(key, val); } catch(e){}
   }
 
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function showToast(msg){
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function(){ els.toast.classList.remove('show'); }, 1800);
+  }
+
   // ---------- data loading ----------
   function loadIndex(){
     return fetch('data/index.json').then(function(r){ return r.json(); }).then(function(idx){
       state.index = idx;
       populateBookSelect();
+      cacheOfflineAsset('data/index.json');
     });
   }
 
   function loadBook(code){
     if (state.bookCache[code]) return Promise.resolve(state.bookCache[code]);
-    return fetch('data/books/' + code + '.json').then(function(r){ return r.json(); }).then(function(book){
+    var url = 'data/books/' + code + '.json';
+    return fetch(url).then(function(r){ return r.json(); }).then(function(book){
       state.bookCache[code] = book;
+      cacheOfflineAsset(url);
       return book;
     });
   }
@@ -578,12 +879,36 @@ main{
     }
   }
 
+  // ---------- marks (bookmarks / highlights / notes) ----------
+  function loadMarks(){
+    try {
+      state.marks = JSON.parse(safeGet('bible_marks') || '{}');
+    } catch(e){ state.marks = {}; }
+  }
+  function saveMarks(){ safeSet('bible_marks', JSON.stringify(state.marks)); }
+  function markKey(code, ch, vn){ return code + '.' + ch + '.' + vn; }
+  function getMark(key){ return state.marks[key] || null; }
+  function setMark(key, patch, meta){
+    var m = state.marks[key] || {};
+    Object.keys(patch).forEach(function(k){ m[k] = patch[k]; });
+    if (meta){
+      m.ref = meta.ref; m.text = meta.text; m.code = meta.code;
+      m.ch = meta.ch; m.vn = meta.vn;
+    }
+    m.ts = Date.now();
+    var empty = !m.bookmark && !m.highlight && !(m.note && m.note.trim());
+    if (empty){ delete state.marks[key]; } else { state.marks[key] = m; }
+    saveMarks();
+  }
+
   // ---------- rendering ----------
   function renderChapter(code, chNum){
     return loadBook(code).then(function(book){
       var ch = book.chapters[String(chNum)];
       state.verses = ch.verses;
       state.activeVerseIdx = -1;
+      state.selectedIdx = -1;
+      hideVerseActionBar();
 
       var meta = bookMeta(code);
       var html = '<p class="book-title">' + esc(book.title) + '</p>';
@@ -602,8 +927,15 @@ main{
             html += '<div class="heading">' + esc(t) + '</div>';
           });
         }
-        html += '<span class="verse" data-idx="' + i + '" data-start="' + (v.start==null?'':v.start) + '" data-end="' + (v.end==null?'':v.end) + '">';
-        html += '<span class="vnum">' + v.n + '</span>' + esc(v.text) + ' ';
+        var key = markKey(code, chNum, v.n);
+        var mark = getMark(key);
+        var cls = 'verse';
+        if (mark && mark.highlight) cls += ' hl-' + mark.highlight;
+        html += '<span class="' + cls + '" data-idx="' + i + '" data-start="' + (v.start==null?'':v.start) + '" data-end="' + (v.end==null?'':v.end) + '">';
+        html += '<span class="vnum">' + v.n + '</span>';
+        if (mark && mark.bookmark) html += '<span class="mk-star">&#9733;</span>';
+        if (mark && mark.note && mark.note.trim()) html += '<span class="mk-note">&#9998;</span>';
+        html += esc(v.text) + ' ';
         html += '</span>';
       });
       if (headingsByVerse['end']){
@@ -621,16 +953,11 @@ main{
           if (state.audioAvailable && v.start != null){
             seekThenPlay(v.start);
           }
+          selectVerseForActions(idx);
         });
       });
 
       setActiveVerse(-1);
-    });
-  }
-
-  function esc(s){
-    return String(s).replace(/[&<>"']/g, function(c){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
   }
 
@@ -652,6 +979,282 @@ main{
     }
   }
 
+  function flashVerse(idx){
+    var el = els.reading.querySelector('.verse[data-idx="' + idx + '"]');
+    if (!el) return;
+    el.scrollIntoView({ behavior:'smooth', block:'center' });
+    el.classList.remove('flash'); void el.offsetWidth;
+    el.classList.add('flash');
+  }
+
+  // ---------- verse action toolbar ----------
+  function selectVerseForActions(idx){
+    state.selectedIdx = idx;
+    var v = state.verses[idx];
+    var meta = bookMeta(state.code);
+    var ref = meta.title + ' ' + state.chapter + ':' + v.n;
+    els.vaRef.textContent = ref;
+    var key = markKey(state.code, state.chapter, v.n);
+    var mark = getMark(key);
+    els.vaBookmark.classList.toggle('on', !!(mark && mark.bookmark));
+    els.vaHighlight.classList.toggle('on', !!(mark && mark.highlight));
+    els.vaNote.classList.toggle('on', !!(mark && mark.note && mark.note.trim()));
+    els.hlPalette.hidden = true;
+    els.verseActionBar.hidden = false;
+  }
+  function hideVerseActionBar(){
+    state.selectedIdx = -1;
+    els.verseActionBar.hidden = true;
+    els.hlPalette.hidden = true;
+  }
+  function currentSelectedVerse(){
+    if (state.selectedIdx < 0) return null;
+    return state.verses[state.selectedIdx];
+  }
+  function refreshVerseEl(vn){
+    var meta = bookMeta(state.code);
+    var key = markKey(state.code, state.chapter, vn);
+    var mark = getMark(key);
+    var el = els.reading.querySelector('.verse[data-idx="' + state.selectedIdx + '"]');
+    if (!el) return;
+    el.classList.remove('hl-y','hl-g','hl-b','hl-p');
+    if (mark && mark.highlight) el.classList.add('hl-' + mark.highlight);
+    var star = el.querySelector('.mk-star');
+    var note = el.querySelector('.mk-note');
+    if (mark && mark.bookmark){ if (!star){ el.querySelector('.vnum').insertAdjacentHTML('afterend', '<span class="mk-star">&#9733;</span>'); } }
+    else if (star){ star.remove(); }
+    if (mark && mark.note && mark.note.trim()){ if (!note){ var afterStar = el.querySelector('.mk-star'); (afterStar||el.querySelector('.vnum')).insertAdjacentHTML('afterend', '<span class="mk-note">&#9998;</span>'); } }
+    else if (note){ note.remove(); }
+  }
+
+  els.vaClose.addEventListener('click', hideVerseActionBar);
+
+  els.vaBookmark.addEventListener('click', function(){
+    var v = currentSelectedVerse(); if (!v) return;
+    var meta = bookMeta(state.code);
+    var key = markKey(state.code, state.chapter, v.n);
+    var mark = getMark(key);
+    var newVal = !(mark && mark.bookmark);
+    setMark(key, { bookmark: newVal }, {
+      ref: meta.title + ' ' + state.chapter + ':' + v.n,
+      text: v.text, code: state.code, ch: state.chapter, vn: v.n
+    });
+    els.vaBookmark.classList.toggle('on', newVal);
+    refreshVerseEl(v.n);
+    showToast(newVal ? 'Vyabitswe' : 'Vyakuwemo');
+  });
+
+  els.vaHighlight.addEventListener('click', function(e){
+    e.stopPropagation();
+    els.hlPalette.hidden = !els.hlPalette.hidden;
+  });
+  Array.prototype.forEach.call(els.hlPalette.querySelectorAll('.hl-swatch'), function(sw){
+    sw.addEventListener('click', function(){
+      var v = currentSelectedVerse(); if (!v) return;
+      var meta = bookMeta(state.code);
+      var key = markKey(state.code, state.chapter, v.n);
+      var color = sw.getAttribute('data-color') || null;
+      setMark(key, { highlight: color }, {
+        ref: meta.title + ' ' + state.chapter + ':' + v.n,
+        text: v.text, code: state.code, ch: state.chapter, vn: v.n
+      });
+      els.vaHighlight.classList.toggle('on', !!color);
+      refreshVerseEl(v.n);
+      els.hlPalette.hidden = true;
+    });
+  });
+
+  els.vaNote.addEventListener('click', function(){
+    var v = currentSelectedVerse(); if (!v) return;
+    var meta = bookMeta(state.code);
+    var key = markKey(state.code, state.chapter, v.n);
+    var mark = getMark(key);
+    openSheet('note', {
+      key: key, ref: meta.title + ' ' + state.chapter + ':' + v.n,
+      text: v.text, existing: (mark && mark.note) || '',
+      code: state.code, ch: state.chapter, vn: v.n
+    });
+  });
+
+  els.vaShare.addEventListener('click', function(){
+    var v = currentSelectedVerse(); if (!v) return;
+    var meta = bookMeta(state.code);
+    var ref = meta.title + ' ' + state.chapter + ':' + v.n;
+    var link = location.origin + location.pathname + '#' + state.code + '.' + state.chapter;
+    var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Kirundi)\n' + link;
+    if (navigator.share){
+      navigator.share({ text: text }).catch(function(){});
+    } else if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        showToast('Vyanditswe (copied)');
+      }).catch(function(){ showToast(text); });
+    } else {
+      showToast(text);
+    }
+  });
+
+  // ---------- daily verse ----------
+  var DAILY_VERSES = [
+    ['GEN',1,1],['DEU',31,6],['JOS',1,9],['PSA',23,1],['PSA',27,1],['PSA',34,8],
+    ['PSA',37,4],['PSA',46,1],['PSA',56,3],['PSA',90,12],['PSA',103,2],['PSA',118,24],
+    ['PSA',119,105],['PSA',121,1],['PSA',139,14],['PRO',3,5],['PRO',16,3],['PRO',18,10],
+    ['PRO',22,6],['ECC',3,1],['ISA',26,3],['ISA',40,31],['ISA',41,10],['ISA',54,17],
+    ['JER',17,7],['JER',29,11],['LAM',3,22],['MIC',6,8],['NAM',1,7],['HAB',3,19],
+    ['ZEP',3,17],['MAL',3,10],['MAT',5,16],['MAT',6,33],['MAT',7,7],['MAT',11,28],
+    ['MAT',28,19],['MRK',11,24],['LUK',1,37],['LUK',6,38],['JHN',1,1],['JHN',3,16],
+    ['JHN',8,12],['JHN',10,10],['JHN',13,34],['JHN',14,6],['JHN',15,5],['JHN',16,33],
+    ['ACT',1,8],['ROM',5,8],['ROM',8,28],['ROM',10,9],['ROM',12,2],['ROM',15,13],
+    ['1CO',10,13],['1CO',13,4],['1CO',15,58],['2CO',4,16],['2CO',5,17],['2CO',12,9],
+    ['GAL',2,20],['GAL',5,22],['GAL',6,9],['EPH',2,8],['EPH',3,20],['EPH',4,32],
+    ['EPH',6,10],['PHP',1,6],['PHP',2,3],['PHP',4,4],['PHP',4,6],['PHP',4,13],
+    ['PHP',4,19],['COL',3,2],['COL',3,23],['1TH',5,16],['1TI',4,12],['2TI',1,7],
+    ['2TI',4,7],['TIT',3,5],['HEB',4,16],['HEB',11,1],['HEB',12,1],['HEB',13,8],
+    ['JAS',1,2],['JAS',1,5],['JAS',4,7],['JAS',5,16],['1PE',1,3],['1PE',2,9],
+    ['1PE',5,7],['2PE',1,3],['1JN',1,9],['1JN',3,1],['1JN',4,7],['1JN',4,19],
+    ['JUD',1,24],['REV',3,20],['REV',21,4]
+  ];
+  function dayOfYear(){
+    var now = new Date();
+    var start = new Date(now.getFullYear(), 0, 0);
+    var diff = now - start;
+    return Math.floor(diff / 86400000);
+  }
+  function todayStr(){
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  }
+  function todaysVerseRef(){
+    var i = dayOfYear() % DAILY_VERSES.length;
+    return DAILY_VERSES[i];
+  }
+  function resolveDailyVerse(){
+    var ref = todaysVerseRef();
+    var code = ref[0], ch = ref[1], vn = ref[2];
+    return loadBook(code).then(function(book){
+      var meta = bookMeta(code);
+      var chData = book.chapters[String(ch)];
+      var v = chData && chData.verses.filter(function(x){ return x.n === vn; })[0];
+      if (!v) v = chData.verses[0];
+      return { code: code, ch: ch, vn: v.n, text: v.text, title: meta.title };
+    });
+  }
+  function initDailyBanner(){
+    if (safeGet('dailyDismiss') === todayStr()) return;
+    resolveDailyVerse().then(function(d){
+      els.dbVerseText.textContent = d.text;
+      els.dbRefText.textContent = d.title + ' ' + d.ch + ':' + d.vn;
+      els.dailyBanner.hidden = false;
+      els.dbReadBtn.onclick = function(){
+        els.dailyBanner.hidden = true;
+        goTo(d.code, d.ch);
+      };
+    }).catch(function(){});
+  }
+  els.dbCloseBtn.addEventListener('click', function(){
+    safeSet('dailyDismiss', todayStr());
+    els.dailyBanner.hidden = true;
+  });
+
+  // ---------- offline downloads (Cache Storage) ----------
+  var OFFLINE_CACHE = 'kirundi-bible-v1';
+  var hasCaches = (typeof caches !== 'undefined');
+
+  function cacheOfflineAsset(url){
+    if (!hasCaches) return;
+    try {
+      caches.open(OFFLINE_CACHE).then(function(cache){
+        fetch(url).then(function(resp){
+          if (resp && resp.ok) cache.put(url, resp.clone());
+        }).catch(function(){});
+      });
+    } catch(e){}
+  }
+
+  function isAudioCached(url){
+    if (!hasCaches) return Promise.resolve(false);
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return cache.match(url).then(function(r){ return !!r; });
+    }).catch(function(){ return false; });
+  }
+
+  function getPlayableUrl(url){
+    if (!hasCaches) return Promise.resolve(url);
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return cache.match(url).then(function(r){
+        if (!r) return url;
+        return r.blob().then(function(b){ return URL.createObjectURL(b); });
+      });
+    }).catch(function(){ return url; });
+  }
+
+  function downloadChapterAudio(url, onProgress){
+    if (!hasCaches) return Promise.reject(new Error('no cache support'));
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return fetch(url).then(function(resp){
+        if (!resp.ok) throw new Error('fetch failed');
+        return cache.put(url, resp.clone()).then(function(){ return resp; });
+      });
+    });
+  }
+
+  function removeChapterAudio(url){
+    if (!hasCaches) return Promise.resolve();
+    return caches.open(OFFLINE_CACHE).then(function(cache){ return cache.delete(url); });
+  }
+
+  function refreshDownloadButton(){
+    var url = audioPathFor(state.code, state.chapter);
+    els.dlBtn.classList.remove('done','busy');
+    els.dlIconDown.hidden = false;
+    els.dlIconDone.hidden = true;
+    isAudioCached(url).then(function(cached){
+      if (cached){
+        els.dlBtn.classList.add('done');
+        els.dlIconDown.hidden = true;
+        els.dlIconDone.hidden = false;
+      }
+    });
+  }
+
+  els.dlBtn.addEventListener('click', function(){
+    var url = audioPathFor(state.code, state.chapter);
+    if (els.dlBtn.classList.contains('done')){
+      removeChapterAudio(url).then(function(){
+        showToast('Vyakuwe (removed)');
+        refreshDownloadButton();
+      });
+      return;
+    }
+    els.dlBtn.classList.add('busy');
+    downloadChapterAudio(url).then(function(){
+      els.dlBtn.classList.remove('busy');
+      showToast('Vyarakuwe, urashobora kuyumva udafise internet');
+      refreshDownloadButton();
+    }).catch(function(){
+      els.dlBtn.classList.remove('busy');
+      showToast('Ntibyakunze. Gerageza ukundi.');
+    });
+  });
+
+  function listDownloadedChapters(){
+    if (!hasCaches) return Promise.resolve([]);
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return cache.keys().then(function(reqs){
+        return reqs
+          .map(function(r){ return r.url; })
+          .filter(function(u){ return /\/audio\//.test(u); })
+          .map(function(u){
+            var m = u.match(/([0-9A-Z]+)_(\d{3})\.mp3$/);
+            if (!m) return null;
+            var code = m[1], ch = parseInt(m[2],10);
+            var meta = state.index && bookMeta(code);
+            return { url: u, code: code, ch: ch, title: meta ? meta.title : code };
+          })
+          .filter(Boolean);
+      });
+    });
+  }
+
   // ---------- audio wiring ----------
   function loadAudioForChapter(code, chNum){
     state.audioAvailable = false;
@@ -659,8 +1262,12 @@ main{
     els.noAudioNote.hidden = false;
     audio.pause();
     audio.removeAttribute('src');
-    audio.src = audioPathFor(code, chNum);
-    audio.load();
+    var url = audioPathFor(code, chNum);
+    getPlayableUrl(url).then(function(playUrl){
+      audio.src = playUrl;
+      audio.load();
+    });
+    refreshDownloadButton();
   }
 
   audio.addEventListener('error', function(){
@@ -803,6 +1410,10 @@ main{
     updateStepButtons();
     renderChapter(code, chNum).then(function(){
       loadAudioForChapter(code, chNum);
+      if (opts.flashVerse != null){
+        var idx = state.verses.findIndex(function(v){ return v.n === opts.flashVerse; });
+        if (idx !== -1) flashVerse(idx);
+      }
     });
     if (!opts.noHash){
       history.replaceState(null, '', '#' + code + '.' + chNum);
@@ -845,12 +1456,313 @@ main{
     }
   });
 
-  // ---------- about sheet ----------
-  els.aboutBtn.addEventListener('click', function(){ els.aboutBackdrop.hidden = false; });
-  els.aboutClose.addEventListener('click', function(){ els.aboutBackdrop.hidden = true; });
-  els.aboutBackdrop.addEventListener('click', function(e){
-    if (e.target === els.aboutBackdrop) els.aboutBackdrop.hidden = true;
+  // ================= generic sheet system =================
+  function closeSheet(){ els.sheetBackdrop.hidden = true; els.sheet.innerHTML = ''; }
+  els.sheetBackdrop.addEventListener('click', function(e){
+    if (e.target === els.sheetBackdrop) closeSheet();
   });
+
+  function openSheet(view, params){
+    els.sheet.innerHTML = buildSheetHtml(view, params || {});
+    els.sheetBackdrop.hidden = false;
+    mountSheet(view, params || {});
+  }
+
+  function buildSheetHtml(view, p){
+    if (view === 'about'){
+      return '' +
+        '<h2>Bibiliya Kirundi</h2>' +
+        '<p class="sub">Ikirundi &middot; Kirundi audio scripture reader</p>' +
+        '<p>This reader shows the full Bible text in Kirundi, synced verse-by-verse to audio recordings as they are added chapter by chapter.</p>' +
+        '<div class="credit-block">' +
+          'Bible text: <strong>Biblica® Open Kirundi Contemporary Bible</strong>, © 2021, 2025 Biblica, Inc.<br>' +
+          'Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.<br>' +
+          'The original work by Biblica, Inc. is available for free at ' +
+          '<a href="https://www.biblica.com" target="_blank" rel="noopener">biblica.com</a> and ' +
+          '<a href="https://open.bible" target="_blank" rel="noopener">open.bible</a>.' +
+          '<br><br>' +
+          'This reader is an independent, unofficial derivative work: the text has been ' +
+          'reformatted for verse-synced audio playback and combined with separately ' +
+          'produced audio recordings. It is not published or endorsed by Biblica, Inc.' +
+        '</div>' +
+        '<div class="close-row"><button class="done" id="sheetDone">Nivyo (Done)</button></div>';
+    }
+    if (view === 'menu'){
+      function row(id, iconSvg, label){
+        return '<li class="menu-row" id="' + id + '">' +
+          '<svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + iconSvg + '</svg>' +
+          '<span class="ml-label">' + label + '</span>' +
+          '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
+          '</li>';
+      }
+      return '' +
+        '<h2>Menu</h2>' +
+        '<ul class="menu-list">' +
+          row('mRowDaily', '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', 'Ijambo ry’uyu musi') +
+          row('mRowMarks', '<path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>', 'Ivyo nabitse (bookmarks &amp; notes)') +
+          row('mRowDownloads', '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>', 'Gukura ngo wumve udafise internet') +
+          row('mRowSupport', '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6 12 13 2 6"/>', 'Twandikire (contact &amp; support)') +
+          row('mRowAbout', '<circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor"/>', 'Ibijanye na porogaramu') +
+        '</ul>';
+    }
+    if (view === 'daily'){
+      return '<h2>Ijambo ry’uyu musi</h2><p class="sub">Verse of the day</p><div id="dailyBody"><p>...</p></div>';
+    }
+    if (view === 'marks'){
+      return '<h2>Ivyo nabitse</h2><p class="sub">Bookmarks, highlights &amp; notes</p><div id="marksBody"></div>';
+    }
+    if (view === 'support'){
+      return '' +
+        '<h2>Twandikire</h2>' +
+        '<p class="sub">Support &amp; contact</p>' +
+        '<p>Niba ufise ikibazo, igitekerezo, canke ikintu kitagenda neza muri iyi porogaramu, twandikire &mdash; turakwishura.</p>' +
+        '<p>If you run into a problem, have feedback, or just want to say hello, send a note &mdash; we read every message.</p>' +
+        '<div class="close-row" style="justify-content:flex-start">' +
+          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Kirundi') + '">Twandikire kuri imeyili</a>' +
+        '</div>' +
+        '<p style="margin-top:18px;font-size:.78rem;color:var(--ink-dim)">Iyi porogaramu ntiyibika amakuru yawe bwite. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>';
+    }
+    if (view === 'note'){
+      return '' +
+        '<h2>Icatwa</h2>' +
+        '<p class="sub">' + esc(p.ref) + '</p>' +
+        '<p style="font-family:var(--font-scripture);font-size:.92rem;color:var(--ink-dim);font-style:italic">' + esc(p.text) + '</p>' +
+        '<textarea id="noteTextarea" placeholder="Andika icatwa cawe hano...">' + esc(p.existing || '') + '</textarea>' +
+        '<div class="sheet-actions-row">' +
+          '<button class="danger-link" id="noteDelete">Siba (delete)</button>' +
+          '<div style="display:flex;gap:8px">' +
+            '<button class="secondary" id="noteCancel">Reka (cancel)</button>' +
+            '<button class="done" id="noteSave">Bika (save)</button>' +
+          '</div>' +
+        '</div>';
+    }
+    if (view === 'downloads'){
+      return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemo, urayumva udafise internet</p><div id="downloadsBody"><p>...</p></div>';
+    }
+    if (view === 'search'){
+      return '' +
+        '<div class="search-input-wrap"><input type="text" id="searchInput" placeholder="Shakisha ijambo canke umurongo..." autocomplete="off"></div>' +
+        '<div id="searchResults"><p class="search-status">Andika ijambo ushaka gushaka.</p></div>';
+    }
+    return '';
+  }
+
+  var SUPPORT_EMAIL = 'kuwimanakevin@gmail.com';
+
+  function mountSheet(view, p){
+    var doneBtn = document.getElementById('sheetDone');
+    if (doneBtn) doneBtn.addEventListener('click', closeSheet);
+
+    if (view === 'menu'){
+      document.getElementById('mRowDaily').addEventListener('click', function(){ openSheet('daily'); });
+      document.getElementById('mRowMarks').addEventListener('click', function(){ openSheet('marks'); });
+      document.getElementById('mRowDownloads').addEventListener('click', function(){ openSheet('downloads'); });
+      document.getElementById('mRowSupport').addEventListener('click', function(){ openSheet('support'); });
+      document.getElementById('mRowAbout').addEventListener('click', function(){ openSheet('about'); });
+    }
+
+    if (view === 'daily'){
+      resolveDailyVerse().then(function(d){
+        var body = document.getElementById('dailyBody');
+        if (!body) return;
+        body.innerHTML = '' +
+          '<p style="font-family:var(--font-scripture);font-size:1.1rem;line-height:1.6">' + esc(d.text) + '</p>' +
+          '<p class="sub" style="margin:4px 0 18px">' + esc(d.title) + ' ' + d.ch + ':' + d.vn + '</p>' +
+          '<div class="close-row" style="justify-content:flex-start">' +
+            '<button class="done" id="dailyReadBtn">Soma mu gitabu</button>' +
+          '</div>';
+        document.getElementById('dailyReadBtn').addEventListener('click', function(){
+          closeSheet();
+          goTo(d.code, d.ch, { flashVerse: d.vn });
+        });
+      });
+    }
+
+    if (view === 'marks'){
+      var body = document.getElementById('marksBody');
+      var keys = Object.keys(state.marks).sort(function(a,b){
+        return (state.marks[b].ts||0) - (state.marks[a].ts||0);
+      });
+      if (!keys.length){
+        body.innerHTML = '<p style="color:var(--ink-dim)">Nta kintu uracobitswe. Kanda ku murongo uwo ariwo wose ugire ngo ubike, ushireho irangi, canke wandike icatwa.</p>';
+      } else {
+        body.innerHTML = keys.map(function(k){
+          var m = state.marks[k];
+          var badges = '';
+          if (m.bookmark) badges += '<span>&#9733; Bookmark</span>';
+          if (m.highlight) badges += '<span>&#9679; Highlight</span>';
+          if (m.note && m.note.trim()) badges += '<span>&#9998; Note</span>';
+          return '' +
+            '<div class="mark-row">' +
+              '<div class="mark-main" data-key="' + k + '">' +
+                '<div class="mark-badges">' + badges + '</div>' +
+                '<div class="mark-text">' + esc(m.ref) + ' — ' + esc((m.text||'').slice(0,90)) + ((m.text||'').length>90?'…':'') + '</div>' +
+                (m.note && m.note.trim() ? '<div class="mark-note-text">' + esc(m.note) + '</div>' : '') +
+              '</div>' +
+              '<button class="mark-del" data-key="' + k + '" aria-label="Siba">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+              '</button>' +
+            '</div>';
+        }).join('');
+        Array.prototype.forEach.call(body.querySelectorAll('.mark-main'), function(el){
+          el.addEventListener('click', function(){
+            var k = el.getAttribute('data-key');
+            var m = state.marks[k];
+            closeSheet();
+            goTo(m.code, m.ch, { flashVerse: m.vn });
+          });
+        });
+        Array.prototype.forEach.call(body.querySelectorAll('.mark-del'), function(btn){
+          btn.addEventListener('click', function(e){
+            e.stopPropagation();
+            var k = btn.getAttribute('data-key');
+            delete state.marks[k];
+            saveMarks();
+            if (state.code && state.chapter){
+              var parts = k.split('.');
+              if (parts[0] === state.code && parseInt(parts[1],10) === state.chapter){
+                var vn = parseInt(parts[2],10);
+                var idx = state.verses.findIndex(function(v){ return v.n === vn; });
+                if (idx !== -1){ state.selectedIdx = idx; refreshVerseEl(vn); }
+              }
+            }
+            openSheet('marks');
+          });
+        });
+      }
+    }
+
+    if (view === 'note'){
+      var ta = document.getElementById('noteTextarea');
+      document.getElementById('noteCancel').addEventListener('click', closeSheet);
+      document.getElementById('noteSave').addEventListener('click', function(){
+        setMark(p.key, { note: ta.value }, { ref: p.ref, text: p.text, code: p.code, ch: p.ch, vn: p.vn });
+        if (state.selectedIdx >= 0) { els.vaNote.classList.toggle('on', !!ta.value.trim()); refreshVerseEl(p.vn); }
+        closeSheet();
+        showToast('Icatwa cabitswe');
+      });
+      document.getElementById('noteDelete').addEventListener('click', function(){
+        setMark(p.key, { note: '' }, { ref: p.ref, text: p.text, code: p.code, ch: p.ch, vn: p.vn });
+        if (state.selectedIdx >= 0) { els.vaNote.classList.remove('on'); refreshVerseEl(p.vn); }
+        closeSheet();
+      });
+    }
+
+    if (view === 'downloads'){
+      refreshDownloadsSheet();
+    }
+
+    if (view === 'search'){
+      var input = document.getElementById('searchInput');
+      var results = document.getElementById('searchResults');
+      input.focus();
+      ensureSearchIndex().then(function(){
+        if (results.querySelector('.search-status')) results.innerHTML = '<p class="search-status">Andika ijambo ushaka gushaka.</p>';
+      });
+      var t = null;
+      input.addEventListener('input', function(){
+        clearTimeout(t);
+        var q = input.value.trim();
+        if (!q){ results.innerHTML = '<p class="search-status">Andika ijambo ushaka gushaka.</p>'; return; }
+        t = setTimeout(function(){ runSearch(q, results); }, 150);
+      });
+    }
+  }
+
+  function refreshDownloadsSheet(){
+    var body = document.getElementById('downloadsBody');
+    if (!body) return;
+    listDownloadedChapters().then(function(list){
+      list.sort(function(a,b){ return (a.title+a.ch).localeCompare(b.title+b.ch); });
+      var storageNote = '';
+      if (navigator.storage && navigator.storage.estimate){
+        navigator.storage.estimate().then(function(est){
+          var mb = ((est.usage||0)/1048576).toFixed(0);
+          var n = body.querySelector('.storage-note');
+          if (n) n.textContent = 'Storage used by this app: ~' + mb + ' MB';
+        });
+      }
+      if (!list.length){
+        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracakurwa. Kanda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisomera udafise internet.</p>';
+        return;
+      }
+      body.innerHTML = '<p class="storage-note">...</p>' + list.map(function(d){
+        return '' +
+          '<div class="dl-row">' +
+            '<div class="dl-main">' + esc(d.title) + ' — Ch ' + d.ch + '</div>' +
+            '<button class="mark-del" data-url="' + esc(d.url) + '" aria-label="Siba">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+            '</button>' +
+          '</div>';
+      }).join('') + '<div class="close-row" style="justify-content:flex-start;margin-top:10px"><button class="secondary" id="clearAllDl">Kuraho vyose</button></div>';
+      Array.prototype.forEach.call(body.querySelectorAll('.mark-del'), function(btn){
+        btn.addEventListener('click', function(){
+          removeChapterAudio(btn.getAttribute('data-url')).then(function(){
+            refreshDownloadButton();
+            refreshDownloadsSheet();
+          });
+        });
+      });
+      var clearAll = document.getElementById('clearAllDl');
+      if (clearAll) clearAll.addEventListener('click', function(){
+        Promise.all(list.map(function(d){ return removeChapterAudio(d.url); })).then(function(){
+          refreshDownloadButton();
+          refreshDownloadsSheet();
+        });
+      });
+    });
+  }
+
+  // ---------- search ----------
+  function ensureSearchIndex(){
+    if (state.searchIndex) return Promise.resolve(state.searchIndex);
+    if (state.searchIndexLoading) return state.searchIndexLoading;
+    state.searchIndexLoading = fetch('data/search-index.json').then(function(r){ return r.json(); }).then(function(idx){
+      state.searchIndex = idx;
+      cacheOfflineAsset('data/search-index.json');
+      return idx;
+    });
+    return state.searchIndexLoading;
+  }
+
+  function runSearch(q, resultsEl){
+    resultsEl.innerHTML = '<p class="search-status">Birimo gushakishwa...</p>';
+    ensureSearchIndex().then(function(idx){
+      var needle = q.toLowerCase().replace(/[’‘]/g, "'");
+      var out = [];
+      for (var i=0;i<idx.length && out.length<80;i++){
+        var row = idx[i];
+        var hay = row.x.toLowerCase().replace(/[’‘]/g, "'");
+        if (hay.indexOf(needle) !== -1) out.push(row);
+      }
+      if (!out.length){
+        resultsEl.innerHTML = '<p class="search-status">Nta kintu caboneste.</p>';
+        return;
+      }
+      var reNeedle = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var re = new RegExp('(' + reNeedle + ')', 'ig');
+      resultsEl.innerHTML = out.map(function(row){
+        var snippet = esc(row.x).replace(re, '<mark>$1</mark>');
+        return '' +
+          '<div class="search-result" data-code="' + row.c + '" data-ch="' + row.n + '" data-vn="' + row.v + '">' +
+            '<div class="sr-ref">' + esc(row.t) + ' ' + row.n + ':' + row.v + '</div>' +
+            '<div class="sr-text">' + snippet + '</div>' +
+          '</div>';
+      }).join('');
+      Array.prototype.forEach.call(resultsEl.querySelectorAll('.search-result'), function(el){
+        el.addEventListener('click', function(){
+          var code = el.getAttribute('data-code');
+          var ch = parseInt(el.getAttribute('data-ch'),10);
+          var vn = parseInt(el.getAttribute('data-vn'),10);
+          closeSheet();
+          goTo(code, ch, { flashVerse: vn });
+        });
+      });
+    });
+  }
+
+  els.searchBtn.addEventListener('click', function(){ openSheet('search'); });
+  els.menuBtn.addEventListener('click', function(){ openSheet('menu'); });
 
   // ---------- boot ----------
   function parseHash(){
@@ -861,6 +1773,7 @@ main{
   }
 
   function start(){
+    loadMarks();
     loadIndex().then(function(){
       var fromHash = parseHash();
       var code = (fromHash && fromHash.code) || safeGet('lastBook') || 'GEN';
@@ -869,6 +1782,9 @@ main{
       var meta = bookMeta(code);
       if (!chapter || chapter < 1 || chapter > meta.chapters) chapter = 1;
       goTo(code, chapter, { noHash: !!fromHash });
+      initDailyBanner();
+      if (window.requestIdleCallback) requestIdleCallback(function(){ ensureSearchIndex(); });
+      else setTimeout(function(){ ensureSearchIndex(); }, 2500);
     });
   }
 
