@@ -674,7 +674,7 @@ main{
   <div class="db-text">
     <p class="db-label">Ijambo ry'uyu musi</p>
     <p class="db-verse" id="dbVerseText"></p>
-    <p class="db-ref"><span id="dbRefText"></span> &middot; <button id="dbReadBtn">Soma mu gitabu</button></p>
+    <p class="db-ref"><span id="dbRefText"></span> &middot; <button id="dbReadBtn">Soma mu gitabu</button> &middot; <button id="dbCardBtn">Ifoto</button></p>
   </div>
   <button class="db-close" id="dbCloseBtn" aria-label="Funga">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1159,6 +1159,136 @@ main{
   function todaysBgImage(){
     return DAILY_BG[dayOfYear() % DAILY_BG.length];
   }
+
+  // ---------- verse card image (download / share to status) ----------
+  function wrapCanvasText(ctx, text, maxWidth){
+    var words = text.split(' ');
+    var lines = [];
+    var current = '';
+    words.forEach(function(w){
+      var test = current ? current + ' ' + w : w;
+      if (ctx.measureText(test).width > maxWidth && current){
+        lines.push(current);
+        current = w;
+      } else {
+        current = test;
+      }
+    });
+    if (current) lines.push(current);
+    return lines;
+  }
+
+  function buildVerseCardBlob(text, ref, bgUrl){
+    return new Promise(function(resolve, reject){
+      var W = 1080, H = 1920;
+      var canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      var ctx = canvas.getContext('2d');
+      var img = new Image();
+      img.onload = function(){
+        try {
+          var ir = img.width / img.height, cr = W / H, sw, sh, sx, sy;
+          if (ir > cr){ sh = img.height; sw = sh * cr; sx = (img.width - sw)/2; sy = 0; }
+          else { sw = img.width; sh = sw / cr; sx = 0; sy = (img.height - sh)/2; }
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+
+          var grad = ctx.createLinearGradient(0,0,0,H);
+          grad.addColorStop(0, 'rgba(8,10,16,.55)');
+          grad.addColorStop(0.45, 'rgba(8,10,16,.4)');
+          grad.addColorStop(1, 'rgba(8,10,16,.75)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0,0,W,H);
+
+          var finish = function(){
+            var margin = 100;
+            var maxWidth = W - margin*2;
+            var fontSize = 72, lines, lineHeight;
+            do {
+              ctx.font = '600 ' + fontSize + 'px Literata, Georgia, serif';
+              lines = wrapCanvasText(ctx, text, maxWidth);
+              lineHeight = fontSize * 1.32;
+              if (lines.length * lineHeight < 760 || fontSize <= 38) break;
+              fontSize -= 4;
+            } while (true);
+
+            var totalTextHeight = lines.length * lineHeight;
+            var startY = H/2 - totalTextHeight/2;
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '600 ' + fontSize + 'px Literata, Georgia, serif';
+            lines.forEach(function(line, i){
+              ctx.fillText(line, W/2, startY + i*lineHeight + fontSize);
+            });
+
+            var dividerY = startY + totalTextHeight + 46;
+            ctx.strokeStyle = 'rgba(240,198,116,.9)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(W/2 - 46, dividerY);
+            ctx.lineTo(W/2 + 46, dividerY);
+            ctx.stroke();
+
+            ctx.font = '700 36px "Work Sans", sans-serif';
+            ctx.fillStyle = '#f0c674';
+            ctx.fillText(ref.toUpperCase(), W/2, dividerY + 56);
+
+            ctx.font = '600 28px "Work Sans", sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,.82)';
+            ctx.fillText('BIBILIYA KIRUNDI', W/2, H - 90);
+
+            canvas.toBlob(function(blob){
+              if (blob) resolve(blob); else reject(new Error('toBlob failed'));
+            }, 'image/jpeg', 0.9);
+          };
+
+          if (document.fonts && document.fonts.ready){
+            document.fonts.ready.then(finish).catch(finish);
+          } else {
+            finish();
+          }
+        } catch(e){ reject(e); }
+      };
+      img.onerror = function(){ reject(new Error('image load failed')); };
+      img.src = bgUrl;
+    });
+  }
+
+  function shareOrDownloadVerseCard(mode, text, ref, bgUrl, statusElId){
+    var statusEl = statusElId ? document.getElementById(statusElId) : null;
+    if (statusEl) statusEl.textContent = 'Birimo gutegurwa...';
+    buildVerseCardBlob(text, ref, bgUrl).then(function(blob){
+      var file = null;
+      try { file = new File([blob], 'ijambo-ryuyu-musi.jpg', { type: 'image/jpeg' }); } catch(e){}
+
+      if (mode === 'share' && navigator.share && file && navigator.canShare && navigator.canShare({ files: [file] })){
+        navigator.share({ files: [file], title: 'Bibiliya Kirundi', text: ref }).then(function(){
+          if (statusEl) statusEl.textContent = '';
+        }).catch(function(){
+          if (statusEl) statusEl.textContent = '';
+        });
+        return;
+      }
+
+      // Fallback (no Web Share / no file support, or explicit download): save the file.
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'ijambo-ryuyu-musi.jpg';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      if (statusEl){
+        statusEl.textContent = mode === 'share'
+          ? 'Ifoto yarakuwe — uyishireho mu WhatsApp Status canke Instagram Story wenyene.'
+          : 'Ifoto yarakuwe (saved to your downloads).';
+      }
+      showToast('Ifoto yarakuwe');
+    }).catch(function(){
+      if (statusEl) statusEl.textContent = 'Ntibyakunze. Gerageza ukundi.';
+      showToast('Ntibyakunze. Gerageza ukundi.');
+    });
+  }
+
   function dayOfYear(){
     var now = new Date();
     var start = new Date(now.getFullYear(), 0, 0);
@@ -1198,6 +1328,8 @@ main{
         els.dailyBanner.hidden = true;
         goTo(d.code, d.ch);
       };
+      var cardBtn = document.getElementById('dbCardBtn');
+      if (cardBtn) cardBtn.onclick = function(){ openSheet('daily'); };
     }).catch(function(){});
   }
   els.dbCloseBtn.addEventListener('click', function(){
@@ -1621,12 +1753,27 @@ main{
         body.innerHTML = '' +
           '<p style="font-family:var(--font-scripture);font-size:1.1rem;line-height:1.6">' + esc(d.text) + '</p>' +
           '<p class="sub" style="margin:4px 0 18px">' + esc(d.title) + ' ' + d.ch + ':' + d.vn + '</p>' +
-          '<div class="close-row" style="justify-content:flex-start">' +
+          '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">' +
             '<button class="done" id="dailyReadBtn">Soma mu gitabu</button>' +
-          '</div>';
+            '<button class="secondary" id="dailyDownloadBtn">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>' +
+              'Kuramo ifoto' +
+            '</button>' +
+            '<button class="secondary" id="dailyShareBtn">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+              'Sangiza ku status' +
+            '</button>' +
+          '</div>' +
+          '<p id="dailyCardStatus" style="margin-top:10px;font-size:.78rem;color:var(--ink-dim)"></p>';
         document.getElementById('dailyReadBtn').addEventListener('click', function(){
           closeSheet();
           goTo(d.code, d.ch, { flashVerse: d.vn });
+        });
+        document.getElementById('dailyDownloadBtn').addEventListener('click', function(){
+          shareOrDownloadVerseCard('download', d.text, d.title + ' ' + d.ch + ':' + d.vn, todaysBgImage(), 'dailyCardStatus');
+        });
+        document.getElementById('dailyShareBtn').addEventListener('click', function(){
+          shareOrDownloadVerseCard('share', d.text, d.title + ' ' + d.ch + ':' + d.vn, todaysBgImage(), 'dailyCardStatus');
         });
       });
     }
