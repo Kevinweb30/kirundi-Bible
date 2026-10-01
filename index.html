@@ -1543,8 +1543,16 @@ main{
   // "paused" for a beat (or, on some devices, indefinitely) even though
   // playback had been correctly requested.
   function setPlayingUI(isPlaying){
+    // Some iOS Safari versions fail to visually repaint an element after
+    // only its `hidden` attribute changes (the DOM state is correct, but
+    // the old paint lingers on screen). Setting inline style.display
+    // explicitly, on top of the hidden attribute, and forcing a layout
+    // read, defeats that stale-paint bug reliably.
     els.playIcon.hidden = isPlaying;
+    els.playIcon.style.display = isPlaying ? 'none' : '';
     els.pauseIcon.hidden = !isPlaying;
+    els.pauseIcon.style.display = isPlaying ? '' : 'none';
+    void els.playBtn.offsetHeight; // force reflow/repaint
   }
   audio.addEventListener('play', function(){ dbg('EVENT play | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); });
   audio.addEventListener('playing', function(){ dbg('EVENT playing | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); });
