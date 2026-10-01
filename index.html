@@ -836,6 +836,28 @@ main{
   var audio = new Audio();
   audio.preload = 'metadata';
 
+  // ---- Temporary on-screen debug log (only active with ?debug=1 in the URL) ----
+  var DEBUG_ON = /[?&]debug=1\b/.test(location.search);
+  var dbgBox = null;
+  if (DEBUG_ON) {
+    dbgBox = document.createElement('div');
+    dbgBox.id = 'dbgBox';
+    dbgBox.style.cssText = 'position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow-y:auto;' +
+      'background:rgba(0,0,0,.88);color:#8f8;font:11px/1.4 monospace;padding:8px;z-index:99999;' +
+      'white-space:pre-wrap;word-break:break-all;-webkit-user-select:text;user-select:text;';
+    document.body.appendChild(dbgBox);
+  }
+  function dbg(msg){
+    if (!DEBUG_ON || !dbgBox) return;
+    var t = new Date();
+    var ts = ('0'+t.getMinutes()).slice(-2)+':'+('0'+t.getSeconds()).slice(-2)+'.'+('00'+t.getMilliseconds()).slice(-3);
+    var line = document.createElement('div');
+    line.textContent = ts + '  ' + msg;
+    dbgBox.appendChild(line);
+    dbgBox.scrollTop = dbgBox.scrollHeight;
+    while (dbgBox.children.length > 80) dbgBox.removeChild(dbgBox.firstChild);
+  }
+
   function pad3(n){ n = String(n); return n.length>=3?n:('000'+n).slice(-3); }
 
   function audioPathFor(code, chapterNum){
@@ -1466,15 +1488,22 @@ main{
   }
 
   audio.addEventListener('error', function(){
+    dbg('EVENT error | code=' + (audio.error && audio.error.code) + ' networkState=' + audio.networkState);
     state.audioAvailable = false;
     els.audioControls.hidden = true;
     els.noAudioNote.hidden = false;
   });
   audio.addEventListener('loadedmetadata', function(){
+    dbg('EVENT loadedmetadata | duration=' + audio.duration.toFixed(2));
     state.audioAvailable = true;
     els.audioControls.hidden = false;
     els.noAudioNote.hidden = true;
     els.durTime.textContent = fmtTime(audio.duration);
+  });
+  ['waiting','stalled','suspend','canplay','canplaythrough','loadstart','emptied','abort','seeking','seeked'].forEach(function(evt){
+    audio.addEventListener(evt, function(){
+      dbg('EVENT ' + evt + ' | t=' + audio.currentTime.toFixed(2) + ' paused=' + audio.paused + ' readyState=' + audio.readyState + ' networkState=' + audio.networkState);
+    });
   });
   function syncPlaybackUI(){
     if (!state.audioAvailable) return;
@@ -1484,6 +1513,10 @@ main{
     // advancing) and forces the icon to match reality. This is what
     // actually fixes a stuck icon, regardless of why an event got missed
     // or a play() promise's rejection handler fired after the fact.
+    if (DEBUG_ON && els.pauseIcon.hidden !== audio.paused) {
+      // the icon currently disagrees with audio.paused — about to flip it
+      dbg('SYNC-FLIP | icon currently showed playing=' + !els.pauseIcon.hidden + ' but audio.paused=' + audio.paused + ' t=' + audio.currentTime.toFixed(2));
+    }
     setPlayingUI(!audio.paused);
     els.curTime.textContent = fmtTime(audio.currentTime);
     var pct = audio.duration ? (audio.currentTime / audio.duration * 100) : 0;
@@ -1513,18 +1546,19 @@ main{
     els.playIcon.hidden = isPlaying;
     els.pauseIcon.hidden = !isPlaying;
   }
-  audio.addEventListener('play', function(){ setPlayingUI(true); });
-  audio.addEventListener('playing', function(){ setPlayingUI(true); });
-  audio.addEventListener('pause', function(){ setPlayingUI(false); });
-  audio.addEventListener('ended', function(){ setPlayingUI(false); });
+  audio.addEventListener('play', function(){ dbg('EVENT play | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); });
+  audio.addEventListener('playing', function(){ dbg('EVENT playing | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); });
+  audio.addEventListener('pause', function(){ dbg('EVENT pause | t=' + audio.currentTime.toFixed(2) + ' ended=' + audio.ended); setPlayingUI(false); });
+  audio.addEventListener('ended', function(){ dbg('EVENT ended'); setPlayingUI(false); });
 
   els.playBtn.addEventListener('click', function(){
+    dbg('TAP playBtn | audio.paused=' + audio.paused);
     if (!state.audioAvailable) return;
     if (audio.paused){
       setPlayingUI(true);
       var p = audio.play();
       if (p && typeof p.catch === 'function'){
-        p.catch(function(){ setPlayingUI(false); });
+        p.catch(function(err){ dbg('play() REJECTED | ' + (err && err.name) + ': ' + (err && err.message)); setPlayingUI(false); });
       }
     } else {
       setPlayingUI(false);
