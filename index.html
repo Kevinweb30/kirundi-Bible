@@ -411,6 +411,9 @@ main{
 }
 .play-btn:disabled{opacity:.3;cursor:default;box-shadow:none}
 .play-btn svg{width:24px;height:24px}
+#pauseIcon{display:none}
+.play-btn.is-playing #playIcon{display:none}
+.play-btn.is-playing #pauseIcon{display:block}
 .scrub-wrap{
   display:flex;
   align-items:center;
@@ -744,7 +747,7 @@ main{
         </button>
         <button class="play-btn" id="playBtn" aria-label="Play">
           <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
         </button>
         <button class="skip-btn" id="skipFwdBtn" aria-label="Forward 10 seconds">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -842,9 +845,12 @@ main{
   if (DEBUG_ON) {
     dbgBox = document.createElement('div');
     dbgBox.id = 'dbgBox';
-    dbgBox.style.cssText = 'position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow-y:auto;' +
+    // Positioned at the TOP (not bottom) so it never covers the fixed
+    // audio player bar, and pointer-events:none so taps pass straight
+    // through to whatever's underneath — this panel is read-only.
+    dbgBox.style.cssText = 'position:fixed;left:0;right:0;top:0;max-height:32vh;overflow-y:auto;' +
       'background:rgba(0,0,0,.88);color:#8f8;font:11px/1.4 monospace;padding:8px;z-index:99999;' +
-      'white-space:pre-wrap;word-break:break-all;-webkit-user-select:text;user-select:text;';
+      'white-space:pre-wrap;word-break:break-all;pointer-events:none;';
     document.body.appendChild(dbgBox);
   }
   function dbg(msg){
@@ -1513,9 +1519,9 @@ main{
     // advancing) and forces the icon to match reality. This is what
     // actually fixes a stuck icon, regardless of why an event got missed
     // or a play() promise's rejection handler fired after the fact.
-    if (DEBUG_ON && els.pauseIcon.hidden !== audio.paused) {
+    if (DEBUG_ON && els.playBtn.classList.contains('is-playing') === audio.paused) {
       // the icon currently disagrees with audio.paused — about to flip it
-      dbg('SYNC-FLIP | icon currently showed playing=' + !els.pauseIcon.hidden + ' but audio.paused=' + audio.paused + ' t=' + audio.currentTime.toFixed(2));
+      dbg('SYNC-FLIP | icon currently showed playing=' + els.playBtn.classList.contains('is-playing') + ' but audio.paused=' + audio.paused + ' t=' + audio.currentTime.toFixed(2));
     }
     setPlayingUI(!audio.paused);
     els.curTime.textContent = fmtTime(audio.currentTime);
@@ -1543,16 +1549,12 @@ main{
   // "paused" for a beat (or, on some devices, indefinitely) even though
   // playback had been correctly requested.
   function setPlayingUI(isPlaying){
-    // Some iOS Safari versions fail to visually repaint an element after
-    // only its `hidden` attribute changes (the DOM state is correct, but
-    // the old paint lingers on screen). Setting inline style.display
-    // explicitly, on top of the hidden attribute, and forcing a layout
-    // read, defeats that stale-paint bug reliably.
-    els.playIcon.hidden = isPlaying;
-    els.playIcon.style.display = isPlaying ? 'none' : '';
-    els.pauseIcon.hidden = !isPlaying;
-    els.pauseIcon.style.display = isPlaying ? '' : 'none';
-    void els.playBtn.offsetHeight; // force reflow/repaint
+    // A single class toggle on the button, with the icon swap handled
+    // entirely in CSS (#pauseIcon / .is-playing rules above). Mixing the
+    // `hidden` attribute with per-icon inline styles proved unreliable on
+    // iOS Safari (stale paint, or both/neither icon showing); one atomic
+    // class change on the parent is the robust way to drive this.
+    els.playBtn.classList.toggle('is-playing', isPlaying);
   }
   audio.addEventListener('play', function(){ dbg('EVENT play | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); });
   audio.addEventListener('playing', function(){ dbg('EVENT playing | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); });
