@@ -248,7 +248,12 @@ body.screen-home .nav-row{display:none}
   text-align:center;
   display:flex;flex-direction:column;align-items:center;
 }
-.home-book-icon{margin-bottom:14px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.18))}
+.home-book-icon{margin-bottom:14px}
+.home-book-icon img{
+  width:104px;height:104px;border-radius:20px;
+  object-fit:cover;display:block;
+  box-shadow:0 10px 22px rgba(0,0,0,.28);
+}
 .home-title{
   font-family:var(--font-scripture);
   font-weight:700;font-size:1.7rem;margin:0;color:var(--ink);
@@ -844,14 +849,7 @@ main{
 <div class="home-screen" id="homeScreen">
   <div class="home-header">
     <div class="home-book-icon">
-      <svg width="76" height="92" viewBox="0 0 100 120">
-        <rect x="14" y="8" width="72" height="104" rx="5" fill="#f0c674"/>
-        <rect x="10" y="6" width="68" height="108" rx="7" fill="#241f1a"/>
-        <rect x="10" y="6" width="11" height="108" rx="4" fill="#140e0a"/>
-        <rect x="40" y="34" width="8" height="40" rx="2" fill="#f0c674"/>
-        <rect x="28" y="46" width="32" height="8" rx="2" fill="#f0c674"/>
-        <path d="M63 108 L63 124 L56 117 L49 124 L49 108 Z" fill="#b3463f"/>
-      </svg>
+      <img src="images/bible-cover.jpg" alt="Bibiliya Yera" width="104" height="104">
     </div>
     <h2 class="home-title">Bibiliya Yera</h2>
     <p class="home-subtitle">Mu Kirundi</p>
@@ -2525,6 +2523,7 @@ main{
       initDailyBanner();
       renderHomeHero();
       updateTestamentCounts();
+      cacheOfflineAsset('images/bible-cover.jpg');
       if (window.requestIdleCallback) requestIdleCallback(function(){ ensureSearchIndex(); });
       else setTimeout(function(){ ensureSearchIndex(); }, 2500);
     });
