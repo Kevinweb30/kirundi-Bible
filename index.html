@@ -265,7 +265,8 @@ body.screen-home .nav-row{display:none}
   height:1px;background:var(--rule);margin:22px 24px 0;
 }
 
-/* dark verse-of-the-day card */
+/* verse-of-the-day card — the real daily photo, shown naturally with just
+   enough of a bottom gradient for the text to stay readable */
 .home-verse-card{
   position:relative;
   margin:20px 16px 0;
@@ -274,23 +275,15 @@ body.screen-home .nav-row{display:none}
   min-height:300px;
   cursor:pointer;
   box-shadow:0 10px 30px rgba(0,0,0,.22);
-  background:
-    radial-gradient(ellipse 120% 60% at 50% 115%, rgba(237,150,92,.65), transparent 62%),
-    linear-gradient(180deg, #221229 0%, #34163a 32%, #58213f 62%, #7d2f3c 100%);
+  background:#2f4858;
+  background-size:cover;
+  background-position:center;
   display:flex;flex-direction:column;
 }
-.hvc-rays{
-  position:absolute;inset:0;
-  background:conic-gradient(from 0deg at 50% 8%,
-    rgba(255,232,200,.16) 0deg 3deg, transparent 3deg 18deg);
-  mix-blend-mode:screen;
-  pointer-events:none;
-}
-.hvc-hill{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;display:block}
 .hvc-content{
   position:relative;flex:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:30px 26px 70px;
+  text-align:center;padding:30px 26px 54px;
 }
 .hvc-label{
   font-family:var(--font-ui);font-weight:700;font-size:.72rem;
@@ -336,6 +329,11 @@ body.screen-home .nav-row{display:none}
 }
 .htc-info p{font-size:.78rem;color:var(--ink-dim);margin:0}
 .htc-chev{width:19px;height:19px;color:var(--ink-dim);flex:none}
+
+/* Soaks up any leftover vertical space on tall screens so the quick-tile
+   row settles toward the bottom instead of leaving dead space under it.
+   On short screens it just collapses and the page scrolls normally. */
+.home-spacer{flex:1 0 12px;min-height:12px}
 
 .home-quick{
   display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
@@ -862,16 +860,6 @@ main{
   <div class="home-divider"></div>
 
   <div class="home-verse-card" id="homeVerseCard">
-    <div class="hvc-rays"></div>
-    <svg class="hvc-hill" viewBox="0 0 400 170" preserveAspectRatio="none">
-      <path d="M0,150 Q200,95 400,150 L400,170 L0,170 Z" fill="#160d1b" opacity=".92"/>
-      <rect x="118" y="92" width="7" height="62" fill="#120a16"/>
-      <rect x="107" y="110" width="29" height="7" fill="#120a16"/>
-      <rect x="196" y="58" width="8" height="96" fill="#120a16"/>
-      <rect x="180" y="88" width="40" height="8" fill="#120a16"/>
-      <rect x="274" y="94" width="7" height="60" fill="#120a16"/>
-      <rect x="263" y="112" width="29" height="7" fill="#120a16"/>
-    </svg>
     <div class="hvc-content">
       <p class="hvc-label">&#10022; IJAMBO RY&rsquo;UMUSI &#10022;</p>
       <p class="hvc-text" id="hvcText"></p>
@@ -901,6 +889,8 @@ main{
       <svg class="htc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
     </button>
   </div>
+
+  <div class="home-spacer"></div>
 
   <div class="home-quick">
     <button class="home-tile" id="homeTileMarks">
@@ -1678,11 +1668,11 @@ main{
       els.hvcText.textContent = d.text;
       els.hvcRef.textContent = ref;
       // Use the same rotating set of 9 daily background photos as the
-      // downloadable verse card, behind the dark gradient + crosses.
+      // downloadable verse card, shown naturally — just a gentle bottom
+      // gradient so the text stays readable, not a heavy color wash.
       var bg = todaysBgImage();
       els.homeVerseCard.style.backgroundImage =
-        'linear-gradient(180deg, rgba(34,18,41,.55) 0%, rgba(52,22,58,.55) 32%, rgba(88,33,63,.58) 62%, rgba(125,47,60,.66) 100%), ' +
-        'radial-gradient(ellipse 120% 60% at 50% 115%, rgba(237,150,92,.5), transparent 62%), ' +
+        'linear-gradient(180deg, rgba(10,8,14,.12) 0%, rgba(10,8,14,.08) 40%, rgba(10,8,14,.62) 100%), ' +
         'url(' + bg + ')';
       els.homeVerseCard.style.backgroundSize = 'cover';
       els.homeVerseCard.style.backgroundPosition = 'center';
