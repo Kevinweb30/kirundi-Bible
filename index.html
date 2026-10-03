@@ -986,9 +986,9 @@ main{
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
       <span>Gukura</span>
     </button>
-    <button class="home-tile" id="homeTileSearch">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span>Rondera</span>
+    <button class="home-tile" id="homeTileAppearance">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
+      <span>Ishusho</span>
     </button>
   </div>
 </div>
@@ -1015,7 +1015,7 @@ main{
       </li>
       <li class="menu-row" id="dRowAppearance">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
-        <span class="ml-label">Imiterere (Appearance)</span>
+        <span class="ml-label">Ishusho (Appearance)</span>
       </li>
       <li class="menu-row" id="dRowSupport">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6 12 13 2 6"/></svg>
@@ -1165,7 +1165,7 @@ main{
     htcNTCount: document.getElementById('htcNTCount'),
     homeTileMarks: document.getElementById('homeTileMarks'),
     homeTileDownloads: document.getElementById('homeTileDownloads'),
-    homeTileSearch: document.getElementById('homeTileSearch'),
+    homeTileAppearance: document.getElementById('homeTileAppearance'),
     drawerBackdrop: document.getElementById('drawerBackdrop'),
     drawer: document.getElementById('drawer'),
     dailyBanner: document.getElementById('dailyBanner'),
@@ -1774,7 +1774,7 @@ main{
 
   els.homeTileMarks.addEventListener('click', function(){ openSheet('marks'); });
   els.homeTileDownloads.addEventListener('click', function(){ openSheet('downloads'); });
-  els.homeTileSearch.addEventListener('click', function(){ openSheet('search'); });
+  els.homeTileAppearance.addEventListener('click', function(){ openSheet('appearance'); });
 
   var homeHeroData = null;
   function renderHomeHero(){
@@ -2355,7 +2355,7 @@ main{
     }
     if (view === 'appearance'){
       return '' +
-        '<h2>Imiterere</h2><p class="sub">Appearance</p>' +
+        '<h2>Ishusho</h2><p class="sub">Appearance</p>' +
 
         '<div class="appr-group">' +
           '<p class="appr-label">Ingene inyandiko igaragara (Text size)</p>' +
@@ -2377,10 +2377,10 @@ main{
         '</div>' +
 
         '<div class="appr-group">' +
-          '<p class="appr-label">Umucyo canke umwijima (Light or dark)</p>' +
+          '<p class="appr-label">Umuco canke umwijima (Light or dark)</p>' +
           '<div class="appr-mode-row">' +
             '<button class="appr-mode-btn" data-mode="auto">Nka telefone</button>' +
-            '<button class="appr-mode-btn" data-mode="light">Umucyo</button>' +
+            '<button class="appr-mode-btn" data-mode="light">Umuco</button>' +
             '<button class="appr-mode-btn" data-mode="dark">Umwijima</button>' +
           '</div>' +
         '</div>' +
