@@ -59,6 +59,43 @@
   color-scheme: dark;
 }
 
+/* ---------- color options (Igenamiterere / Appearance) ---------- */
+:root[data-accent="wood"]{
+  --bg:#f4ead9; --surface:#fffaf1; --ink:#2e2015; --ink-dim:#7a6450; --rule:#e3d2b8;
+  --accent:#7a4a24; --accent-ink:#ffffff; --accent-soft:#eadcc6;
+  --verse-active:#f0dfa8; --verse-active-ink:#2e2015;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-accent="wood"]:not([data-theme="light"]){
+    --bg:#1a1510; --surface:#231c15; --ink:#ede2d2; --ink-dim:#b3a28c; --rule:#3a2f22;
+    --accent:#c9975f; --accent-ink:#2a1a0c; --accent-soft:#3a2a1a;
+    --verse-active:#4a3a1e; --verse-active-ink:#f3e4c0;
+  }
+}
+:root[data-theme="dark"][data-accent="wood"]{
+  --bg:#1a1510; --surface:#231c15; --ink:#ede2d2; --ink-dim:#b3a28c; --rule:#3a2f22;
+  --accent:#c9975f; --accent-ink:#2a1a0c; --accent-soft:#3a2a1a;
+  --verse-active:#4a3a1e; --verse-active-ink:#f3e4c0;
+}
+
+:root[data-accent="beige"]{
+  --bg:#f3eee3; --surface:#fbf8f2; --ink:#3a3127; --ink-dim:#8a7a65; --rule:#e4dbc9;
+  --accent:#a9825a; --accent-ink:#ffffff; --accent-soft:#ede3d2;
+  --verse-active:#efe2b8; --verse-active-ink:#3a3127;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-accent="beige"]:not([data-theme="light"]){
+    --bg:#1c1914; --surface:#24201a; --ink:#ece4d6; --ink-dim:#a89b86; --rule:#38332a;
+    --accent:#d4b78c; --accent-ink:#2a2015; --accent-soft:#3a3022;
+    --verse-active:#4a4226; --verse-active-ink:#f2e7c8;
+  }
+}
+:root[data-theme="dark"][data-accent="beige"]{
+  --bg:#1c1914; --surface:#24201a; --ink:#ece4d6; --ink-dim:#a89b86; --rule:#38332a;
+  --accent:#d4b78c; --accent-ink:#2a2015; --accent-soft:#3a3022;
+  --verse-active:#4a4226; --verse-active-ink:#f2e7c8;
+}
+
 /* Type */
 @import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600;7..72,700&family=Work+Sans:wght@400;500;600;700&display=swap');
 :root{
@@ -408,7 +445,7 @@ main{
 }
 .chapter-num{
   font-family:var(--font-scripture);
-  font-size:2rem;
+  font-size:calc(2rem * var(--reading-scale, 1));
   font-weight:600;
   margin:0 0 22px;
   color:var(--ink);
@@ -417,13 +454,13 @@ main{
   font-family:var(--font-scripture);
   font-weight:600;
   font-style:italic;
-  font-size:1.02rem;
+  font-size:calc(1.02rem * var(--reading-scale, 1));
   color:var(--ink-dim);
   margin:28px 0 10px;
 }
 .verses{
   font-family:var(--font-scripture);
-  font-size:1.14rem;
+  font-size:calc(1.14rem * var(--reading-scale, 1));
   line-height:1.85;
   color:var(--ink);
 }
@@ -724,6 +761,52 @@ main{
   background:none;border:none;color:var(--danger);
   font-family:var(--font-ui);font-size:.9rem;cursor:pointer;padding:8px 0;
 }
+
+/* ---------- appearance settings ---------- */
+.appr-group{margin-bottom:24px}
+.appr-group:last-of-type{margin-bottom:4px}
+.appr-label{
+  font-family:var(--font-ui);font-weight:600;font-size:.78rem;
+  color:var(--ink-dim);text-transform:uppercase;letter-spacing:.05em;
+  margin:0 0 10px;
+}
+.appr-size-row{display:flex;gap:8px}
+.appr-size-btn{
+  flex:1;min-width:0;
+  border:1px solid var(--rule);background:var(--bg);color:var(--ink);
+  border-radius:10px;padding:10px 4px;cursor:pointer;
+  font-family:var(--font-scripture);font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  min-height:46px;
+}
+.appr-size-btn.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.appr-color-row{display:flex;gap:18px}
+.appr-color-btn{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:none;border:none;cursor:pointer;color:var(--ink-dim);
+  font-family:var(--font-ui);font-size:.76rem;font-weight:500;padding:2px;
+}
+.appr-color-btn.sel{color:var(--ink)}
+.appr-swatch{
+  width:38px;height:38px;border-radius:50%;
+  border:2px solid transparent;
+  box-shadow:0 0 0 1px var(--rule) inset;
+}
+.appr-color-btn.sel .appr-swatch{border-color:var(--ink)}
+.appr-mode-row{display:flex;gap:8px}
+.appr-mode-btn{
+  flex:1;border:1px solid var(--rule);background:var(--bg);color:var(--ink);
+  border-radius:10px;padding:11px 6px;cursor:pointer;
+  font-family:var(--font-ui);font-size:.84rem;font-weight:500;min-height:44px;
+}
+.appr-mode-btn.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.appr-preview{
+  border:1px solid var(--rule);border-radius:12px;padding:14px 16px;
+  background:var(--bg);
+}
+.appr-preview .book-title{margin:0 0 2px}
+.appr-preview .chapter-num{margin:0 0 6px;font-size:calc(1.3rem * var(--reading-scale,1))}
+.appr-preview .verses{font-size:calc(1rem * var(--reading-scale,1));line-height:1.7}
 .credit-block{
   background:var(--accent-soft);
   border-radius:10px;
@@ -929,6 +1012,10 @@ main{
       <li class="menu-row" id="dRowDownloads">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
         <span class="ml-label">Gukura ngo wumve udafise internet</span>
+      </li>
+      <li class="menu-row" id="dRowAppearance">
+        <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
+        <span class="ml-label">Imiterere (Appearance)</span>
       </li>
       <li class="menu-row" id="dRowSupport">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6 12 13 2 6"/></svg>
@@ -1150,6 +1237,32 @@ main{
   }
   function safeSet(key, val){
     try { localStorage.setItem(key, val); } catch(e){}
+  }
+
+  // ---------- appearance: text size, color, light/dark ----------
+  function getReadingScale(){ return parseFloat(safeGet('readingScale') || '1') || 1; }
+  function getAccent(){ return safeGet('accent') || 'teal'; }
+  function getThemeMode(){ return safeGet('themeMode') || 'auto'; }
+
+  function applyReadingScale(scale){
+    document.documentElement.style.setProperty('--reading-scale', scale);
+    safeSet('readingScale', String(scale));
+  }
+  function applyAccent(accent){
+    if (accent === 'teal') document.documentElement.removeAttribute('data-accent');
+    else document.documentElement.setAttribute('data-accent', accent);
+    safeSet('accent', accent);
+  }
+  function applyThemeMode(mode){
+    if (mode === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else if (mode === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+    safeSet('themeMode', mode);
+  }
+  function applyAppearancePrefs(){
+    applyReadingScale(getReadingScale());
+    applyAccent(getAccent());
+    applyThemeMode(getThemeMode());
   }
 
   function esc(s){
@@ -1713,6 +1826,7 @@ main{
   document.getElementById('dRowDaily').addEventListener('click', function(){ closeDrawer(); openSheet('daily'); });
   document.getElementById('dRowMarks').addEventListener('click', function(){ closeDrawer(); openSheet('marks'); });
   document.getElementById('dRowDownloads').addEventListener('click', function(){ closeDrawer(); openSheet('downloads'); });
+  document.getElementById('dRowAppearance').addEventListener('click', function(){ closeDrawer(); openSheet('appearance'); });
   document.getElementById('dRowSupport').addEventListener('click', function(){ closeDrawer(); openSheet('support'); });
   document.getElementById('dRowAbout').addEventListener('click', function(){ closeDrawer(); openSheet('about'); });
 
@@ -2239,6 +2353,49 @@ main{
         '<p class="sub">' + (isOT ? 'Old Testament' : 'New Testament') + '</p>' +
         '<div id="booksListBody"></div>';
     }
+    if (view === 'appearance'){
+      return '' +
+        '<h2>Imiterere</h2><p class="sub">Appearance</p>' +
+
+        '<div class="appr-group">' +
+          '<p class="appr-label">Ingene inyandiko igaragara (Text size)</p>' +
+          '<div class="appr-size-row">' +
+            '<button class="appr-size-btn" data-size="0.88" style="font-size:.82rem">A</button>' +
+            '<button class="appr-size-btn" data-size="1" style="font-size:1rem">A</button>' +
+            '<button class="appr-size-btn" data-size="1.18" style="font-size:1.2rem">A</button>' +
+            '<button class="appr-size-btn" data-size="1.34" style="font-size:1.38rem">A</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="appr-group">' +
+          '<p class="appr-label">Ibara (Color)</p>' +
+          '<div class="appr-color-row">' +
+            '<button class="appr-color-btn" data-accent="teal"><span class="appr-swatch" style="background:#2f4858"></span>Isanzwe</button>' +
+            '<button class="appr-color-btn" data-accent="wood"><span class="appr-swatch" style="background:#7a4a24"></span>Igiti</button>' +
+            '<button class="appr-color-btn" data-accent="beige"><span class="appr-swatch" style="background:#a9825a"></span>Umusenyi</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="appr-group">' +
+          '<p class="appr-label">Umucyo canke umwijima (Light or dark)</p>' +
+          '<div class="appr-mode-row">' +
+            '<button class="appr-mode-btn" data-mode="auto">Nka telefone</button>' +
+            '<button class="appr-mode-btn" data-mode="light">Umucyo</button>' +
+            '<button class="appr-mode-btn" data-mode="dark">Umwijima</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="appr-group">' +
+          '<p class="appr-label">Ukuntu bisa (Preview)</p>' +
+          '<div class="appr-preview">' +
+            '<p class="book-title">YOHANA</p>' +
+            '<p class="chapter-num">3</p>' +
+            '<p class="verses"><span class="vnum">16</span>Kuko Imana yakunze abari mu isi gurtyo, ta yatanze Umwana wayo w&rsquo;ikinege, ngo umwizera wese ntaze, ahabwe ubuzima budashira.</p>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="close-row"><button class="done" id="sheetDone">Nivyo (Done)</button></div>';
+    }
     return '';
   }
 
@@ -2405,6 +2562,40 @@ main{
         });
       }
     }
+
+    if (view === 'appearance'){
+      var sizeBtns = els.sheet.querySelectorAll('.appr-size-btn');
+      var colorBtns = els.sheet.querySelectorAll('.appr-color-btn');
+      var modeBtns = els.sheet.querySelectorAll('.appr-mode-btn');
+
+      function markSelected(list, attr, val){
+        Array.prototype.forEach.call(list, function(btn){
+          btn.classList.toggle('sel', btn.getAttribute(attr) === String(val));
+        });
+      }
+      markSelected(sizeBtns, 'data-size', getReadingScale());
+      markSelected(colorBtns, 'data-accent', getAccent());
+      markSelected(modeBtns, 'data-mode', getThemeMode());
+
+      Array.prototype.forEach.call(sizeBtns, function(btn){
+        btn.addEventListener('click', function(){
+          applyReadingScale(parseFloat(btn.getAttribute('data-size')));
+          markSelected(sizeBtns, 'data-size', getReadingScale());
+        });
+      });
+      Array.prototype.forEach.call(colorBtns, function(btn){
+        btn.addEventListener('click', function(){
+          applyAccent(btn.getAttribute('data-accent'));
+          markSelected(colorBtns, 'data-accent', getAccent());
+        });
+      });
+      Array.prototype.forEach.call(modeBtns, function(btn){
+        btn.addEventListener('click', function(){
+          applyThemeMode(btn.getAttribute('data-mode'));
+          markSelected(modeBtns, 'data-mode', getThemeMode());
+        });
+      });
+    }
   }
 
   function refreshDownloadsSheet(){
@@ -2511,6 +2702,7 @@ main{
   }
 
   function start(){
+    applyAppearancePrefs();
     loadMarks();
     loadIndex().then(function(){
       var fromHash = parseHash();
