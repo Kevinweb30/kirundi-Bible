@@ -160,6 +160,7 @@ select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .step-btn:hover{background:var(--accent-soft);border-color:var(--accent)}
 .step-btn:disabled{opacity:.35;cursor:default}
 .step-btn:disabled:hover{background:var(--bg)}
+.step-btn svg{width:17px;height:17px}
 
 /* ---------- daily verse banner ---------- */
 .daily-banner{
@@ -826,6 +827,9 @@ main{
     </button>
   </div>
   <div class="nav-row">
+    <button class="step-btn" id="readerHomeBtn" aria-label="Ahatangura (Home)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+    </button>
     <div class="picker">
       <select id="bookSelect" aria-label="Book"></select>
       <select id="chapterSelect" aria-label="Chapter"></select>
@@ -1045,6 +1049,7 @@ main{
     chapterSelect: document.getElementById('chapterSelect'),
     prevBtn: document.getElementById('prevBtn'),
     nextBtn: document.getElementById('nextBtn'),
+    readerHomeBtn: document.getElementById('readerHomeBtn'),
     reading: document.getElementById('reading'),
     main: document.querySelector('main'),
     audioControls: document.getElementById('audioControls'),
@@ -1652,6 +1657,7 @@ main{
     state.screen = 'reader';
     document.body.classList.remove('screen-home');
   }
+  if (els.readerHomeBtn) els.readerHomeBtn.addEventListener('click', function(){ showHome(); });
 
   els.homeTileMarks.addEventListener('click', function(){ openSheet('marks'); });
   els.homeTileDownloads.addEventListener('click', function(){ openSheet('downloads'); });
