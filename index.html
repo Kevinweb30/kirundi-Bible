@@ -61,21 +61,21 @@
 
 /* ---------- color options (Igenamiterere / Appearance) ---------- */
 :root[data-accent="wood"]{
-  --bg:#f4ead9; --surface:#fffaf1; --ink:#2e2015; --ink-dim:#7a6450; --rule:#e3d2b8;
-  --accent:#7a4a24; --accent-ink:#ffffff; --accent-soft:#eadcc6;
-  --verse-active:#f0dfa8; --verse-active-ink:#2e2015;
+  --bg:#dcad8b; --surface:#f3e2cc; --ink:#2f1d10; --ink-dim:#5c3c24; --rule:#c69569;
+  --accent:#5c3016; --accent-ink:#ffffff; --accent-soft:#eccda4;
+  --verse-active:#f3dca0; --verse-active-ink:#2f1d10;
 }
 @media (prefers-color-scheme: dark){
   :root[data-accent="wood"]:not([data-theme="light"]){
-    --bg:#1a1510; --surface:#231c15; --ink:#ede2d2; --ink-dim:#b3a28c; --rule:#3a2f22;
-    --accent:#c9975f; --accent-ink:#2a1a0c; --accent-soft:#3a2a1a;
-    --verse-active:#4a3a1e; --verse-active-ink:#f3e4c0;
+    --bg:#19130d; --surface:#241a10; --ink:#f1e4d3; --ink-dim:#c2a98c; --rule:#453019;
+    --accent:#dcad8b; --accent-ink:#2a1a0c; --accent-soft:#3c2a1a;
+    --verse-active:#4a3a1e; --verse-active-ink:#f6e8c8;
   }
 }
 :root[data-theme="dark"][data-accent="wood"]{
-  --bg:#1a1510; --surface:#231c15; --ink:#ede2d2; --ink-dim:#b3a28c; --rule:#3a2f22;
-  --accent:#c9975f; --accent-ink:#2a1a0c; --accent-soft:#3a2a1a;
-  --verse-active:#4a3a1e; --verse-active-ink:#f3e4c0;
+  --bg:#19130d; --surface:#241a10; --ink:#f1e4d3; --ink-dim:#c2a98c; --rule:#453019;
+  --accent:#dcad8b; --accent-ink:#2a1a0c; --accent-soft:#3c2a1a;
+  --verse-active:#4a3a1e; --verse-active-ink:#f6e8c8;
 }
 
 :root[data-accent="beige"]{
@@ -466,24 +466,49 @@ main{
 }
 .chapter-num{
   font-family:var(--font-scripture);
+  font-optical-sizing:auto;
   font-size:calc(2rem * var(--reading-scale, 1));
   font-weight:600;
   margin:0 0 22px;
   color:var(--ink);
+  position:relative;
+}
+.chapter-num::after{
+  content:'';
+  display:block;
+  width:30px;
+  height:3px;
+  border-radius:2px;
+  margin-top:12px;
+  background:var(--accent);
 }
 .heading{
   font-family:var(--font-scripture);
+  font-optical-sizing:auto;
   font-weight:600;
   font-style:italic;
   font-size:calc(1.02rem * var(--reading-scale, 1));
   color:var(--ink-dim);
   margin:28px 0 10px;
+  clear:both;
 }
 .verses{
   font-family:var(--font-scripture);
+  font-optical-sizing:auto;
   font-size:calc(1.14rem * var(--reading-scale, 1));
   line-height:1.85;
   color:var(--ink);
+}
+.dropcap{
+  float:left;
+  font-family:var(--font-scripture);
+  font-optical-sizing:auto;
+  font-weight:700;
+  font-style:normal;
+  font-size:3.1em;
+  line-height:.82;
+  padding:.03em .08em 0 0;
+  color:var(--accent);
 }
 .verse{
   cursor:pointer;
@@ -1008,7 +1033,7 @@ main{
         Umukara
       </button>
       <button class="home-color-btn" id="hcWood" data-preset="wood">
-        <span class="hc-swatch" style="background:#7a4a24"></span>
+        <span class="hc-swatch" style="background:#dcad8b"></span>
         Igiti
       </button>
     </div>
@@ -1445,7 +1470,11 @@ main{
         html += '<span class="vnum">' + v.n + '</span>';
         if (mark && mark.bookmark) html += '<span class="mk-star">&#9733;</span>';
         if (mark && mark.note && mark.note.trim()) html += '<span class="mk-note">&#9998;</span>';
-        html += esc(v.text) + ' ';
+        if (i === 0 && v.text){
+          html += '<span class="dropcap">' + esc(v.text.charAt(0)) + '</span>' + esc(v.text.slice(1)) + ' ';
+        } else {
+          html += esc(v.text) + ' ';
+        }
         html += '</span>';
       });
       if (headingsByVerse['end']){
@@ -2436,7 +2465,7 @@ main{
           '<p class="appr-label">Ibara (Color)</p>' +
           '<div class="appr-color-row">' +
             '<button class="appr-color-btn" data-accent="teal"><span class="appr-swatch" style="background:#2f4858"></span>Isanzwe</button>' +
-            '<button class="appr-color-btn" data-accent="wood"><span class="appr-swatch" style="background:#7a4a24"></span>Igiti</button>' +
+            '<button class="appr-color-btn" data-accent="wood"><span class="appr-swatch" style="background:#dcad8b"></span>Igiti</button>' +
             '<button class="appr-color-btn" data-accent="beige"><span class="appr-swatch" style="background:#a9825a"></span>Umusenyi</button>' +
           '</div>' +
         '</div>' +
