@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Sends today's daily verse as a push notification to everyone who has the
- * Bibiliya Kirundi app installed, via OneSignal's REST API.
+ * Bibiliya Yera app installed, via OneSignal's REST API.
  *
  * Run once a day by .github/workflows/daily-verse-notification.yml — not
  * meant to be run by hand, but safe to if you want to test (it will

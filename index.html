@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>Bibiliya Kirundi</title>
+<title>Bibiliya Yera</title>
 <style>
 /* ============================================================
    DESIGN PLAN
@@ -970,7 +970,7 @@ main{
 
 <div class="daily-banner" id="dailyBanner" hidden>
   <div class="db-text">
-    <p class="db-label">Ijambo ry'uyu musi</p>
+    <p class="db-label">Ijambo ry'uno musi</p>
     <p class="db-verse" id="dbVerseText"></p>
     <p class="db-ref"><span id="dbRefText"></span> &middot; <button id="dbReadBtn">Soma mu gitabu</button> &middot; <button id="dbCardBtn">Ifoto</button></p>
   </div>
@@ -1030,7 +1030,7 @@ main{
       </button>
       <button class="home-color-btn" id="hcBlack" data-preset="black">
         <span class="hc-swatch" style="background:#161512"></span>
-        Umukara
+        Umwiza
       </button>
       <button class="home-color-btn" id="hcWood" data-preset="wood">
         <span class="hc-swatch" style="background:#dcad8b"></span>
@@ -1059,7 +1059,7 @@ main{
 
 <div class="drawer-backdrop" id="drawerBackdrop">
   <nav class="drawer" id="drawer">
-    <div class="drawer-head"><h2>Bibiliya Kirundi</h2></div>
+    <div class="drawer-head"><h2>Bibiliya Yera</h2></div>
     <ul class="menu-list">
       <li class="menu-row" id="dRowHome">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
@@ -1620,7 +1620,7 @@ main{
     var meta = bookMeta(state.code);
     var ref = meta.title + ' ' + state.chapter + ':' + v.n;
     var link = location.origin + location.pathname + '#' + state.code + '.' + state.chapter;
-    var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Kirundi)\n' + link;
+    var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Yera)\n' + link;
     if (navigator.share){
       navigator.share({ text: text }).catch(function(){});
     } else if (navigator.clipboard && navigator.clipboard.writeText){
@@ -1768,7 +1768,7 @@ main{
     try { file = new File([blob], 'ijambo-ryuyu-musi.jpg', { type: 'image/jpeg' }); } catch(e){}
 
     if (mode === 'share' && navigator.share && file && navigator.canShare && navigator.canShare({ files: [file] })){
-      navigator.share({ files: [file], title: 'Bibiliya Kirundi', text: '' }).then(function(){
+      navigator.share({ files: [file], title: 'Bibiliya Yera', text: '' }).then(function(){
         if (statusEl) statusEl.textContent = '';
       }).catch(function(){
         if (statusEl) statusEl.textContent = '';
@@ -2386,7 +2386,7 @@ main{
   function buildSheetHtml(view, p){
     if (view === 'about'){
       return '' +
-        '<h2>Bibiliya Kirundi</h2>' +
+        '<h2>Bibiliya Yera</h2>' +
         '<p class="sub">Ikirundi &middot; Kirundi audio scripture reader</p>' +
         '<p>This reader shows the full Bible text in Kirundi, synced verse-by-verse to audio recordings as they are added chapter by chapter.</p>' +
         '<div class="credit-block">' +
@@ -2403,7 +2403,7 @@ main{
         '<div class="close-row"><button class="done" id="sheetDone">Nivyo (Done)</button></div>';
     }
     if (view === 'daily'){
-      return '<h2>Ijambo ry’uyu musi</h2><p class="sub">Verse of the day</p><div id="dailyImgWrap" class="daily-img-wrap"><p class="daily-img-loading" id="dailyImgLoading">Birimo gutegura ifoto...</p></div><div id="dailyBody"></div>';
+      return '<h2>Ijambo ry’uno musi</h2><p class="sub">Verse of the day</p><div id="dailyImgWrap" class="daily-img-wrap"><p class="daily-img-loading" id="dailyImgLoading">Birimo gutegura ifoto...</p></div><div id="dailyBody"></div>';
     }
     if (view === 'marks'){
       return '<h2>Ivyo nabitse</h2><p class="sub">Bookmarks, highlights &amp; notes</p><div id="marksBody"></div>';
@@ -2412,12 +2412,12 @@ main{
       return '' +
         '<h2>Twandikire</h2>' +
         '<p class="sub">Support &amp; contact</p>' +
-        '<p>Niba ufise ikibazo, igitekerezo, canke ikintu kitagenda neza muri iyi porogaramu, twandikire &mdash; turakwishura.</p>' +
+        '<p>Nimba ufise ikibazo, iciyumviro, canke ikintu kitagenda neza muri iyi porogaramu, twandikire &mdash; turakwishura.</p>' +
         '<p>If you run into a problem, have feedback, or just want to say hello, send a note &mdash; we read every message.</p>' +
         '<div class="close-row" style="justify-content:flex-start">' +
-          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Kirundi') + '">Twandikire kuri imeyili</a>' +
+          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Yera') + '">Twandikire kuri imeyili</a>' +
         '</div>' +
-        '<p style="margin-top:18px;font-size:.78rem;color:var(--ink-dim)">Iyi porogaramu ntiyibika amakuru yawe bwite. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>';
+        '<p style="margin-top:18px;font-size:.78rem;color:var(--ink-dim)">Iyi porogaramu ntibika amakuru yawe bwite. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>';
     }
     if (view === 'note'){
       return '' +
@@ -2434,7 +2434,7 @@ main{
         '</div>';
     }
     if (view === 'downloads'){
-      return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemo, urayumva udafise internet</p><div id="downloadsBody"><p>...</p></div>';
+      return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p><div id="downloadsBody"><p>...</p></div>';
     }
     if (view === 'search'){
       return '' +
@@ -2510,11 +2510,11 @@ main{
             '<button class="done" id="dailyReadBtn">Soma mu gitabu</button>' +
             '<button class="secondary" id="dailyDownloadBtn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>' +
-              'Kuramo ifoto' +
+              'Kuramwo ifoto' +
             '</button>' +
             '<button class="secondary" id="dailyShareBtn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
-              'Sangiza ku status' +
+              'Sangiza kuri Status' +
             '</button>' +
           '</div>' +
           '<p id="dailyCardStatus" style="margin-top:12px;font-size:.86rem;color:var(--ink-dim)"></p>';
@@ -2708,7 +2708,7 @@ main{
         });
       }
       if (!list.length){
-        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracakurwa. Fyonda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisomera udafise internet.</p>';
+        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracakurwa. Fyonda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
         return;
       }
       body.innerHTML = '<p class="storage-note">...</p>' + list.map(function(d){
