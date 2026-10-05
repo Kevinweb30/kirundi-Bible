@@ -2552,7 +2552,7 @@ main{
         return (state.marks[b].ts||0) - (state.marks[a].ts||0);
       });
       if (!keys.length){
-        body.innerHTML = '<p style="color:var(--ink-dim)">Nta kintu uracobitswe. Fyonda ku murongo uwo ariwo wose ugire ngo ubike, ushireho irangi, canke wandike icatwa.</p>';
+        body.innerHTML = '<p style="color:var(--ink-dim)">Nta kintu cabitswe. Fyonda ku murongo uwariwo wose ubike, shirako irangi canke wandike ijambo.</p>';
       } else {
         body.innerHTML = keys.map(function(k){
           var m = state.marks[k];
@@ -2708,7 +2708,7 @@ main{
         });
       }
       if (!list.length){
-        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracakurwa. Fyonda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
+        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracagurwa. Fyonda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
         return;
       }
       body.innerHTML = '<p class="storage-note">...</p>' + list.map(function(d){
