@@ -116,7 +116,7 @@ async function main() {
   const [code, ch, vn] = verses[idx];
   const v = loadVerseText(code, ch, vn);
 
-  const heading = 'Ijambo ry’uyu musi — ' + v.title + ' ' + v.ch + ':' + v.vn;
+  const heading = 'Ijambo ry’uno musi — ' + v.title + ' ' + v.ch + ':' + v.vn;
   const contents = v.text;
 
   console.log('Sending: ' + heading);

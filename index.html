@@ -1067,7 +1067,11 @@ main{
       </li>
       <li class="menu-row" id="dRowDaily">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="ml-label">Ijambo ry&rsquo;uyu musi</span>
+        <span class="ml-label">Ijambo ry&rsquo;uno musi</span>
+      </li>
+      <li class="menu-row" id="dRowNotif" style="display:none">
+        <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="ml-label">Nyibutse ijambo ry&rsquo;uno musi <span id="notifState" style="color:var(--ink-dim);font-weight:400"></span></span>
       </li>
       <li class="menu-row" id="dRowMarks">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -1621,7 +1625,10 @@ main{
     var ref = meta.title + ' ' + state.chapter + ':' + v.n;
     var link = location.origin + location.pathname + '#' + state.code + '.' + state.chapter;
     var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Yera)\n' + link;
-    if (navigator.share){
+    var SHn = nativeShare();
+    if (SHn){
+      SHn.share({ text: text, dialogTitle: 'Sangiza' }).catch(function(){});
+    } else if (navigator.share){
       navigator.share({ text: text }).catch(function(){});
     } else if (navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(function(){
@@ -1743,7 +1750,7 @@ main{
 
             ctx.font = '600 28px "Work Sans", sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,.82)';
-            ctx.fillText('BIBILIYA KIRUNDI', W/2, H - 90);
+            ctx.fillText('BIBILIYA YERA', W/2, H - 90);
 
             canvas.toBlob(function(blob){
               if (blob) resolve(blob); else reject(new Error('toBlob failed'));
@@ -1762,8 +1769,54 @@ main{
     });
   }
 
-  function downloadOrShareBlob(mode, blob, statusElId){
+  // Inside the Android/iOS app, the web "share" API is missing, so we hand the
+  // image to the phone's own share sheet (WhatsApp, Instagram, Messages, ...).
+  function nativeShare(){
+    try {
+      var C = window.Capacitor;
+      if (!C || !C.isNativePlatform || !C.isNativePlatform()) return null;
+      if (C.isPluginAvailable && !C.isPluginAvailable('Share')) return null;
+      return (C.Plugins && C.Plugins.Share) || null;
+    } catch(e){ return null; }
+  }
+  function nativeFilesystem(){
+    try {
+      var C = window.Capacitor;
+      if (C && C.isPluginAvailable && !C.isPluginAvailable('Filesystem')) return null;
+      return (C && C.Plugins && C.Plugins.Filesystem) || null;
+    } catch(e){ return null; }
+  }
+  function blobToBase64(blob){
+    return new Promise(function(resolve, reject){
+      var fr = new FileReader();
+      fr.onload = function(){ resolve(String(fr.result).split(',')[1] || ''); };
+      fr.onerror = reject;
+      fr.readAsDataURL(blob);
+    });
+  }
+  // Resolves true if the share sheet was shown (or the person closed it),
+  // false if native sharing isn't available/failed so the caller can fall back.
+  function nativeShareImage(blob){
+    var SH = nativeShare(), FS = nativeFilesystem();
+    if (!SH || !FS) return Promise.resolve(false);
+    return blobToBase64(blob).then(function(b64){
+      return FS.writeFile({ path: 'ijambo-ryuno-musi.jpg', data: b64, directory: 'CACHE' });
+    }).then(function(r){
+      return SH.share({ title: 'Bibiliya Yera', files: [r.uri], dialogTitle: 'Sangiza ifoto' });
+    }).then(function(){ return true; }).catch(function(e){
+      return /cancel/i.test(String(e && (e.message || e))) ? true : false;
+    });
+  }
+
+  function downloadOrShareBlob(mode, blob, statusElId, skipNative){
     var statusEl = statusElId ? document.getElementById(statusElId) : null;
+    if (mode === 'share' && !skipNative && nativeShare()){
+      nativeShareImage(blob).then(function(done){
+        if (done){ if (statusEl) statusEl.textContent = ''; }
+        else downloadOrShareBlob(mode, blob, statusElId, true);
+      });
+      return;
+    }
     var file = null;
     try { file = new File([blob], 'ijambo-ryuyu-musi.jpg', { type: 'image/jpeg' }); } catch(e){}
 
@@ -1792,7 +1845,7 @@ main{
 
   function shareOrDownloadVerseCard(mode, text, ref, bgUrl, statusElId){
     var statusEl = statusElId ? document.getElementById(statusElId) : null;
-    if (statusEl) statusEl.textContent = 'Birimo gutegurwa...';
+    if (statusEl) statusEl.textContent = 'Turiko turategura ifoto...';
     buildVerseCardBlob(text, ref, bgUrl).then(function(blob){
       downloadOrShareBlob(mode, blob, statusElId);
     }).catch(function(){
@@ -1848,6 +1901,119 @@ main{
     safeSet('dailyDismiss', todayStr());
     els.dailyBanner.hidden = true;
   });
+
+  // ---------- daily verse phone reminders (native app only) ----------
+  // Inside the Android/iOS app, schedules one local notification per day at
+  // 7:00 AM with that day's verse. No account or server needed: the phone
+  // itself fires them. We re-schedule the next 30 days every time the app is
+  // opened, so the reminders keep going as long as the app is used at least
+  // once a month.
+  var NOTIF_HOUR = 7, NOTIF_MINUTE = 0, NOTIF_DAYS = 30, NOTIF_ID_BASE = 1000;
+  function notifPlugin(){
+    try {
+      var C = window.Capacitor;
+      if (!C || !C.isNativePlatform || !C.isNativePlatform()) return null;
+      if (C.isPluginAvailable && !C.isPluginAvailable('LocalNotifications')) return null;
+      return (C.Plugins && C.Plugins.LocalNotifications) || null;
+    } catch(e){ return null; }
+  }
+  function dayOfYearFor(d){
+    var start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86400000);
+  }
+  function scheduleDailyReminders(){
+    var LN = notifPlugin();
+    if (!LN) return Promise.resolve(false);
+    return fetch('data/daily-verses.json').then(function(r){ return r.json(); }).then(function(verses){
+      var now = new Date(), list = [], i;
+      for (i = 0; i < NOTIF_DAYS + 1 && list.length < NOTIF_DAYS; i++){
+        var when = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, NOTIF_HOUR, NOTIF_MINUTE, 0);
+        if (when <= now) continue;
+        var v = verses[dayOfYearFor(when) % verses.length];
+        list.push({
+          id: NOTIF_ID_BASE + list.length,
+          title: 'Ijambo ry’uno musi — ' + v.title + ' ' + v.ch + ':' + v.vn,
+          body: v.text,
+          largeBody: v.text,
+          channelId: 'daily-verse',
+          schedule: { at: when, allowWhileIdle: true }
+        });
+      }
+      var ids = [];
+      for (i = 0; i < NOTIF_DAYS + 1; i++) ids.push({ id: NOTIF_ID_BASE + i });
+      return Promise.resolve(LN.createChannel
+          ? LN.createChannel({ id: 'daily-verse', name: 'Ijambo ry’uno musi', importance: 4, visibility: 1 }).catch(function(){})
+          : null)
+        .then(function(){ return LN.cancel({ notifications: ids }); })
+        .then(function(){ return LN.schedule({ notifications: list }); })
+        .then(function(){ return true; });
+    }).catch(function(){ return false; });
+  }
+  function cancelDailyReminders(){
+    var LN = notifPlugin();
+    if (!LN) return Promise.resolve();
+    var ids = [];
+    for (var i = 0; i < NOTIF_DAYS + 1; i++) ids.push({ id: NOTIF_ID_BASE + i });
+    return LN.cancel({ notifications: ids }).catch(function(){});
+  }
+  // Fires a sample notification a few seconds from now, so the person can
+  // see right away that reminders work (used when they switch it on by hand).
+  function sendTestReminder(){
+    var LN = notifPlugin();
+    if (!LN) return Promise.resolve();
+    return fetch('data/daily-verses.json').then(function(r){ return r.json(); }).then(function(verses){
+      var v = verses[dayOfYearFor(new Date()) % verses.length];
+      return LN.schedule({ notifications: [{
+        id: NOTIF_ID_BASE - 1,
+        title: 'Ijambo ry\u2019uno musi \u2014 ' + v.title + ' ' + v.ch + ':' + v.vn,
+        body: v.text, largeBody: v.text, channelId: 'daily-verse',
+        schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true }
+      }] });
+    }).catch(function(){});
+  }
+  function renderNotifState(){
+    var el = document.getElementById('notifState');
+    if (el) el.textContent = safeGet('dailyReminder') === 'off' ? '(ryazimye)' : '(rirakora)';
+  }
+  function enableDailyReminders(){
+    var LN = notifPlugin();
+    if (!LN) return Promise.resolve(false);
+    return LN.checkPermissions().then(function(p){
+      return p.display === 'granted' ? p : LN.requestPermissions();
+    }).then(function(p){
+      if (p.display !== 'granted'){
+        safeSet('dailyReminder', 'off');
+        renderNotifState();
+        return false;
+      }
+      safeSet('dailyReminder', 'on');
+      renderNotifState();
+      return scheduleDailyReminders();
+    }).catch(function(){ return false; });
+  }
+  function initDailyReminders(){
+    var LN = notifPlugin();
+    var row = document.getElementById('dRowNotif');
+    if (!LN || !row) return;
+    row.style.display = '';
+    renderNotifState();
+    row.addEventListener('click', function(){
+      if (safeGet('dailyReminder') === 'off'){
+        enableDailyReminders().then(function(ok){
+          showToast(ok ? 'Rizokubibutsa saa moya za mugitondo.'
+                       : 'Emera amatangazo muri Settings ya telefone.');
+          if (ok) sendTestReminder();
+        });
+      } else {
+        safeSet('dailyReminder', 'off');
+        renderNotifState();
+        cancelDailyReminders().then(function(){ showToast('Ibutsa ryazimye.'); });
+      }
+    });
+    // First launch: ask once. After that, just keep the next 30 days topped up.
+    if (safeGet('dailyReminder') === null) enableDailyReminders();
+    else if (safeGet('dailyReminder') === 'on') scheduleDailyReminders();
+  }
 
   // ---------- home screen / left drawer navigation ----------
   function showHome(){
@@ -2403,7 +2569,7 @@ main{
         '<div class="close-row"><button class="done" id="sheetDone">Nivyo (Done)</button></div>';
     }
     if (view === 'daily'){
-      return '<h2>Ijambo ry’uno musi</h2><p class="sub">Verse of the day</p><div id="dailyImgWrap" class="daily-img-wrap"><p class="daily-img-loading" id="dailyImgLoading">Birimo gutegura ifoto...</p></div><div id="dailyBody"></div>';
+      return '<h2>Ijambo ry’uno musi</h2><p class="sub">Verse of the day</p><div id="dailyImgWrap" class="daily-img-wrap"><p class="daily-img-loading" id="dailyImgLoading">Turiko turategura ifoto...</p></div><div id="dailyBody"></div>';
     }
     if (view === 'marks'){
       return '<h2>Ivyo nabitse</h2><p class="sub">Bookmarks, highlights &amp; notes</p><div id="marksBody"></div>';
@@ -2816,6 +2982,7 @@ main{
         showHome();
       }
       initDailyBanner();
+      initDailyReminders();
       renderHomeHero();
       updateTestamentCounts();
       cacheOfflineAsset('images/bible-cover.jpg');
