@@ -1809,8 +1809,58 @@ main{
     });
   }
 
+  // Inside the app, "download" saves the picture into the phone's Photos /
+  // Gallery (in an album called "Bibiliya Yera") instead of a Downloads folder.
+  function nativeMedia(){
+    try {
+      var C = window.Capacitor;
+      if (!C || !C.isNativePlatform || !C.isNativePlatform()) return null;
+      if (C.isPluginAvailable && !C.isPluginAvailable('Media')) return null;
+      return (C.Plugins && C.Plugins.Media) || null;
+    } catch(e){ return null; }
+  }
+  function nativeSaveToGallery(blob){
+    var MD = nativeMedia();
+    if (!MD) return Promise.resolve(false);
+    var isAndroid = false;
+    try { isAndroid = window.Capacitor.getPlatform() === 'android'; } catch(e){}
+    return blobToBase64(blob).then(function(b64){
+      var data = 'data:image/jpeg;base64,' + b64;
+      var prep = Promise.resolve(null);
+      if (isAndroid && MD.getAlbumsPath){
+        // Android keeps albums as folders: make sure ours exists, then point at it.
+        prep = MD.getAlbumsPath().then(function(r){
+          return Promise.resolve(MD.createAlbum({ name: 'Bibiliya Yera' }))
+            .catch(function(){})
+            .then(function(){ return r.path + '/Bibiliya Yera'; });
+        });
+      }
+      return prep.then(function(albumId){
+        var opts = { path: data, fileName: 'ijambo-ryuno-musi-' + Date.now() };
+        if (albumId) opts.albumIdentifier = albumId;
+        return MD.savePhoto(opts);
+      });
+    }).then(function(){ return true; }).catch(function(){ return false; });
+  }
+
   function downloadOrShareBlob(mode, blob, statusElId, skipNative){
     var statusEl = statusElId ? document.getElementById(statusElId) : null;
+    if (mode === 'download' && !skipNative && nativeMedia()){
+      nativeSaveToGallery(blob).then(function(saved){
+        if (saved){
+          if (statusEl) statusEl.textContent = 'Ifoto yabitswe muri Galerie yawe.';
+          showToast('Ifoto yabitswe muri Galerie');
+        } else {
+          // Couldn't write to the gallery (e.g. permission refused): let the
+          // person pick "Save" from the phone's share sheet instead.
+          nativeShareImage(blob).then(function(done){
+            if (done){ if (statusEl) statusEl.textContent = ''; }
+            else downloadOrShareBlob(mode, blob, statusElId, true);
+          });
+        }
+      });
+      return;
+    }
     if (mode === 'share' && !skipNative && nativeShare()){
       nativeShareImage(blob).then(function(done){
         if (done){ if (statusEl) statusEl.textContent = ''; }
