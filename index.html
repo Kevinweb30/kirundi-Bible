@@ -1153,10 +1153,10 @@ main{
       <div class="hvc-rule"></div>
       <p class="hvc-ref" id="hvcRef"></p>
     </div>
-    <button class="hvc-dl hvc-play" id="hvcPlayBtn" hidden aria-label="Umva ijambo ry&rsquo;uno musi">
+    <button class="hvc-dl hvc-play" id="hvcPlayBtn" hidden aria-label="Umviriza ijambo ry&rsquo;uno musi">
       <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-      <span id="hvcPlayLabel">Umva</span>
+      <span id="hvcPlayLabel">Umviriza</span>
     </button>
     <button class="hvc-dl" id="hvcDownloadBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -1363,7 +1363,7 @@ main{
           </svg>
         </button>
       </div>
-      <button class="dl-btn" id="dlBtn" aria-label="Kuramo kugira wumve udafise internet">
+      <button class="dl-btn" id="dlBtn" aria-label="Kuramwo kugira wumve udafise internet">
         <svg id="dlIconDown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
         <svg id="dlIconDone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M20 6 9 17l-5-5"/></svg>
       </button>
@@ -2467,8 +2467,8 @@ main{
           '<button class="secondary" id="planDoneBtn">Nasomye uno musi</button>' +
         '</div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:10px">' +
-          '<button class="secondary dl-start" id="planDlToday">Kuramo ivyo gusoma uno musi</button>' +
-          '<button class="secondary dl-start" id="planDlWeek">Kuramo imisi 7</button>' +
+          '<button class="secondary dl-start" id="planDlToday">Kuramwo ivyo gusoma uno musi</button>' +
+          '<button class="secondary dl-start" id="planDlWeek">Kuramwo imisi 7</button>' +
         '</div>' + dlProgBoxHtml() +
         '<p class="pc-sub" id="planDlStatus" style="margin:8px 0 0"></p>';
     }
@@ -2832,7 +2832,7 @@ main{
   }
   function setVersePlayUi(playing){
     els.hvcPlayBtn.classList.toggle('playing', playing);
-    els.hvcPlayLabel.textContent = playing ? 'Hagarika' : 'Umva';
+    els.hvcPlayLabel.textContent = playing ? 'Hagarika' : 'Umviriza';
   }
   function stopVerseAudio(){
     clearTimeout(verseEndTimer);
@@ -3803,10 +3803,10 @@ main{
     if (view === 'downloads'){
       return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p>' +
         '<div class="appr-group">' +
-          '<p class="appr-label">Kuramo igitabo cose</p>' +
+          '<p class="appr-label">Kuramwo igitabo cose</p>' +
           '<select id="dlBookSel" aria-label="Igitabo" style="width:100%;flex:none"></select>' +
           '<p class="pc-sub" id="dlBookInfo" style="margin:8px 0 10px"></p>' +
-          '<button class="done dl-start" id="dlBookBtn">Kuramo igitabo</button>' +
+          '<button class="done dl-start" id="dlBookBtn">Kuramwo igitabo</button>' +
           '<p class="pc-sub" style="margin:10px 0 0">Koresha WiFi kugira udakoresha amakuru menshi.</p>' +
         '</div>' +
         dlProgBoxHtml() +
