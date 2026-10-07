@@ -2994,8 +2994,71 @@ main{
   }
 
   function removeChapterAudio(url){
+    autoUnmark(url);
     if (!hasCaches) return Promise.resolve();
     return caches.open(OFFLINE_CACHE).then(function(cache){ return cache.delete(url); });
+  }
+
+  // ---------- save what you listen to ----------
+  // After a chapter has been playing for a few seconds, its recording is saved
+  // to the phone in the background, so next time it plays with no internet and
+  // no data. Chapters saved this way are kept up to a limit (the oldest go first);
+  // chapters the person downloads on purpose are never removed automatically.
+  // The first time costs the chapter's size once more, so it can be switched off.
+  var AUTO_MAX = 60;
+  var autoSaving = {}, autoTimer = null;
+  function autoSaveOn(){ return safeGet('autoSave') !== 'off'; }
+  function loadAutoList(){
+    try { var a = JSON.parse(safeGet('autoSaved') || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; }
+  }
+  function autoMark(url){
+    var l = loadAutoList().filter(function(x){ return x.u !== url; });
+    l.push({ u: url, t: Date.now() });
+    safeSet('autoSaved', JSON.stringify(l));
+  }
+  function autoUnmark(url){
+    var l = loadAutoList(), n = l.filter(function(x){ return x.u !== url; });
+    if (n.length !== l.length) safeSet('autoSaved', JSON.stringify(n));
+  }
+  function autoTrim(){
+    var l = loadAutoList();
+    if (l.length <= AUTO_MAX) return;
+    var drop = l.splice(0, l.length - AUTO_MAX);
+    safeSet('autoSaved', JSON.stringify(l));
+    if (!hasCaches) return;
+    caches.open(OFFLINE_CACHE).then(function(cache){
+      drop.forEach(function(x){ cache.delete(x.u); });
+    }).catch(function(){});
+  }
+  function autoSaveChapter(url){
+    if (autoSaving[url] || navigator.onLine === false) return;
+    isAudioCached(url).then(function(cached){
+      if (cached) return;
+      autoSaving[url] = true;
+      try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+      return offlineAudio(url).then(function(r){
+        if (r !== 'cached') return;
+        autoMark(url);
+        autoTrim();
+        if (audioPathFor(state.code, state.chapter) === url) refreshDownloadButton();
+        if (safeGet('autoSaveTold') !== '1'){
+          safeSet('autoSaveTold', '1');
+          showToast('Ijwi urimo kuyumviriza ribitswe kuri telefone. Uzaryumvirize udafise internet.', 4200);
+        }
+      }).catch(function(){});
+    }).then(function(){ delete autoSaving[url]; }, function(){ delete autoSaving[url]; });
+  }
+  function scheduleAutoSave(){
+    clearTimeout(autoTimer);
+    autoTimer = null;
+    if (!hasCaches || !autoSaveOn() || !state.audioAvailable) return;
+    try { if (navigator.connection && navigator.connection.saveData) return; } catch(e){}
+    if (/^blob:/.test(audio.currentSrc || '')) return;          // already playing the saved copy
+    var key = audioKey, url = audioPathFor(state.code, state.chapter);
+    autoTimer = setTimeout(function(){
+      autoTimer = null;
+      if (audioKey === key && !audio.paused) autoSaveChapter(url);
+    }, 8000);
   }
 
   // ---------- bulk offline downloads ----------
@@ -3041,6 +3104,7 @@ main{
       var txt = texts[code] || (texts[code] = offlineText(code).catch(function(){}));
       return txt.then(function(){ return offlineAudio(audioPathFor(code, ch)); }).then(function(r){
         res[r]++;
+        if (r !== 'missing') autoUnmark(audioPathFor(code, ch));
         failStreak = 0;
       }, function(){
         res.failed++;
@@ -3214,6 +3278,7 @@ main{
     }
     els.dlBtn.classList.add('busy');
     downloadChapterAudio(url).then(function(){
+      autoUnmark(url);
       els.dlBtn.classList.remove('busy');
       showToast('Vyarakuwe, urashobora kuyumva udafise internet');
       refreshDownloadButton();
@@ -3561,7 +3626,7 @@ main{
     els.playBtn.classList.toggle('is-playing', isPlaying);
   }
   audio.addEventListener('play', function(){ dbg('EVENT play | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); msSetState('playing'); msUpdatePosition(); });
-  audio.addEventListener('playing', function(){ dbg('EVENT playing | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); msSetState('playing'); });
+  audio.addEventListener('playing', function(){ dbg('EVENT playing | t=' + audio.currentTime.toFixed(2)); setPlayingUI(true); msSetState('playing'); scheduleAutoSave(); });
   audio.addEventListener('pause', function(){
     dbg('EVENT pause | t=' + audio.currentTime.toFixed(2) + ' ended=' + audio.ended);
     setPlayingUI(false);
@@ -3933,6 +3998,11 @@ main{
     }
     if (view === 'downloads'){
       return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p>' +
+        '<div class="appr-group">' +
+          '<p class="appr-label">Kubika ijwi uyumviriza</p>' +
+          '<button class="secondary" id="autoSaveBtn"></button>' +
+          '<p class="pc-sub" style="margin:8px 0 0">Igice uyumviriza gihita kibikwa kuri telefone, ubutaha ukiyumvirize udafise internet. Ku nshuro ya mbere bikoresha amakuru y&rsquo;inyongera angana n&rsquo;igice.</p>' +
+        '</div>' +
         '<p class="pc-sub" id="dlTextStatus" style="margin:0 0 6px"></p>' +
         '<button class="secondary" id="dlTextBtn" hidden style="margin-bottom:16px">Kuramwo inyandiko yose</button>' +
         '<div class="appr-group">' +
@@ -4230,6 +4300,17 @@ main{
   }
 
   function mountDownloadsSheet(){
+    var asBtn = document.getElementById('autoSaveBtn');
+    if (asBtn){
+      var paintAs = function(){ asBtn.textContent = autoSaveOn() ? 'Kubika ijwi: rirakora' : 'Kubika ijwi: ryazimye'; };
+      paintAs();
+      asBtn.addEventListener('click', function(){
+        safeSet('autoSave', autoSaveOn() ? 'off' : 'on');
+        if (!autoSaveOn()){ clearTimeout(autoTimer); autoTimer = null; }
+        paintAs();
+        showToast(autoSaveOn() ? 'Ijwi rizobikwa uko urikumviriza.' : 'Ijwi ntirizobikwa.');
+      });
+    }
     paintTextStatus();
     var textBtn = document.getElementById('dlTextBtn');
     if (textBtn) textBtn.addEventListener('click', function(){
