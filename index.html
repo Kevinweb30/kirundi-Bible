@@ -1108,7 +1108,7 @@ main{
       <div class="hf-left">
         <span class="hf-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
         <div class="htc-info">
-          <h3>Subira aho wari ugeze</h3>
+          <h3>Subira aho War’ugeze</h3>
           <p id="hrcRef">&nbsp;</p>
         </div>
       </div>
@@ -2108,7 +2108,7 @@ main{
   // "Today" is simply the first day not finished yet: missing a day never
   // makes the plan fall behind or turn red, it just waits.
   var PLAN_DEFS = [
-    { id: 'gospels30',  title: 'Evanjili zine mu minsi 30',       days: 30,  books: ['MAT', 'MRK', 'LUK', 'JHN'] },
+    { id: 'gospels30',  title: 'Ibitabo bine mu minsi 30',       days: 30,  books: ['MAT', 'MRK', 'LUK', 'JHN'] },
     { id: 'psalms30',   title: 'Zaburi mu minsi 30',              days: 30,  books: ['PSA'] },
     { id: 'proverbs31', title: 'Imigani mu minsi 31',             days: 31,  books: ['PRO'] },
     { id: 'nt90',       title: 'Isezerano Rishasha mu minsi 90',  days: 90,  testament: 'NT' },
@@ -2193,7 +2193,7 @@ main{
     if (finished.length) plan.lastDoneDate = todayStr();
     savePlan(plan);
     if (finished.length){
-      showToast('Umunsi wa ' + (finished[finished.length - 1] + 1) + ' urarangiye!');
+      showToast('Umusi wa ' + (finished[finished.length - 1] + 1) + ' uraheze!');
       rescheduleForPlan();
     }
     renderHomeFeatureCards();
@@ -2246,7 +2246,7 @@ main{
     els.hpcTitle.textContent = def.title;
     els.hpcSub.textContent = cur >= days.length
       ? 'Warayirangije! Hitamwo indi gahunda.'
-      : 'Umunsi ' + (cur + 1) + ' muri ' + days.length + ' · ' + chapterRangeLabel(days[cur]);
+      : 'Umusi wa ' + (cur + 1) + ' muri ' + days.length + ' · ' + chapterRangeLabel(days[cur]);
     els.hpcBar.hidden = false;
     els.hpcBarFill.style.width = Math.round(done / days.length * 100) + '%';
   }
@@ -2285,13 +2285,13 @@ main{
     var cur = planCurrentDay(plan, days), done = planDoneCount(plan, days);
     var pct = Math.round(done / days.length * 100);
     var h = '<div class="plan-card"><h3>' + esc(def.title) + '</h3>' +
-      '<p class="pc-sub">Iminsi ' + done + ' muri ' + days.length + ' irarangiye · ' + pct + '%</p>' +
+      '<p class="pc-sub">Iminsi ' + done + ' muri ' + days.length + ' iraheze · ' + pct + '%</p>' +
       '<div class="hf-bar" style="margin-top:0"><i style="width:' + pct + '%"></i></div></div>';
 
     if (cur >= days.length){
       h += '<p class="opt-note">Warangije iyi gahunda. Imana ishimwe!</p>';
     } else {
-      h += '<p class="appr-label">Umunsi ' + (cur + 1) + ' · ibyo gusoma ubu</p><div class="plan-chips">' +
+      h += '<p class="appr-label">Umusi wa ' + (cur + 1) + ' · ivyo gusoma uno musi</p><div class="plan-chips">' +
         days[cur].map(function(p){
           var seen = plan.seen[p[0] + '.' + p[1]];
           return '<button class="plan-chip' + (seen ? ' seen' : '') + '" data-code="' + p[0] + '" data-ch="' + p[1] + '">' +
@@ -2299,7 +2299,7 @@ main{
         }).join('') + '</div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:0">' +
           '<button class="done" id="planReadBtn">Tangura gusoma</button>' +
-          '<button class="secondary" id="planDoneBtn">Nasoma uyu munsi</button>' +
+          '<button class="secondary" id="planDoneBtn">Nasomye uno musi</button>' +
         '</div>';
     }
 
@@ -2308,12 +2308,12 @@ main{
     h += '<p class="appr-label" style="margin-top:22px">' + (planShowAll ? 'Imisi yose' : 'Imisi iri imbere') + '</p><div>';
     for (var i = from; i < to; i++){
       h += '<div class="plan-day' + (i === cur ? ' cur' : '') + '" data-day="' + i + '">' +
-        '<div class="pd-main"><span class="pd-n">Umunsi ' + (i + 1) + '</span>' + esc(chapterRangeLabel(days[i])) + '</div>' +
+        '<div class="pd-main"><span class="pd-n">Umusi wa ' + (i + 1) + '</span>' + esc(chapterRangeLabel(days[i])) + '</div>' +
         '<button class="plan-tick' + (plan.done[i] ? ' on' : '') + '" data-tick="' + i + '" aria-label="Narangije">' + CHECK_SVG + '</button></div>';
     }
     h += '</div><div class="sheet-actions-row">' +
       '<button class="danger-link" id="planChange" style="color:var(--ink-dim)">Hindura gahunda</button>' +
-      '<button class="secondary" id="planToggleAll" style="padding:9px 16px;min-height:40px">' + (planShowAll ? 'Hisha' : 'Reba imisi yose') + '</button></div>';
+      '<button class="secondary" id="planToggleAll" style="padding:9px 16px;min-height:40px">' + (planShowAll ? 'Hisha' : 'Raba imisi yose') + '</button></div>';
     body.innerHTML = h;
 
     function afterChange(){
@@ -2340,7 +2340,7 @@ main{
       plan.done[cur] = 1;
       plan.lastDoneDate = todayStr();
       savePlan(plan);
-      showToast('Umunsi wa ' + (cur + 1) + ' urarangiye!');
+      showToast('Umusi wa ' + (cur + 1) + ' uraheze!');
       afterChange();
     });
     Array.prototype.forEach.call(body.querySelectorAll('.plan-tick'), function(b){
