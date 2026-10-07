@@ -331,6 +331,7 @@ body.screen-home .nav-row{display:none}
   border-radius:18px;
   overflow:hidden;
   min-height:300px;
+  flex-shrink:0;
   cursor:pointer;
   box-shadow:0 10px 30px rgba(0,0,0,.22);
   background:#2f4858;
@@ -339,9 +340,9 @@ body.screen-home .nav-row{display:none}
   display:flex;flex-direction:column;
 }
 .hvc-content{
-  position:relative;flex:1;
+  position:relative;flex:1 0 auto;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:30px 26px 54px;
+  text-align:center;padding:30px 26px 62px;
 }
 .hvc-label{
   font-family:var(--font-ui);font-weight:700;font-size:.72rem;
@@ -854,6 +855,7 @@ main{
 }
 .sheet .sub{color:var(--ink-dim);font-size:.88rem;margin:0 0 18px}
 .sheet p{margin:0 0 12px}
+.sheet .pc-sub{font-size:.8rem;color:var(--ink-dim)}
 .sheet .close-row{display:flex;justify-content:flex-end;margin-top:16px}
 .sheet button.done{
   background:var(--accent);color:var(--accent-ink);
@@ -871,6 +873,43 @@ main{
   background:none;border:none;color:var(--danger);
   font-family:var(--font-ui);font-size:.9rem;cursor:pointer;padding:8px 0;
 }
+
+/* ---------- reading streak (home) ---------- */
+.home-streak{
+  display:flex;align-items:center;gap:12px;
+  margin:16px 16px 0;padding:12px 14px;
+  border:1px solid var(--rule);border-radius:14px;background:var(--surface);
+  font-family:var(--font-ui);
+}
+.hs-flame{
+  width:36px;height:36px;border-radius:50%;flex:none;
+  background:var(--accent-soft);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+}
+.hs-flame svg{width:19px;height:19px}
+.home-streak.off .hs-flame{color:var(--ink-dim)}
+.hs-text{flex:1;min-width:0;font-size:.88rem;color:var(--ink);line-height:1.3}
+.hs-text strong{font-size:1.2rem;color:var(--accent);margin-right:2px}
+.home-streak.off .hs-text strong{color:var(--ink-dim)}
+.hs-text small{display:block;color:var(--ink-dim);font-size:.74rem;margin-top:2px}
+.hs-dots{display:flex;gap:5px;flex:none}
+.hs-dot{width:10px;height:10px;border-radius:50%;background:var(--rule)}
+.hs-dot.on{background:var(--accent)}
+.hs-dot.today{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--accent)}
+@media (max-width:350px){
+  .home-streak{gap:10px;padding:12px}
+  .hs-dots{gap:4px}
+  .hs-dot{width:8px;height:8px}
+}
+
+/* listen to the verse of the day */
+.hvc-play{left:14px;right:auto}
+.hvc-play[hidden]{display:none}
+.sheet select{font-size:.95rem;padding:11px 30px 11px 12px}
+.hvc-play svg{width:14px;height:14px}
+.hvc-play .ic-pause{display:none}
+.hvc-play.playing .ic-play{display:none}
+.hvc-play.playing .ic-pause{display:block}
 
 /* ---------- option lists (sleep timer, reading plans) ---------- */
 .opt-row{
@@ -1114,12 +1153,23 @@ main{
       <div class="hvc-rule"></div>
       <p class="hvc-ref" id="hvcRef"></p>
     </div>
+    <button class="hvc-dl hvc-play" id="hvcPlayBtn" hidden aria-label="Umva ijambo ry&rsquo;uno musi">
+      <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      <span id="hvcPlayLabel">Umva</span>
+    </button>
     <button class="hvc-dl" id="hvcDownloadBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
       Kwega
     </button>
   </div>
   <p class="home-verse-tap-hint">Fyonda kugira usome iyi mirongo &rarr;</p>
+
+  <div class="home-streak off" id="homeStreak">
+    <span class="hs-flame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2.2C13.6 5 12.4 6.6 11 8.2 9.5 9.9 7.5 11.8 7.5 15a5 5 0 0 0 5 5c2.8 0 5-2.2 5-5 0-2.1-.9-3.7-2.1-5.2-.2 1.2-.8 2.1-1.8 2.7.3-3.3-.2-7.3-.4-10.3z"/><path style="fill:var(--accent-soft)" d="M12.5 20c-1.5 0-2.7-1.2-2.7-2.7 0-1.5 1-2.2 1.8-3.2.3.9.8 1.4 1.6 1.7 0-.9.3-1.7.7-2.4.9.8 1.3 1.7 1.3 2.7 0 1.9-1.2 3.9-2.7 3.9z"/></svg></span>
+    <div class="hs-text"><strong id="hsCount">0</strong><span id="hsLabel">imisi ikurikirana</span><small id="hsSub">Soma uno musi kugira utangure</small></div>
+    <div class="hs-dots" id="hsDots"></div>
+  </div>
 
   <div class="home-testaments">
     <button class="home-testament-card home-feature" id="homeResumeCard" hidden>
@@ -1400,6 +1450,13 @@ main{
     vaNote: document.getElementById('vaNote'),
     vaShare: document.getElementById('vaShare'),
     vaPicture: document.getElementById('vaPicture'),
+    hvcPlayBtn: document.getElementById('hvcPlayBtn'),
+    hvcPlayLabel: document.getElementById('hvcPlayLabel'),
+    homeStreak: document.getElementById('homeStreak'),
+    hsCount: document.getElementById('hsCount'),
+    hsLabel: document.getElementById('hsLabel'),
+    hsSub: document.getElementById('hsSub'),
+    hsDots: document.getElementById('hsDots'),
     sizeDownBtn: document.getElementById('sizeDownBtn'),
     sizeUpBtn: document.getElementById('sizeUpBtn'),
     sleepBtn: document.getElementById('sleepBtn'),
@@ -1555,11 +1612,11 @@ main{
     });
   }
 
-  function showToast(msg){
+  function showToast(msg, ms){
     els.toast.textContent = msg;
     els.toast.classList.add('show');
     clearTimeout(showToast._t);
-    showToast._t = setTimeout(function(){ els.toast.classList.remove('show'); }, 1800);
+    showToast._t = setTimeout(function(){ els.toast.classList.remove('show'); }, ms || 1800);
   }
 
   // ---------- data loading ----------
@@ -2127,7 +2184,8 @@ main{
       var chData = book.chapters[String(ch)];
       var v = chData && chData.verses.filter(function(x){ return x.n === vn; })[0];
       if (!v) v = chData.verses[0];
-      return { code: code, ch: ch, vn: v.n, text: v.text, title: meta.title };
+      return { code: code, ch: ch, vn: v.n, text: v.text, title: meta.title,
+               start: (v.start == null ? null : v.start), end: (v.end == null ? null : v.end) };
     });
   }
   function initDailyBanner(){
@@ -2253,10 +2311,65 @@ main{
   var planReadTimer = null;
   function schedulePlanRead(code, ch){
     clearTimeout(planReadTimer);
-    if (!state.index || !loadPlan()) return;
+    if (!state.index) return;
     planReadTimer = setTimeout(function(){
-      if (state.code === code && state.chapter === ch && state.screen === 'reader') planNoteRead(code, ch);
+      if (state.code === code && state.chapter === ch && state.screen === 'reader'){
+        streakNoteRead();
+        planNoteRead(code, ch);
+      }
     }, 20000);
+  }
+
+  // ---------- reading streak ----------
+  // A day counts when a chapter was really read or heard (open for 20 s, or its
+  // audio finished), or a plan day was ticked off. Miss a day and it restarts.
+  function dateKey(d){
+    d = d || new Date();
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+  function daysAgoKey(n){
+    var d = new Date();
+    d.setDate(d.getDate() - n);
+    return dateKey(d);
+  }
+  function loadStreak(){
+    try {
+      var st = JSON.parse(safeGet('streak') || 'null');
+      if (st && st.last){ st.log = st.log || []; st.best = st.best || 0; return st; }
+    } catch(e){}
+    return { last: '', count: 0, best: 0, log: [] };
+  }
+  function streakCurrent(st){
+    if (!st.last) return 0;
+    return (st.last === daysAgoKey(0) || st.last === daysAgoKey(1)) ? st.count : 0;
+  }
+  function streakNoteRead(){
+    var st = loadStreak(), today = daysAgoKey(0);
+    if (st.last === today) return;
+    st.count = (st.last === daysAgoKey(1)) ? st.count + 1 : 1;
+    st.best = Math.max(st.best || 0, st.count);
+    st.last = today;
+    st.log = st.log.filter(function(k){ return k !== today; });
+    st.log.push(today);
+    st.log = st.log.slice(-30);
+    safeSet('streak', JSON.stringify(st));
+    if (st.count >= 2) showToast(st.count + ' imisi ikurikirana!');
+    renderStreak();
+  }
+  function renderStreak(){
+    if (!els.homeStreak) return;
+    var st = loadStreak(), cur = streakCurrent(st), today = daysAgoKey(0);
+    els.homeStreak.classList.toggle('off', cur === 0);
+    els.hsCount.textContent = String(cur);
+    els.hsLabel.textContent = cur === 1 ? ' umusi ukurikirana' : ' imisi ikurikirana';
+    els.hsSub.textContent = st.last === today ? 'Wasomye uno musi. Garuka ejo!'
+      : (cur > 0 ? 'Soma uno musi kugira ukomeze' : 'Soma uno musi kugira utangure');
+    els.homeStreak.title = st.best ? 'Ndende kuruta izindi: ' + st.best : '';
+    var dots = '';
+    for (var i = 6; i >= 0; i--){
+      dots += '<span class="hs-dot' + (st.log.indexOf(daysAgoKey(i)) !== -1 ? ' on' : '') + (i === 0 ? ' today' : '') + '"></span>';
+    }
+    els.hsDots.innerHTML = dots;
   }
   function startPlan(id){
     savePlan({ id: id, started: Date.now(), done: {}, seen: {}, lastDoneDate: '' });
@@ -2304,6 +2417,7 @@ main{
   function renderHomeFeatureCards(){
     renderResumeCard();
     renderPlanCard();
+    renderStreak();
   }
 
   var CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
@@ -2351,7 +2465,12 @@ main{
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:0">' +
           '<button class="done" id="planReadBtn">Tangura gusoma</button>' +
           '<button class="secondary" id="planDoneBtn">Nasomye uno musi</button>' +
-        '</div>';
+        '</div>' +
+        '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:10px">' +
+          '<button class="secondary dl-start" id="planDlToday">Kuramo ivyo gusoma uno musi</button>' +
+          '<button class="secondary dl-start" id="planDlWeek">Kuramo imisi 7</button>' +
+        '</div>' + dlProgBoxHtml() +
+        '<p class="pc-sub" id="planDlStatus" style="margin:8px 0 0"></p>';
     }
 
     var from = 0, to = days.length;
@@ -2385,12 +2504,26 @@ main{
       closeSheet();
       goTo(target[0], target[1]);
     });
+    var dlToday = document.getElementById('planDlToday');
+    if (dlToday){
+      dlToday.addEventListener('click', function(){ beginOfflineDownload(days[cur]); });
+      document.getElementById('planDlWeek').addEventListener('click', function(){
+        var list = [];
+        for (var k = cur; k < Math.min(days.length, cur + 7); k++) list = list.concat(days[k]);
+        beginOfflineDownload(list);
+      });
+      wireDlProg();
+      paintOfflineProgress();
+      updateDownloadButtons();
+      offlineStatusFor(days[cur], 'planDlStatus');
+    }
     var doneBtn = document.getElementById('planDoneBtn');
     if (doneBtn) doneBtn.addEventListener('click', function(){
       days[cur].forEach(function(p){ plan.seen[p[0] + '.' + p[1]] = 1; });
       plan.done[cur] = 1;
       plan.lastDoneDate = todayStr();
       savePlan(plan);
+      streakNoteRead();
       showToast('Umusi wa ' + (cur + 1) + ' uraheze!');
       afterChange();
     });
@@ -2654,6 +2787,8 @@ main{
       var ref = d.title + ' ' + d.ch + ':' + d.vn;
       els.hvcText.textContent = d.text;
       els.hvcRef.textContent = ref;
+      els.hvcPlayBtn.hidden = (d.start == null);
+      if (d.start != null) prepareVerseAudio(d);
       // Use the same rotating set of 9 daily background photos as the
       // downloadable verse card, shown naturally — just a gentle bottom
       // gradient so the text stays readable, not a heavy color wash.
@@ -2675,6 +2810,77 @@ main{
     if (!homeHeroData) return;
     var ref = homeHeroData.title + ' ' + homeHeroData.ch + ':' + homeHeroData.vn;
     shareOrDownloadVerseCard('download', homeHeroData.text, ref, todaysBgImage());
+  });
+
+  // ---------- listen to the verse of the day ----------
+  // Plays just that verse out of the chapter's recording (using the verse's
+  // start/end times) with its own small audio player, so the chapter player
+  // is left alone. Uses the downloaded copy when there is one.
+  var verseAudio = null, verseStopAt = 0, verseEndTimer = null, versePlayKey = '';
+  var verseBlobUrl = null, verseBlobKey = '';
+  function prepareVerseAudio(d){
+    var key = d.code + '.' + d.ch;
+    if (verseBlobKey === key) return;
+    verseBlobKey = key;
+    verseBlobUrl = null;
+    if (!hasCaches) return;
+    var url = audioPathFor(d.code, d.ch);
+    isAudioCached(url).then(function(cached){
+      if (!cached || verseBlobKey !== key) return;
+      return getPlayableUrl(url).then(function(u){ if (verseBlobKey === key) verseBlobUrl = u; });
+    });
+  }
+  function setVersePlayUi(playing){
+    els.hvcPlayBtn.classList.toggle('playing', playing);
+    els.hvcPlayLabel.textContent = playing ? 'Hagarika' : 'Umva';
+  }
+  function stopVerseAudio(){
+    clearTimeout(verseEndTimer);
+    verseEndTimer = null;
+    if (verseAudio){ try { verseAudio.pause(); } catch(e){} }
+    setVersePlayUi(false);
+  }
+  function ensureVerseAudio(){
+    if (verseAudio) return verseAudio;
+    verseAudio = new Audio();
+    verseAudio.preload = 'auto';
+    verseAudio.addEventListener('timeupdate', function(){
+      if (verseAudio.paused || !verseStopAt) return;
+      var rem = verseStopAt - verseAudio.currentTime;
+      if (rem <= 0.02) stopVerseAudio();
+      else if (rem < 0.4 && !verseEndTimer) verseEndTimer = setTimeout(stopVerseAudio, rem * 1000);
+    });
+    verseAudio.addEventListener('ended', stopVerseAudio);
+    verseAudio.addEventListener('error', function(){ setVersePlayUi(false); });
+    return verseAudio;
+  }
+  els.hvcPlayBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var d = homeHeroData;
+    if (!d || d.start == null) return;
+    if (verseAudio && !verseAudio.paused){ stopVerseAudio(); return; }
+    try { if (!audio.paused) audio.pause(); } catch(err){}
+    var va = ensureVerseAudio();
+    var key = d.code + '.' + d.ch;
+    var begin = Math.max(0, d.start - 0.05);
+    verseStopAt = d.end != null ? d.end : 0;       // 0 = play to the end of the recording
+    clearTimeout(verseEndTimer);
+    verseEndTimer = null;
+    setVersePlayUi(true);
+    // play() has to start inside the tap itself (phones block it otherwise),
+    // so the source is chosen synchronously here.
+    if (versePlayKey !== key || !va.src){
+      versePlayKey = key;
+      va.src = (verseBlobKey === key && verseBlobUrl) ? verseBlobUrl : audioPathFor(d.code, d.ch);
+    }
+    try { va.currentTime = begin; } catch(err){}
+    va.addEventListener('loadedmetadata', function(){
+      if (Math.abs(va.currentTime - begin) > 0.6){ try { va.currentTime = begin; } catch(err){} }
+    }, { once: true });
+    var p = va.play();
+    if (p && typeof p.catch === 'function'){
+      p.catch(function(){ setVersePlayUi(false); showToast('Ntibyakunze. Gerageza ukundi.'); });
+    }
   });
 
   function updateTestamentCounts(){
@@ -2746,6 +2952,141 @@ main{
   function removeChapterAudio(url){
     if (!hasCaches) return Promise.resolve();
     return caches.open(OFFLINE_CACHE).then(function(cache){ return cache.delete(url); });
+  }
+
+  // ---------- bulk offline downloads ----------
+  // Saves chapters (audio + the book's text) into the phone so they can be
+  // read and heard with no internet. Safe to repeat: chapters already saved
+  // are skipped, so a download that was interrupted simply continues.
+  var offlineJob = null;      // { cancelled: bool } while a download is running
+  var offlineProg = null;     // { done, total } for the progress bar
+  var bookSizeCache = {};
+
+  function offlineText(code){
+    if (!hasCaches) return Promise.resolve();
+    var url = 'data/books/' + code + '.json';
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return cache.match(url).then(function(hit){
+        if (hit) return;
+        return fetch(url).then(function(resp){ if (resp.ok) return cache.put(url, resp); });
+      });
+    });
+  }
+  // resolves 'have' | 'cached' | 'missing'; rejects when the network fails
+  function offlineAudio(url){
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return cache.match(url).then(function(hit){
+        if (hit) return 'have';
+        return fetch(url).then(function(resp){
+          if (resp.status === 404) return 'missing';
+          if (!resp.ok) throw new Error('http ' + resp.status);
+          return cache.put(url, resp).then(function(){ return 'cached'; });
+        });
+      });
+    });
+  }
+  function downloadChaptersOffline(list, onProgress){
+    var job = { cancelled: false };
+    offlineJob = job;
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+    var res = { total: list.length, done: 0, cached: 0, have: 0, missing: 0, failed: 0, cancelled: false, noNetwork: false };
+    var next = 0, failStreak = 0, texts = {};
+    function worker(){
+      if (job.cancelled || next >= list.length) return Promise.resolve();
+      var item = list[next++], code = item[0], ch = item[1];
+      var txt = texts[code] || (texts[code] = offlineText(code).catch(function(){}));
+      return txt.then(function(){ return offlineAudio(audioPathFor(code, ch)); }).then(function(r){
+        res[r]++;
+        failStreak = 0;
+      }, function(){
+        res.failed++;
+        if (++failStreak >= 3){ job.cancelled = true; res.noNetwork = true; }
+      }).then(function(){
+        res.done++;
+        if (onProgress) onProgress(res.done, res.total);
+        return worker();
+      });
+    }
+    return Promise.all([worker(), worker()]).then(function(){
+      res.cancelled = job.cancelled;
+      offlineJob = null;
+      return res;
+    });
+  }
+  function dlProgBoxHtml(){
+    return '<div id="dlProgBox" hidden style="margin:12px 0">' +
+      '<div class="hf-bar" style="margin:0 0 6px"><i id="dlProgFill" style="width:0%"></i></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+        '<span id="dlProgText" style="font-size:.86rem;color:var(--ink-dim)"></span>' +
+        '<button class="danger-link" id="dlProgCancel">Hagarika</button>' +
+      '</div></div>';
+  }
+  function wireDlProg(){
+    var c = document.getElementById('dlProgCancel');
+    if (c) c.addEventListener('click', function(){ if (offlineJob) offlineJob.cancelled = true; });
+  }
+  function paintOfflineProgress(){
+    var box = document.getElementById('dlProgBox');
+    if (!box) return;
+    if (!offlineJob || !offlineProg){ box.hidden = true; return; }
+    box.hidden = false;
+    document.getElementById('dlProgFill').style.width = Math.round(offlineProg.done / offlineProg.total * 100) + '%';
+    document.getElementById('dlProgText').textContent = 'Birimo gukurwa... ' + offlineProg.done + '/' + offlineProg.total;
+  }
+  function updateDownloadButtons(){
+    Array.prototype.forEach.call(document.querySelectorAll('.dl-start'), function(b){ b.disabled = !!offlineJob; });
+  }
+  function beginOfflineDownload(list){
+    if (!hasCaches){ showToast('Iyi telefone ntishobora kubika ibi.'); return; }
+    if (offlineJob){ showToast('Hari ibirimo gukurwa. Tegereza.'); return; }
+    if (!list.length) return;
+    offlineProg = { done: 0, total: list.length };
+    var p = downloadChaptersOffline(list, function(d, t){ offlineProg = { done: d, total: t }; paintOfflineProgress(); });
+    paintOfflineProgress();
+    updateDownloadButtons();
+    p.then(function(res){
+      offlineProg = null;
+      paintOfflineProgress();
+      updateDownloadButtons();
+      refreshDownloadButton();
+      if (document.getElementById('downloadsBody')) refreshDownloadsSheet();
+      if (document.getElementById('planBody')) renderPlanSheet();
+      if (res.noNetwork) showToast('Nta internet. Gerageza ukundi.', 3200);
+      else if (res.cancelled) showToast('Vyahagaritswe.');
+      else if (res.failed) showToast('Ibice ' + res.failed + ' ntibyakunze. Gerageza ukundi.', 3200);
+      else showToast('Vyarakuwe! Urashobora kubisoma no kubiyumva udafise internet.', 3400);
+    });
+  }
+  // how many of these chapters are already saved on the phone
+  function offlineStatusFor(list, elId){
+    if (!hasCaches) return;
+    Promise.all(list.map(function(p){ return isAudioCached(audioPathFor(p[0], p[1])); })).then(function(flags){
+      var have = flags.filter(Boolean).length;
+      var el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = have === list.length
+        ? 'Vyose vyakuwe. Urashobora kubisoma udafise internet.'
+        : (have ? 'Vyakuwe: ' + have + '/' + list.length : '');
+    });
+  }
+  // total size of a book's recordings (asks the server for file sizes only)
+  function probeBookSize(code){
+    if (bookSizeCache[code]) return Promise.resolve(bookSizeCache[code]);
+    var meta = bookMeta(code), urls = [], idx = 0, total = 0, got = 0;
+    for (var c = 1; c <= meta.chapters; c++) urls.push(audioPathFor(code, c));
+    function w(){
+      if (idx >= urls.length) return Promise.resolve();
+      var u = urls[idx++];
+      return fetch(u, { method: 'HEAD' }).then(function(r){
+        var n = parseInt(r.headers.get('content-length') || '0', 10);
+        if (r.ok && n){ total += n; got++; }
+      }).catch(function(){}).then(w);
+    }
+    return Promise.all([w(), w(), w(), w()]).then(function(){
+      var out = { bytes: got ? total * (urls.length / got) : 0 };
+      bookSizeCache[code] = out;
+      return out;
+    });
   }
 
   function refreshDownloadButton(){
@@ -3118,6 +3459,7 @@ main{
   audio.addEventListener('ended', function(){
     dbg('EVENT ended');
     setPlayingUI(false);
+    streakNoteRead();
     planNoteRead(state.code, state.chapter);
     if (sleepState.atChapterEnd){
       // Sleep timer set to "when this chapter ends": stop here, and make the
@@ -3239,6 +3581,7 @@ main{
   function goTo(code, chNum, opts){
     opts = opts || {};
     showReader();
+    stopVerseAudio();
     var dir = opts.dir;
 
     // The authoritative state (state.code/chapter, the URL hash, the
@@ -3458,7 +3801,17 @@ main{
         '</div>';
     }
     if (view === 'downloads'){
-      return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p><div id="downloadsBody"><p>...</p></div>';
+      return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p>' +
+        '<div class="appr-group">' +
+          '<p class="appr-label">Kuramo igitabo cose</p>' +
+          '<select id="dlBookSel" aria-label="Igitabo" style="width:100%;flex:none"></select>' +
+          '<p class="pc-sub" id="dlBookInfo" style="margin:8px 0 10px"></p>' +
+          '<button class="done dl-start" id="dlBookBtn">Kuramo igitabo</button>' +
+          '<p class="pc-sub" style="margin:10px 0 0">Koresha WiFi kugira udakoresha amakuru menshi.</p>' +
+        '</div>' +
+        dlProgBoxHtml() +
+        '<p class="appr-label">Vyamaze gukurwa</p>' +
+        '<div id="downloadsBody"><p>...</p></div>';
     }
     if (view === 'search'){
       return '' +
@@ -3662,7 +4015,7 @@ main{
     }
 
     if (view === 'downloads'){
-      refreshDownloadsSheet();
+      mountDownloadsSheet();
     }
 
     if (view === 'search'){
@@ -3743,6 +4096,36 @@ main{
     }
   }
 
+  function mountDownloadsSheet(){
+    var sel = document.getElementById('dlBookSel');
+    if (sel && state.index){
+      sel.innerHTML = state.index.books.map(function(b){
+        return '<option value="' + b.code + '">' + esc(b.title) + ' (' + b.chapters + ')</option>';
+      }).join('');
+      if (state.code && bookMeta(state.code)) sel.value = state.code;
+      var infoEl = document.getElementById('dlBookInfo');
+      var showInfo = function(){
+        var code = sel.value, meta = bookMeta(code);
+        infoEl.textContent = 'Ibice ' + meta.chapters;
+        probeBookSize(code).then(function(r){
+          if (sel.value !== code || !document.getElementById('dlBookInfo') || !r.bytes) return;
+          infoEl.textContent = 'Ibice ' + meta.chapters + ' · ~' + Math.max(1, Math.round(r.bytes / 1048576)) + ' MB';
+        });
+      };
+      sel.addEventListener('change', showInfo);
+      showInfo();
+      document.getElementById('dlBookBtn').addEventListener('click', function(){
+        var code = sel.value, meta = bookMeta(code), list = [];
+        for (var c = 1; c <= meta.chapters; c++) list.push([code, c]);
+        beginOfflineDownload(list);
+      });
+    }
+    wireDlProg();
+    paintOfflineProgress();
+    updateDownloadButtons();
+    refreshDownloadsSheet();
+  }
+
   function refreshDownloadsSheet(){
     var body = document.getElementById('downloadsBody');
     if (!body) return;
@@ -3760,18 +4143,28 @@ main{
         body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracagurwa. Fyonda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
         return;
       }
-      body.innerHTML = '<p class="storage-note">...</p>' + list.map(function(d){
+      // one row per book (so a whole downloaded book is a single line)
+      var groups = [], byCode = {};
+      list.forEach(function(d){
+        if (!byCode[d.code]){ byCode[d.code] = { code: d.code, title: d.title, items: [] }; groups.push(byCode[d.code]); }
+        byCode[d.code].items.push(d);
+      });
+      var order = {};
+      state.index.books.forEach(function(b, i){ order[b.code] = i; });
+      groups.sort(function(a, b){ return (order[a.code] || 0) - (order[b.code] || 0); });
+      body.innerHTML = '<p class="storage-note">...</p>' + groups.map(function(g){
         return '' +
           '<div class="dl-row">' +
-            '<div class="dl-main">' + esc(d.title) + ' — Ch ' + d.ch + '</div>' +
-            '<button class="mark-del" data-url="' + esc(d.url) + '" aria-label="Siba">' +
+            '<div class="dl-main">' + esc(g.title) + ' <span style="color:var(--ink-dim);font-size:.8rem">· ibice ' + g.items.length + '</span></div>' +
+            '<button class="mark-del" data-code="' + g.code + '" aria-label="Siba">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
             '</button>' +
           '</div>';
       }).join('') + '<div class="close-row" style="justify-content:flex-start;margin-top:10px"><button class="secondary" id="clearAllDl">Kuraho vyose</button></div>';
       Array.prototype.forEach.call(body.querySelectorAll('.mark-del'), function(btn){
         btn.addEventListener('click', function(){
-          removeChapterAudio(btn.getAttribute('data-url')).then(function(){
+          var g = byCode[btn.getAttribute('data-code')];
+          Promise.all(g.items.map(function(d){ return removeChapterAudio(d.url); })).then(function(){
             refreshDownloadButton();
             refreshDownloadsSheet();
           });
@@ -3846,7 +4239,16 @@ main{
     return null;
   }
 
+  // Lets the app open with no internet (see sw.js).
+  function registerOfflineWorker(){
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+    var go = function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  }
+
   function start(){
+    registerOfflineWorker();
     applyAppearancePrefs();
     refreshHomeColorSelection();
     loadMarks();
