@@ -874,6 +874,16 @@ main{
   font-family:var(--font-ui);font-size:.9rem;cursor:pointer;padding:8px 0;
 }
 
+/* text could not be loaded */
+.load-fail{padding:48px 24px;text-align:center;font-family:var(--font-ui);color:var(--ink)}
+.load-fail p{margin:0 0 12px;font-size:1rem;line-height:1.5}
+.load-fail .lf-sub{color:var(--ink-dim);font-size:.9rem}
+.load-fail button{
+  margin-top:8px;background:none;color:var(--accent);
+  border:1px solid var(--rule);border-radius:10px;padding:12px 22px;
+  font-family:var(--font-ui);font-weight:600;font-size:.95rem;cursor:pointer;min-height:46px;
+}
+
 /* ---------- reading streak (home) ---------- */
 .home-streak{
   display:flex;align-items:center;gap:12px;
@@ -1371,7 +1381,7 @@ main{
   </div>
   <div class="no-audio" id="noAudioNote">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4z"/><line x1="16" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="16" y2="15"/></svg>
-    <span>Nta majwi ahari kuri iki gice (audio not added yet)</span>
+    <span id="noAudioText">Nta majwi ahari kuri iki gice (audio not added yet)</span>
   </div>
 </div>
 
@@ -1410,6 +1420,7 @@ main{
     main: document.querySelector('main'),
     audioControls: document.getElementById('audioControls'),
     noAudioNote: document.getElementById('noAudioNote'),
+    noAudioText: document.getElementById('noAudioText'),
     playBtn: document.getElementById('playBtn'),
     playIcon: document.getElementById('playIcon'),
     pauseIcon: document.getElementById('pauseIcon'),
@@ -1620,20 +1631,51 @@ main{
   }
 
   // ---------- data loading ----------
+  // Reads a data file (a book's text, the book list, the search index).
+  // The copy saved on the phone is used first, so it works with no internet
+  // and costs no data; the network is only used when nothing is saved yet.
+  // A saved copy is quietly re-checked once per visit (a tiny request that
+  // answers "unchanged"), so corrections to the text still arrive.
+  var dataChecked = {};
+  function fetchDataJson(url){
+    function fromNetwork(){
+      return fetch(url).then(function(r){
+        if (!r.ok) throw new Error('http ' + r.status);
+        if (hasCaches){
+          var copy = r.clone();
+          caches.open(OFFLINE_CACHE).then(function(c){ return c.put(url, copy); }).catch(function(){});
+        }
+        return r.json();
+      });
+    }
+    if (!hasCaches) return fromNetwork();
+    return caches.open(OFFLINE_CACHE).then(function(c){ return c.match(url); }).then(function(hit){
+      if (!hit) return fromNetwork();
+      recheckSavedData(url);
+      return hit.json();
+    }, function(){ return fromNetwork(); });
+  }
+  function recheckSavedData(url){
+    if (dataChecked[url] || navigator.onLine === false) return;
+    dataChecked[url] = true;
+    setTimeout(function(){
+      fetch(url, { cache: 'no-cache' }).then(function(r){
+        if (r && r.ok) return caches.open(OFFLINE_CACHE).then(function(c){ return c.put(url, r); });
+      }).catch(function(){});
+    }, 4000);
+  }
+
   function loadIndex(){
-    return fetch('data/index.json').then(function(r){ return r.json(); }).then(function(idx){
+    return fetchDataJson('data/index.json').then(function(idx){
       state.index = idx;
       populateBookSelect();
-      cacheOfflineAsset('data/index.json');
     });
   }
 
   function loadBook(code){
     if (state.bookCache[code]) return Promise.resolve(state.bookCache[code]);
-    var url = 'data/books/' + code + '.json';
-    return fetch(url).then(function(r){ return r.json(); }).then(function(book){
+    return fetchDataJson('data/books/' + code + '.json').then(function(book){
       state.bookCache[code] = book;
-      cacheOfflineAsset(url);
       return book;
     });
   }
@@ -1693,8 +1735,10 @@ main{
 
   // ---------- rendering ----------
   function renderChapter(code, chNum){
+    state.renderedKey = '';
     return loadBook(code).then(function(book){
       var ch = book.chapters[String(chNum)];
+      state.renderedKey = code + '.' + chNum;
       state.verses = ch.verses;
       state.activeVerseIdx = -1;
       state.selectedIdx = -1;
@@ -2313,7 +2357,7 @@ main{
     clearTimeout(planReadTimer);
     if (!state.index) return;
     planReadTimer = setTimeout(function(){
-      if (state.code === code && state.chapter === ch && state.screen === 'reader'){
+      if (state.code === code && state.chapter === ch && state.screen === 'reader' && state.renderedKey === code + '.' + ch){
         streakNoteRead();
         planNoteRead(code, ch);
       }
@@ -3057,6 +3101,62 @@ main{
       else showToast('Vyarakuwe! Urashobora kubisoma no kubiyumva udafise internet.', 3400);
     });
   }
+  // The whole Bible text (not the audio) is small, so it is saved to the phone
+  // once, quietly, after the first visit. Then every chapter can be read with no
+  // internet. (About 1.8 MB over the network in total.)
+  var TEXT_ALL_KEY = 'textAllSaved';
+  var textSaveJob = false;
+  function savedTextCount(){
+    if (!hasCaches || !state.index) return Promise.resolve(0);
+    return caches.open(OFFLINE_CACHE).then(function(cache){
+      return Promise.all(state.index.books.map(function(b){
+        return cache.match('data/books/' + b.code + '.json').then(function(r){ return r ? 1 : 0; });
+      }));
+    }).then(function(a){ return a.reduce(function(x, y){ return x + y; }, 0); }, function(){ return 0; });
+  }
+  function saveAllText(){
+    if (textSaveJob || !hasCaches || !state.index) return Promise.resolve(false);
+    textSaveJob = true;
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+    var codes = state.index.books.map(function(b){ return b.code; }), next = 0, failStreak = 0, stop = false;
+    function worker(){
+      if (stop || next >= codes.length) return Promise.resolve();
+      return offlineText(codes[next++]).then(function(){ failStreak = 0; }, function(){
+        if (++failStreak >= 3) stop = true;
+      }).then(worker);
+    }
+    return Promise.all([worker(), worker()]).then(savedTextCount).then(function(n){
+      textSaveJob = false;
+      var all = n >= state.index.books.length;
+      if (all) safeSet(TEXT_ALL_KEY, '1');
+      return all;
+    });
+  }
+  function saveAllTextQuietly(){
+    if (!hasCaches || safeGet(TEXT_ALL_KEY) === '1') return;
+    try { if (navigator.connection && navigator.connection.saveData) return; } catch(e){}
+    setTimeout(function(){
+      if (navigator.onLine === false) return;
+      saveAllText();
+    }, 8000);
+  }
+  function paintTextStatus(){
+    var el = document.getElementById('dlTextStatus');
+    if (!el) return;
+    var btn = document.getElementById('dlTextBtn');
+    savedTextCount().then(function(n){
+      var total = state.index.books.length;
+      if (!document.getElementById('dlTextStatus')) return;
+      if (n >= total){
+        el.textContent = 'Inyandiko yose y\u2019Ibibiliya iri kuri iyi telefone. Urashobora kuyisoma udafise internet.';
+        if (btn) btn.hidden = true;
+      } else {
+        el.textContent = 'Inyandiko: ibitabo ' + n + ' muri ' + total + ' biri kuri iyi telefone.';
+        if (btn) btn.hidden = false;
+      }
+    });
+  }
+
   // how many of these chapters are already saved on the phone
   function offlineStatusFor(list, elId){
     if (!hasCaches) return;
@@ -3346,6 +3446,7 @@ main{
     els.noAudioNote.hidden = false;
     audio.pause();
     audio.removeAttribute('src');
+    els.noAudioText.textContent = NO_AUDIO_TEXT;
     audioKey = code + '.' + chNum;
     var url = audioPathFor(code, chNum);
     getPlayableUrl(url).then(function(playUrl){
@@ -3355,12 +3456,27 @@ main{
     refreshDownloadButton();
   }
 
+  var NO_AUDIO_TEXT = 'Nta majwi ahari kuri iki gice (audio not added yet)';
+  var NO_NET_TEXT = 'Nta internet. Kuramwo iki gice (\u2193) ufise internet kugira ukiyumvire udafise internet.';
+  // Why is there no sound: the recording does not exist, or just no internet?
+  function explainNoAudio(){
+    var key = audioKey, url = audioPathFor(state.code, state.chapter);
+    els.noAudioText.textContent = NO_AUDIO_TEXT;
+    fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function(r){
+      if (key !== audioKey) return;
+      els.noAudioText.textContent = (r.status === 404) ? NO_AUDIO_TEXT : NO_NET_TEXT;
+    }, function(){
+      if (key !== audioKey) return;
+      els.noAudioText.textContent = NO_NET_TEXT;
+    });
+  }
   audio.addEventListener('error', function(){
     dbg('EVENT error | code=' + (audio.error && audio.error.code) + ' networkState=' + audio.networkState);
     state.audioAvailable = false;
     state.pendingAutoplay = false;
     els.audioControls.hidden = true;
     els.noAudioNote.hidden = false;
+    explainNoAudio();
     msSetState('paused');
   });
   audio.addEventListener('loadedmetadata', function(){
@@ -3616,6 +3732,21 @@ main{
           var idx = state.verses.findIndex(function(v){ return v.n === opts.flashVerse; });
           if (idx !== -1) flashVerse(idx);
         }
+      }, function(){
+        // The text could not be loaded (no internet and not saved yet).
+        // Say so, offer a retry, and still let a downloaded recording play.
+        if (state.code !== code || state.chapter !== chNum) return;
+        state.verses = [];
+        state.activeVerseIdx = -1;
+        state.selectedIdx = -1;
+        hideVerseActionBar();
+        els.reading.innerHTML = '<div class="load-fail">' +
+          '<p><strong>Nta internet.</strong> Iki gice ntikiraba kuri iyi telefone.</p>' +
+          '<p class="lf-sub">Ongera ugerageze iyo ubonye internet. Kugira usome udafise internet, fungura &ldquo;Downloads&rdquo; ukuremwo inyandiko yose.</p>' +
+          '<button class="secondary" id="retryLoad">Ongera ugerageze</button></div>';
+        var rb = document.getElementById('retryLoad');
+        if (rb) rb.addEventListener('click', function(){ goTo(code, chNum, { noHash: true }); });
+        loadAudioForChapter(code, chNum);
       });
     }
 
@@ -3802,6 +3933,8 @@ main{
     }
     if (view === 'downloads'){
       return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p>' +
+        '<p class="pc-sub" id="dlTextStatus" style="margin:0 0 6px"></p>' +
+        '<button class="secondary" id="dlTextBtn" hidden style="margin-bottom:16px">Kuramwo inyandiko yose</button>' +
         '<div class="appr-group">' +
           '<p class="appr-label">Kuramwo igitabo cose</p>' +
           '<select id="dlBookSel" aria-label="Igitabo" style="width:100%;flex:none"></select>' +
@@ -4097,6 +4230,18 @@ main{
   }
 
   function mountDownloadsSheet(){
+    paintTextStatus();
+    var textBtn = document.getElementById('dlTextBtn');
+    if (textBtn) textBtn.addEventListener('click', function(){
+      textBtn.disabled = true;
+      textBtn.textContent = 'Birimo gukurwa...';
+      saveAllText().then(function(all){
+        textBtn.disabled = false;
+        textBtn.textContent = 'Kuramwo inyandiko yose';
+        paintTextStatus();
+        showToast(all ? 'Inyandiko yose yarakuwe!' : 'Nta internet. Gerageza ukundi.', 2600);
+      });
+    });
     var sel = document.getElementById('dlBookSel');
     if (sel && state.index){
       sel.innerHTML = state.index.books.map(function(b){
@@ -4184,10 +4329,12 @@ main{
   function ensureSearchIndex(){
     if (state.searchIndex) return Promise.resolve(state.searchIndex);
     if (state.searchIndexLoading) return state.searchIndexLoading;
-    state.searchIndexLoading = fetch('data/search-index.json').then(function(r){ return r.json(); }).then(function(idx){
+    state.searchIndexLoading = fetchDataJson('data/search-index.json').then(function(idx){
       state.searchIndex = idx;
-      cacheOfflineAsset('data/search-index.json');
       return idx;
+    }, function(err){
+      state.searchIndexLoading = null;     // allow another try later
+      throw err;
     });
     return state.searchIndexLoading;
   }
@@ -4273,8 +4420,9 @@ main{
       renderHomeHero();
       updateTestamentCounts();
       cacheOfflineAsset('images/bible-cover.jpg');
-      if (window.requestIdleCallback) requestIdleCallback(function(){ ensureSearchIndex(); });
-      else setTimeout(function(){ ensureSearchIndex(); }, 2500);
+      if (window.requestIdleCallback) requestIdleCallback(function(){ ensureSearchIndex().catch(function(){}); });
+      else setTimeout(function(){ ensureSearchIndex().catch(function(){}); }, 2500);
+      saveAllTextQuietly();
     });
   }
 

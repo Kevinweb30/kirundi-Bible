@@ -5,15 +5,14 @@
  *
  *  - Pages (index.html, privacy.html): network first, so updates always show up
  *    right away; if the network fails or is very slow, the last saved copy is used.
- *  - Small files (Bible text, images, verse list): saved on first use and served
+ *  - Small files (images, verse list): saved on first use and served
  *    from the saved copy next time, refreshed quietly in the background.
  *  - Audio is NOT handled here. Online it streams normally; downloaded audio is
  *    kept by the page itself (Cache Storage) and played from there.
  */
-var SHELL = 'bibiliya-shell-v1';
+var SHELL = 'bibiliya-shell-v2';
 var SHELL_FILES = [
   'index.html',
-  'data/index.json',
   'data/daily-verses.json',
   'images/bible-cover.jpg',
   'images/now-playing.jpg',
@@ -105,6 +104,9 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
   if (/\/audio\//.test(url.pathname)) return;     // audio: never touched here
+  // The Bible text, the book list and the search index are saved and read by the page
+  // itself (so it also works on iPhone, where this worker may be unavailable).
+  if (/\/data\/(books\/|index\.json|search-index\.json)/.test(url.pathname)) return;
   if (req.headers.has('range')) return;
   if (req.mode === 'navigate') { e.respondWith(networkFirstPage(req)); return; }
   e.respondWith(staleWhileRevalidate(req));
