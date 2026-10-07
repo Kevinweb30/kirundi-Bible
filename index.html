@@ -156,6 +156,20 @@ button.icon-btn{
 button.icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
 button.icon-btn svg{width:21px;height:21px}
 
+.size-btns{display:flex;align-items:center;gap:4px}
+.size-btn{
+  height:36px;min-width:42px;padding:0 8px;border-radius:9px;
+  border:1px solid var(--rule);background:var(--bg);color:var(--ink);
+  font-family:var(--font-ui);font-weight:700;font-size:.95rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:1px;
+}
+.size-btn .sz-s{font-size:.8rem}
+.size-btn .sz-l{font-size:1.2rem}
+.size-btn:hover{border-color:var(--accent);color:var(--accent)}
+.size-btn:disabled{opacity:.35;cursor:default}
+.size-btn:disabled:hover{border-color:var(--rule);color:var(--ink)}
+body.screen-home .size-btns{display:none}
+
 .nav-row{
   display:flex;
   align-items:stretch;
@@ -1050,6 +1064,10 @@ main{
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
     </button>
     <h1>Bibiliya</h1>
+    <div class="size-btns">
+      <button class="size-btn" id="sizeDownBtn" aria-label="Smaller text"><span class="sz-s">A</span>&minus;</button>
+      <button class="size-btn" id="sizeUpBtn" aria-label="Bigger text"><span class="sz-l">A</span>+</button>
+    </div>
     <button class="icon-btn" id="searchBtn" aria-label="Rondera">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </button>
@@ -1382,6 +1400,8 @@ main{
     vaNote: document.getElementById('vaNote'),
     vaShare: document.getElementById('vaShare'),
     vaPicture: document.getElementById('vaPicture'),
+    sizeDownBtn: document.getElementById('sizeDownBtn'),
+    sizeUpBtn: document.getElementById('sizeUpBtn'),
     sleepBtn: document.getElementById('sleepBtn'),
     sleepTxt: document.getElementById('sleepTxt'),
     homeResumeCard: document.getElementById('homeResumeCard'),
@@ -1458,6 +1478,35 @@ main{
   function applyReadingScale(scale){
     document.documentElement.style.setProperty('--reading-scale', scale);
     safeSet('readingScale', String(scale));
+    try { refreshSizeButtons(); } catch(e){}
+  }
+  // A- / A+ buttons in the top bar step through these sizes (the first four
+  // are the same ones offered in the Appearance sheet).
+  var TEXT_SCALES = [0.88, 1, 1.18, 1.34, 1.52, 1.72];
+  function nearestScaleIdx(v){
+    var best = 0;
+    TEXT_SCALES.forEach(function(sc, i){ if (Math.abs(sc - v) < Math.abs(TEXT_SCALES[best] - v)) best = i; });
+    return best;
+  }
+  function refreshSizeButtons(){
+    var i = nearestScaleIdx(getReadingScale());
+    els.sizeDownBtn.disabled = i === 0;
+    els.sizeUpBtn.disabled = i === TEXT_SCALES.length - 1;
+  }
+  function stepReadingScale(dir){
+    var i = Math.max(0, Math.min(TEXT_SCALES.length - 1, nearestScaleIdx(getReadingScale()) + dir));
+    // Keep the verse that is at the top of the screen where it is while the text grows or shrinks.
+    var main = els.main, top = main.getBoundingClientRect().top, anchor = null, off = 0;
+    var vs = els.reading.querySelectorAll('.verse');
+    for (var k = 0; k < vs.length; k++){
+      var r = vs[k].getBoundingClientRect();
+      if (r.bottom > top + 4){ anchor = vs[k]; off = r.top - top; break; }
+    }
+    applyReadingScale(TEXT_SCALES[i]);
+    if (anchor){
+      var r2 = anchor.getBoundingClientRect();
+      main.scrollTop += (r2.top - top) - off;
+    }
   }
   function applyAccent(accent){
     if (accent === 'teal') document.documentElement.removeAttribute('data-accent');
@@ -1471,6 +1520,8 @@ main{
     safeSet('themeMode', mode);
   }
   function applyAppearancePrefs(){
+    els.sizeDownBtn.addEventListener('click', function(){ stepReadingScale(-1); });
+    els.sizeUpBtn.addEventListener('click', function(){ stepReadingScale(1); });
     applyReadingScale(getReadingScale());
     applyAccent(getAccent());
     applyThemeMode(getThemeMode());
@@ -3431,6 +3482,8 @@ main{
             '<button class="appr-size-btn" data-size="1" style="font-size:1rem">A</button>' +
             '<button class="appr-size-btn" data-size="1.18" style="font-size:1.2rem">A</button>' +
             '<button class="appr-size-btn" data-size="1.34" style="font-size:1.38rem">A</button>' +
+            '<button class="appr-size-btn" data-size="1.52" style="font-size:1.55rem">A</button>' +
+            '<button class="appr-size-btn" data-size="1.72" style="font-size:1.75rem">A</button>' +
           '</div>' +
         '</div>' +
 
