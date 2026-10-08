@@ -1105,42 +1105,54 @@ main{
   opacity:0;pointer-events:none;transition:opacity .2s ease;
 }
 .toast.show{opacity:1}
+
+/* language pickers */
+.sheet h2.no-sub{margin-bottom:16px}
+.lang-row{display:flex;gap:8px}
+.lang-opt{
+  flex:1;border:1px solid var(--rule);background:var(--bg);color:var(--ink);
+  border-radius:10px;padding:11px 6px;cursor:pointer;
+  font-family:var(--font-ui);font-size:.9rem;font-weight:500;min-height:44px;
+}
+.lang-opt.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.lang-col{flex-direction:column}
+.lang-col .lang-opt{font-size:1.05rem;min-height:54px}
 </style>
 
 <div class="topbar">
   <div class="brand">
-    <button class="icon-btn" id="menuBtn" aria-label="Menu">
+    <button class="icon-btn" id="menuBtn" aria-label="Menu" data-i18n-aria="a.menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
     </button>
     <h1>Bibiliya</h1>
     <div class="size-btns">
-      <button class="size-btn" id="sizeDownBtn" aria-label="Smaller text"><span class="sz-s">A</span>&minus;</button>
-      <button class="size-btn" id="sizeUpBtn" aria-label="Bigger text"><span class="sz-l">A</span>+</button>
+      <button class="size-btn" id="sizeDownBtn" aria-label="Smaller text" data-i18n-aria="a.smaller"><span class="sz-s">A</span>&minus;</button>
+      <button class="size-btn" id="sizeUpBtn" aria-label="Bigger text" data-i18n-aria="a.bigger"><span class="sz-l">A</span>+</button>
     </div>
-    <button class="icon-btn" id="searchBtn" aria-label="Rondera">
+    <button class="icon-btn" id="searchBtn" aria-label="Rondera" data-i18n-aria="a.search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </button>
   </div>
   <div class="nav-row">
-    <button class="step-btn" id="readerHomeBtn" aria-label="Ahatangura (Home)">
+    <button class="step-btn" id="readerHomeBtn" aria-label="Ahatangura (Home)" data-i18n-aria="a.home">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
     </button>
     <div class="picker">
-      <select id="bookSelect" aria-label="Book"></select>
-      <select id="chapterSelect" aria-label="Chapter"></select>
+      <select id="bookSelect" aria-label="Book" data-i18n-aria="a.book"></select>
+      <select id="chapterSelect" aria-label="Chapter" data-i18n-aria="a.chapter"></select>
     </div>
-    <button class="step-btn" id="prevBtn" aria-label="Previous chapter">&#8249;</button>
-    <button class="step-btn" id="nextBtn" aria-label="Next chapter">&#8250;</button>
+    <button class="step-btn" id="prevBtn" aria-label="Previous chapter" data-i18n-aria="a.prev">&#8249;</button>
+    <button class="step-btn" id="nextBtn" aria-label="Next chapter" data-i18n-aria="a.next">&#8250;</button>
   </div>
 </div>
 
 <div class="daily-banner" id="dailyBanner" hidden>
   <div class="db-text">
-    <p class="db-label">Ijambo ry'uno musi</p>
+    <p class="db-label" data-i18n="daily.label">Ijambo ry'uno musi</p>
     <p class="db-verse" id="dbVerseText"></p>
-    <p class="db-ref"><span id="dbRefText"></span> &middot; <button id="dbReadBtn">Soma mu gitabu</button> &middot; <button id="dbCardBtn">Ifoto</button></p>
+    <p class="db-ref"><span id="dbRefText"></span> &middot; <button id="dbReadBtn" data-i18n="daily.read">Soma mu gitabu</button> &middot; <button id="dbCardBtn" data-i18n="daily.photo">Ifoto</button></p>
   </div>
-  <button class="db-close" id="dbCloseBtn" aria-label="Funga">
+  <button class="db-close" id="dbCloseBtn" aria-label="Funga" data-i18n-aria="a.close">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 </div>
@@ -1151,29 +1163,29 @@ main{
       <img src="images/bible-cover.jpg" alt="Bibiliya Yera" width="168" height="112">
     </div>
     <h2 class="home-title">Bibiliya Yera</h2>
-    <p class="home-subtitle">Mu Kirundi</p>
-    <p class="home-tagline">Soma kandi wumve Ijambo ry&rsquo;Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.</p>
+    <p class="home-subtitle" data-i18n="home.subtitle">Mu Kirundi</p>
+    <p class="home-tagline" data-i18n="home.tagline">Soma kandi wumve Ijambo ry&rsquo;Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.</p>
   </div>
   <div class="home-divider"></div>
 
   <div class="home-verse-card" id="homeVerseCard">
     <div class="hvc-content">
-      <p class="hvc-label">&#10022; IJAMBO RY&rsquo;UNO MUSI &#10022;</p>
+      <p class="hvc-label" data-i18n="home.vodLabel">&#10022; IJAMBO RY&rsquo;UNO MUSI &#10022;</p>
       <p class="hvc-text" id="hvcText"></p>
       <div class="hvc-rule"></div>
       <p class="hvc-ref" id="hvcRef"></p>
     </div>
-    <button class="hvc-dl hvc-play" id="hvcPlayBtn" hidden aria-label="Umviriza ijambo ry&rsquo;uno musi">
+    <button class="hvc-dl hvc-play" id="hvcPlayBtn" hidden aria-label="Umviriza ijambo ry&rsquo;uno musi" data-i18n-aria="a.playVod">
       <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
       <span id="hvcPlayLabel">Umviriza</span>
     </button>
     <button class="hvc-dl" id="hvcDownloadBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-      Kwega
+      <span data-i18n="home.dl">Kwega</span>
     </button>
   </div>
-  <p class="home-verse-tap-hint">Fyonda kugira usome iyi mirongo &rarr;</p>
+  <p class="home-verse-tap-hint" data-i18n="home.tapHint">Fyonda kugira usome iyi mirongo &rarr;</p>
 
   <div class="home-streak off" id="homeStreak">
     <span class="hs-flame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2.2C13.6 5 12.4 6.6 11 8.2 9.5 9.9 7.5 11.8 7.5 15a5 5 0 0 0 5 5c2.8 0 5-2.2 5-5 0-2.1-.9-3.7-2.1-5.2-.2 1.2-.8 2.1-1.8 2.7.3-3.3-.2-7.3-.4-10.3z"/><path style="fill:var(--accent-soft)" d="M12.5 20c-1.5 0-2.7-1.2-2.7-2.7 0-1.5 1-2.2 1.8-3.2.3.9.8 1.4 1.6 1.7 0-.9.3-1.7.7-2.4.9.8 1.3 1.7 1.3 2.7 0 1.9-1.2 3.9-2.7 3.9z"/></svg></span>
@@ -1186,7 +1198,7 @@ main{
       <div class="hf-left">
         <span class="hf-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
         <div class="htc-info">
-          <h3>Subira aho War’ugeze</h3>
+          <h3 data-i18n="home.resume">Subira aho War’ugeze</h3>
           <p id="hrcRef">&nbsp;</p>
         </div>
       </div>
@@ -1205,14 +1217,14 @@ main{
     </button>
     <button class="home-testament-card" id="homeOTCard">
       <div class="htc-info">
-        <h3>Isezerano rya Kera</h3>
+        <h3 data-i18n="ot">Isezerano rya Kera</h3>
         <p id="htcOTCount">&nbsp;</p>
       </div>
       <svg class="htc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
     </button>
     <button class="home-testament-card" id="homeNTCard">
       <div class="htc-info">
-        <h3>Isezerano Rishasha</h3>
+        <h3 data-i18n="nt">Isezerano Rishasha</h3>
         <p id="htcNTCount">&nbsp;</p>
       </div>
       <svg class="htc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
@@ -1220,19 +1232,19 @@ main{
   </div>
 
   <div class="home-colors">
-    <p class="home-colors-label">Ishusho</p>
+    <p class="home-colors-label" data-i18n="home.colorsLabel">Ishusho</p>
     <div class="home-colors-row">
       <button class="home-color-btn" id="hcBeige" data-preset="beige">
         <span class="hc-swatch" style="background:#a9825a"></span>
-        Umusenyi
+        <span data-i18n="col.beige">Umusenyi</span>
       </button>
       <button class="home-color-btn" id="hcBlack" data-preset="black">
         <span class="hc-swatch" style="background:#161512"></span>
-        Umwiza
+        <span data-i18n="col.black">Umwiza</span>
       </button>
       <button class="home-color-btn" id="hcWood" data-preset="wood">
         <span class="hc-swatch" style="background:#dcad8b"></span>
-        Igiti
+        <span data-i18n="col.wood">Igiti</span>
       </button>
     </div>
   </div>
@@ -1242,15 +1254,15 @@ main{
   <div class="home-quick">
     <button class="home-tile" id="homeTileMarks">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      <span>Ivyo nabitse</span>
+      <span data-i18n="tile.saved">Ivyo nabitse</span>
     </button>
     <button class="home-tile" id="homeTileDownloads">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-      <span>Gukwega</span>
+      <span data-i18n="tile.downloads">Gukwega</span>
     </button>
     <button class="home-tile" id="homeTileAppearance">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
-      <span>Ishusho</span>
+      <span data-i18n="tile.look">Ishusho</span>
     </button>
   </div>
 </div>
@@ -1261,39 +1273,43 @@ main{
     <ul class="menu-list">
       <li class="menu-row" id="dRowHome">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
-        <span class="ml-label">Ahatangura (Home)</span>
+        <span class="ml-label" data-i18n="drawer.home">Ahatangura (Home)</span>
       </li>
       <li class="menu-row" id="dRowDaily">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="ml-label">Ijambo ry&rsquo;uno musi</span>
+        <span class="ml-label" data-i18n="daily.label">Ijambo ry&rsquo;uno musi</span>
       </li>
       <li class="menu-row" id="dRowNotif" style="display:none">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-        <span class="ml-label">Nyibutse ijambo ry&rsquo;uno musi <span id="notifState" style="color:var(--ink-dim);font-weight:400"></span></span>
+        <span class="ml-label"><span data-i18n="drawer.notif">Nyibutse ijambo ry&rsquo;uno musi</span> <span id="notifState" style="color:var(--ink-dim);font-weight:400"></span></span>
       </li>
       <li class="menu-row" id="dRowPlan">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>
-        <span class="ml-label">Gahunda yo gusoma (reading plan)</span>
+        <span class="ml-label" data-i18n="drawer.plan">Gahunda yo gusoma (reading plan)</span>
       </li>
       <li class="menu-row" id="dRowMarks">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        <span class="ml-label">Ivyo nabitse (bookmarks &amp; notes)</span>
+        <span class="ml-label" data-i18n="drawer.marks">Ivyo nabitse (bookmarks &amp; notes)</span>
       </li>
       <li class="menu-row" id="dRowDownloads">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-        <span class="ml-label">Gukwega ngo wumve udafise internet</span>
+        <span class="ml-label" data-i18n="drawer.downloads">Gukwega ngo wumve udafise internet</span>
       </li>
       <li class="menu-row" id="dRowAppearance">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
-        <span class="ml-label">Ishusho (Appearance)</span>
+        <span class="ml-label" data-i18n="drawer.look">Ishusho (Appearance)</span>
+      </li>
+      <li class="menu-row" id="dRowLang">
+        <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></svg>
+        <span class="ml-label"><span data-i18n="drawer.lang">Ururimi</span> <span id="langState" style="color:var(--ink-dim);font-weight:400">(Ikirundi)</span></span>
       </li>
       <li class="menu-row" id="dRowSupport">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6 12 13 2 6"/></svg>
-        <span class="ml-label">Twandikire (contact &amp; support)</span>
+        <span class="ml-label" data-i18n="drawer.support">Twandikire (contact &amp; support)</span>
       </li>
       <li class="menu-row" id="dRowAbout">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor"/></svg>
-        <span class="ml-label">Ibijanye na porogaramu</span>
+        <span class="ml-label" data-i18n="drawer.about">Ibijanye na porogaramu</span>
       </li>
     </ul>
   </nav>
@@ -1301,7 +1317,7 @@ main{
 
 <main>
   <div class="reading" id="reading">
-    <p class="empty-note">Ndaragukira...</p>
+    <p class="empty-note" data-i18n="loading">Ndaragukira...</p>
   </div>
 </main>
 
@@ -1309,26 +1325,26 @@ main{
   <div class="verse-action-bar" id="verseActionBar" hidden>
     <span class="va-ref" id="vaRef"></span>
     <div class="va-actions">
-      <button class="va-btn" id="vaBookmark" aria-label="Bika (bookmark)">
+      <button class="va-btn" id="vaBookmark" aria-label="Bika (bookmark)" data-i18n-aria="a.bookmark">
         <svg id="vaBookmarkIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       </button>
-      <button class="va-btn" id="vaHighlight" aria-label="Shiraho irangi (highlight)">
+      <button class="va-btn" id="vaHighlight" aria-label="Shiraho irangi (highlight)" data-i18n-aria="a.highlight">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15 16 5l3 3L9 18H6v-3z"/><path d="M4 21h5"/></svg>
       </button>
-      <button class="va-btn" id="vaNote" aria-label="Andika icatwa (note)">
+      <button class="va-btn" id="vaNote" aria-label="Andika icatwa (note)" data-i18n-aria="a.note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
       </button>
-      <button class="va-btn" id="vaPicture" aria-label="Ifoto y&rsquo;umurongo (verse picture)">
+      <button class="va-btn" id="vaPicture" aria-label="Ifoto y&rsquo;umurongo (verse picture)" data-i18n-aria="a.versePic">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
       </button>
-      <button class="va-btn" id="vaShare" aria-label="Sangiza (share)">
+      <button class="va-btn" id="vaShare" aria-label="Sangiza (share)" data-i18n-aria="a.share">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       </button>
-      <button class="va-btn va-close" id="vaClose" aria-label="Funga">
+      <button class="va-btn va-close" id="vaClose" aria-label="Funga" data-i18n-aria="a.close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="hl-palette" id="hlPalette" hidden>
-        <div class="hl-swatch none" id="hlNone" title="Kuraho"></div>
+        <div class="hl-swatch none" id="hlNone" title="Kuraho" data-i18n-title="hl.none"></div>
         <div class="hl-swatch" style="background:#e6b432" data-color="y"></div>
         <div class="hl-swatch" style="background:#5aaf78" data-color="g"></div>
         <div class="hl-swatch" style="background:#5a96d2" data-color="b"></div>
@@ -1347,25 +1363,25 @@ main{
     </div>
     <div class="transport-row">
       <div class="tr-left">
-        <button class="speed-btn" id="speedBtn" aria-label="Playback speed">1&times;</button>
-        <button class="sleep-btn" id="sleepBtn" aria-label="Kuzimya ijwi nyuma y&rsquo;igihe (sleep timer)">
+        <button class="speed-btn" id="speedBtn" aria-label="Playback speed" data-i18n-aria="a.speed">1&times;</button>
+        <button class="sleep-btn" id="sleepBtn" aria-label="Kuzimya ijwi nyuma y&rsquo;igihe (sleep timer)" data-i18n-aria="a.sleep">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
           <span class="sl-txt" id="sleepTxt"></span>
         </button>
       </div>
       <div class="transport-center">
-        <button class="skip-btn" id="skipBackBtn" aria-label="Back 10 seconds">
+        <button class="skip-btn" id="skipBackBtn" aria-label="Back 10 seconds" data-i18n-aria="a.back10">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 8a8 8 0 1 1-1.5 6"/>
             <path d="M2 4v4.4h4.4" fill="none"/>
             <text x="12.3" y="16" font-size="8.5" font-weight="700" text-anchor="middle" stroke="none" fill="currentColor" font-family="sans-serif">10</text>
           </svg>
         </button>
-        <button class="play-btn" id="playBtn" aria-label="Play">
+        <button class="play-btn" id="playBtn" aria-label="Play" data-i18n-aria="a.play">
           <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
         </button>
-        <button class="skip-btn" id="skipFwdBtn" aria-label="Forward 10 seconds">
+        <button class="skip-btn" id="skipFwdBtn" aria-label="Forward 10 seconds" data-i18n-aria="a.fwd10">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 8a8 8 0 1 0 1.5 6"/>
             <path d="M22 4v4.4h-4.4" fill="none"/>
@@ -1373,7 +1389,7 @@ main{
           </svg>
         </button>
       </div>
-      <button class="dl-btn" id="dlBtn" aria-label="Kwega kugira wumve udafise internet">
+      <button class="dl-btn" id="dlBtn" aria-label="Kwega kugira wumve udafise internet" data-i18n-aria="a.dl">
         <svg id="dlIconDown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
         <svg id="dlIconDone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M20 6 9 17l-5-5"/></svg>
       </button>
@@ -1407,7 +1423,10 @@ main{
     marks: {},
     searchIndex: null,
     searchIndexLoading: null,
-    pendingAutoplay: false
+    pendingAutoplay: false,
+    sheet: null,              // { view, params } while a sheet is open
+    loadFail: null,           // { code, ch } while the "no internet" page is showing
+    noAudioKind: 'none'       // which of the two "no sound" messages is showing
   };
 
   var els = {
@@ -1536,6 +1555,379 @@ main{
   }
   function safeSet(key, val){
     try { localStorage.setItem(key, val); } catch(e){}
+  }
+
+  // ================= language: Kirundi / English / French =================
+  // Every word the app shows around the Bible lives in this table, the three
+  // languages side by side. The Bible text, the audio and the book names are
+  // NOT in it: they stay in Kirundi whatever language is chosen.
+  // The Kirundi column is the original wording; {name} marks a value filled in
+  // by the code, and a function is used where singular/plural differ.
+  var LANGS = ['rn', 'en', 'fr'];
+  var LANG_NAMES = { rn: 'Ikirundi', en: 'English', fr: 'Français' };
+  var I18N = {
+    // ---- labels read by screen readers
+    'a.menu':      { rn: 'Menu', en: 'Menu', fr: 'Menu' },
+    'a.smaller':   { rn: 'Smaller text', en: 'Smaller text', fr: 'Texte plus petit' },
+    'a.bigger':    { rn: 'Bigger text', en: 'Bigger text', fr: 'Texte plus grand' },
+    'a.search':    { rn: 'Rondera', en: 'Search', fr: 'Rechercher' },
+    'a.home':      { rn: 'Ahatangura (Home)', en: 'Home', fr: 'Accueil' },
+    'a.book':      { rn: 'Book', en: 'Book', fr: 'Livre' },
+    'a.chapter':   { rn: 'Chapter', en: 'Chapter', fr: 'Chapitre' },
+    'a.prev':      { rn: 'Previous chapter', en: 'Previous chapter', fr: 'Chapitre précédent' },
+    'a.next':      { rn: 'Next chapter', en: 'Next chapter', fr: 'Chapitre suivant' },
+    'a.close':     { rn: 'Funga', en: 'Close', fr: 'Fermer' },
+    'a.playVod':   { rn: 'Umviriza ijambo ry’uno musi', en: 'Listen to the verse of the day', fr: 'Écouter le verset du jour' },
+    'a.bookmark':  { rn: 'Bika (bookmark)', en: 'Bookmark', fr: 'Favori' },
+    'a.highlight': { rn: 'Shiraho irangi (highlight)', en: 'Highlight', fr: 'Surligner' },
+    'a.note':      { rn: 'Andika icatwa (note)', en: 'Write a note', fr: 'Écrire une note' },
+    'a.versePic':  { rn: 'Ifoto y’umurongo (verse picture)', en: 'Verse picture', fr: 'Image du verset' },
+    'a.share':     { rn: 'Sangiza (share)', en: 'Share', fr: 'Partager' },
+    'a.speed':     { rn: 'Playback speed', en: 'Playback speed', fr: 'Vitesse de lecture' },
+    'a.sleep':     { rn: 'Kuzimya ijwi nyuma y’igihe (sleep timer)', en: 'Sleep timer', fr: 'Minuterie de sommeil' },
+    'a.back10':    { rn: 'Back 10 seconds', en: 'Back 10 seconds', fr: 'Reculer de 10 secondes' },
+    'a.play':      { rn: 'Play', en: 'Play', fr: 'Lecture' },
+    'a.fwd10':     { rn: 'Forward 10 seconds', en: 'Forward 10 seconds', fr: 'Avancer de 10 secondes' },
+    'a.dl':        { rn: 'Kwega kugira wumve udafise internet', en: 'Download to listen offline', fr: 'Télécharger pour écouter hors ligne' },
+    'a.delete':    { rn: 'Siba', en: 'Delete', fr: 'Supprimer' },
+    'a.bookSel':   { rn: 'Igitabo', en: 'Book', fr: 'Livre' },
+    'hl.none':     { rn: 'Kuraho', en: 'Remove', fr: 'Retirer' },
+    'loading':     { rn: 'Ndaragukira...', en: 'Loading…', fr: 'Chargement…' },
+    'chShort':     { rn: 'Ch {n}', en: 'Ch {n}', fr: 'Ch {n}' },
+
+    // ---- verse of the day (banner, home card, sheet)
+    'daily.label': { rn: 'Ijambo ry’uno musi', en: 'Verse of the day', fr: 'Verset du jour' },
+    'daily.read':  { rn: 'Soma mu gitabu', en: 'Read in the Bible', fr: 'Lire dans la Bible' },
+    'daily.photo': { rn: 'Ifoto', en: 'Picture', fr: 'Image' },
+    'daily.sub':   { rn: 'Verse of the day', en: '', fr: '' },
+    'daily.shareStatus': { rn: 'Sangiza kuri Status', en: 'Share to Status', fr: 'Partager en statut' },
+    'home.vodLabel': { rn: '✦ IJAMBO RY’UNO MUSI ✦', en: '✦ VERSE OF THE DAY ✦', fr: '✦ VERSET DU JOUR ✦' },
+    'vod.listen':  { rn: 'Umviriza', en: 'Listen', fr: 'Écouter' },
+    'vod.stop':    { rn: 'Hagarika', en: 'Stop', fr: 'Arrêter' },
+    'home.dl':     { rn: 'Kwega', en: 'Download', fr: 'Télécharger' },
+    'home.tapHint': { rn: 'Fyonda kugira usome iyi mirongo →', en: 'Tap to read these verses →', fr: 'Touchez pour lire ces versets →' },
+
+    // ---- home
+    'home.subtitle': { rn: 'Mu Kirundi', en: 'In Kirundi', fr: 'En kirundi' },
+    'home.tagline': { rn: 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.', en: 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.', fr: 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.' },
+    'home.resume': { rn: 'Subira aho War’ugeze', en: 'Continue where you left off', fr: 'Reprendre là où vous en étiez' },
+    'ot':          { rn: 'Isezerano rya Kera', en: 'Old Testament', fr: 'Ancien Testament' },
+    'nt':          { rn: 'Isezerano Rishasha', en: 'New Testament', fr: 'Nouveau Testament' },
+    'ot.sub':      { rn: 'Old Testament', en: '', fr: '' },
+    'nt.sub':      { rn: 'New Testament', en: '', fr: '' },
+    'home.books':  { rn: '{n} ibitabo', en: '{n} books', fr: '{n} livres' },
+    'home.colorsLabel': { rn: 'Ishusho', en: 'Theme', fr: 'Thème' },
+    'col.beige':   { rn: 'Umusenyi', en: 'Sand', fr: 'Sable' },
+    'col.black':   { rn: 'Umwiza', en: 'Dark', fr: 'Sombre' },
+    'col.wood':    { rn: 'Igiti', en: 'Wood', fr: 'Bois' },
+    'col.teal':    { rn: 'Isanzwe', en: 'Default', fr: 'Par défaut' },
+    'tile.saved':  { rn: 'Ivyo nabitse', en: 'Saved', fr: 'Favoris' },
+    'tile.downloads': { rn: 'Gukwega', en: 'Downloads', fr: 'Hors ligne' },
+    'tile.look':   { rn: 'Ishusho', en: 'Appearance', fr: 'Apparence' },
+
+    // ---- menu
+    'drawer.home':      { rn: 'Ahatangura (Home)', en: 'Home', fr: 'Accueil' },
+    'drawer.notif':     { rn: 'Nyibutse ijambo ry’uno musi', en: 'Remind me of the verse of the day', fr: 'Me rappeler le verset du jour' },
+    'drawer.plan':      { rn: 'Gahunda yo gusoma (reading plan)', en: 'Reading plan', fr: 'Plan de lecture' },
+    'drawer.marks':     { rn: 'Ivyo nabitse (bookmarks & notes)', en: 'Saved (bookmarks & notes)', fr: 'Favoris et notes' },
+    'drawer.downloads': { rn: 'Gukwega ngo wumve udafise internet', en: 'Download for offline listening', fr: 'Télécharger pour écouter hors ligne' },
+    'drawer.look':      { rn: 'Ishusho (Appearance)', en: 'Appearance', fr: 'Apparence' },
+    'drawer.lang':      { rn: 'Ururimi', en: 'Language', fr: 'Langue' },
+    'drawer.support':   { rn: 'Twandikire (contact & support)', en: 'Contact & support', fr: 'Contact et assistance' },
+    'drawer.about':     { rn: 'Ibijanye na porogaramu', en: 'About the app', fr: 'À propos de l’application' },
+    'notif.on':         { rn: '(rirakora)', en: '(on)', fr: '(activé)' },
+    'notif.off':        { rn: '(ryazimye)', en: '(off)', fr: '(désactivé)' },
+
+    // ---- reading streak
+    'streak.label': { rn: function(p){ return p.n === 1 ? 'umusi ukurikirana' : 'imisi ikurikirana'; },
+                      en: function(p){ return p.n === 1 ? 'day in a row' : 'days in a row'; },
+                      fr: function(p){ return p.n < 2 ? 'jour de suite' : 'jours de suite'; } },
+    'streak.toast': { rn: '{n} imisi ikurikirana!', en: '{n} days in a row!', fr: '{n} jours de suite !' },
+    'streak.today': { rn: 'Wasomye uno musi. Garuka ejo!', en: 'You read today. Come back tomorrow!', fr: 'Vous avez lu aujourd’hui. Revenez demain !' },
+    'streak.keep':  { rn: 'Soma uno musi kugira ukomeze', en: 'Read today to keep it going', fr: 'Lisez aujourd’hui pour continuer' },
+    'streak.start': { rn: 'Soma uno musi kugira utangure', en: 'Read today to start', fr: 'Lisez aujourd’hui pour commencer' },
+    'streak.best':  { rn: 'Ndende kuruta izindi: {n}', en: 'Longest: {n}', fr: 'Record : {n}' },
+
+    // ---- reading plans
+    'plan.title':     { rn: 'Gahunda yo gusoma', en: 'Reading plan', fr: 'Plan de lecture' },
+    'plan.sub':       { rn: 'Reading plan', en: '', fr: '' },
+    'plan.tagline':   { rn: 'Soma Bibiliya buke buke buri musi', en: 'Read the Bible a little each day', fr: 'Lisez la Bible un peu chaque jour' },
+    'plan.gospels30': { rn: 'Ibitabo bine mu minsi 30', en: 'The four Gospels in 30 days', fr: 'Les quatre Évangiles en 30 jours' },
+    'plan.psalms30':  { rn: 'Zaburi mu minsi 30', en: 'Zaburi (Psalms) in 30 days', fr: 'Zaburi (Psaumes) en 30 jours' },
+    'plan.proverbs31': { rn: 'Imigani mu minsi 31', en: 'Imigani (Proverbs) in 31 days', fr: 'Imigani (Proverbes) en 31 jours' },
+    'plan.nt90':      { rn: 'Isezerano Rishasha mu minsi 90', en: 'New Testament in 90 days', fr: 'Nouveau Testament en 90 jours' },
+    'plan.bible365':  { rn: 'Bibiliya yose mu mwaka umwe', en: 'The whole Bible in one year', fr: 'Toute la Bible en un an' },
+    'plan.finishedPick': { rn: 'Warayirangije! Hitamwo indi gahunda.', en: 'You finished it! Choose another plan.', fr: 'Terminé ! Choisissez un autre plan.' },
+    'plan.dayOf':     { rn: 'Umusi wa {n} muri {m} · {range}', en: 'Day {n} of {m} · {range}', fr: 'Jour {n} sur {m} · {range}' },
+    'plan.intro':     { rn: 'Hitamwo gahunda, usome buke buke buri musi. Aho ugeze harabikwa.', en: 'Choose a plan and read a little each day. Your progress is saved.', fr: 'Choisissez un plan et lisez un peu chaque jour. Votre progression est enregistrée.' },
+    'plan.chaptersPerDay': { rn: 'Ibice {n} · ~{per} ku musi', en: '{n} chapters · ~{per} per day', fr: '{n} chapitres · ~{per} par jour' },
+    'start':          { rn: 'Tangura', en: 'Start', fr: 'Commencer' },
+    'plan.started':   { rn: 'Gahunda yatanguye', en: 'Plan started', fr: 'Plan commencé' },
+    'plan.progress':  { rn: 'Iminsi {n} muri {m} iraheze · {pct}%', en: '{n} of {m} days complete · {pct}%',
+                        fr: function(p){ return p.n + (p.n < 2 ? ' jour sur ' : ' jours sur ') + p.m + (p.n < 2 ? ' terminé' : ' terminés') + ' · ' + p.pct + '\u00a0%'; } },
+    'plan.allDone':   { rn: 'Warangije iyi gahunda. Imana ishimwe!', en: 'You finished this plan. Praise God!', fr: 'Vous avez terminé ce plan. Gloire à Dieu !' },
+    'plan.todayLabel': { rn: 'Umusi wa {n} · ivyo gusoma uno musi', en: 'Day {n} · today’s reading', fr: 'Jour {n} · lecture du jour' },
+    'plan.read':      { rn: 'Tangura gusoma', en: 'Start reading', fr: 'Commencer la lecture' },
+    'plan.markDone':  { rn: 'Nasomye uno musi', en: 'I read today', fr: 'J’ai lu aujourd’hui' },
+    'plan.dlToday':   { rn: 'Kwega ivyo gusoma uno musi', en: 'Download today’s reading', fr: 'Télécharger la lecture du jour' },
+    'plan.dlWeek':    { rn: 'Kwega imisi 7', en: 'Download 7 days', fr: 'Télécharger 7 jours' },
+    'plan.allDays':   { rn: 'Imisi yose', en: 'All days', fr: 'Tous les jours' },
+    'plan.upcoming':  { rn: 'Imisi iri imbere', en: 'Coming up', fr: 'À venir' },
+    'plan.dayN':      { rn: 'Umusi wa {n}', en: 'Day {n}', fr: 'Jour {n}' },
+    'plan.tick':      { rn: 'Narangije', en: 'Done', fr: 'Terminé' },
+    'plan.change':    { rn: 'Hindura gahunda', en: 'Change plan', fr: 'Changer de plan' },
+    'plan.changeConfirm': { rn: 'Fyonda none kugira wemeze (aho ugeze hazohera)', en: 'Tap again to confirm (your progress will be erased)', fr: 'Touchez à nouveau pour confirmer (votre progression sera effacée)' },
+    'plan.hide':      { rn: 'Hisha', en: 'Hide', fr: 'Masquer' },
+    'plan.showAll':   { rn: 'Raba imisi yose', en: 'See all days', fr: 'Voir tous les jours' },
+    'plan.dayDone':   { rn: 'Umusi wa {n} uraheze!', en: 'Day {n} complete!', fr: 'Jour {n} terminé !' },
+
+    // ---- sleep timer
+    'sleep.title':   { rn: 'Kuzimya ijwi', en: 'Sleep timer', fr: 'Minuterie de sommeil' },
+    'sleep.sub':     { rn: 'Sleep timer', en: '', fr: '' },
+    'sleep.min':     { rn: 'Iminuta {n}', en: '{n} minutes', fr: '{n} minutes' },
+    'sleep.hour':    { rn: 'Isaha imwe', en: '1 hour', fr: '1 heure' },
+    'sleep.chapterEnd': { rn: 'Igice kirangiye', en: 'End of the chapter', fr: 'Fin du chapitre' },
+    'sleep.noteChapter': { rn: 'Ijwi rizozimywa igice kirangiye.', en: 'The sound will turn off when the chapter ends.', fr: 'Le son s’éteindra à la fin du chapitre.' },
+    'sleep.noteMin': { rn: 'Ijwi rizozimywa mu minuta {n}.',
+                       en: function(p){ return 'The sound will turn off in ' + p.n + (p.n === 1 ? ' minute.' : ' minutes.'); },
+                       fr: function(p){ return 'Le son s’éteindra dans ' + p.n + (p.n === 1 ? ' minute.' : ' minutes.'); } },
+    'sleep.cancel':  { rn: 'Kuraho igihe', en: 'Cancel timer', fr: 'Annuler la minuterie' },
+    'sleep.removed': { rn: 'Igihe cakuweho', en: 'Timer removed', fr: 'Minuterie supprimée' },
+    'sleep.set':     { rn: 'Ijwi rizozimywa wenyene', en: 'The sound will turn off by itself', fr: 'Le son s’éteindra automatiquement' },
+    'sleep.fired':   { rn: 'Ijwi ryazimye.', en: 'Sound turned off.', fr: 'Le son est éteint.' },
+    'sleep.short':   { rn: '{n}m', en: '{n}m', fr: '{n} min' },
+
+    // ---- verse picture
+    'vp.title':      { rn: 'Ifoto y’umurongo', en: 'Verse picture', fr: 'Image du verset' },
+    'vp.choose':     { rn: 'Hitamwo ishusho', en: 'Choose a background', fr: 'Choisissez un fond' },
+    'vp.bg':         { rn: 'Ishusho {n}', en: 'Background {n}', fr: 'Fond {n}' },
+    'sharePic':      { rn: 'Sangiza ifoto', en: 'Share picture', fr: 'Partager l’image' },
+    'dlPic':         { rn: 'Kwega ifoto', en: 'Download picture', fr: 'Télécharger l’image' },
+    'pic.preparing': { rn: 'Turiko turategura ifoto...', en: 'Preparing the picture…', fr: 'Préparation de l’image…' },
+    'err.retry':     { rn: 'Ntivyakunze. Gerageza ukundi.', en: 'That did not work. Please try again.', fr: 'Cela n’a pas fonctionné. Réessayez.' },
+    'pic.savedGallery.long': { rn: 'Ifoto yabitswe muri Galerie yawe.', en: 'Picture saved to your Gallery.', fr: 'Image enregistrée dans votre Galerie.' },
+    'pic.savedGallery': { rn: 'Ifoto yabitswe muri Galerie', en: 'Picture saved to Gallery', fr: 'Image enregistrée dans la Galerie' },
+    'pic.dl.share':  { rn: 'Ifoto yarakuwe — uyishireho mu WhatsApp Status canke Instagram Story wenyene.', en: 'Picture saved — post it to your WhatsApp Status or Instagram Story yourself.', fr: 'Image téléchargée — publiez-la vous-même dans votre statut WhatsApp ou votre story Instagram.' },
+    'pic.dl':        { rn: 'Ifoto yarakuwe (saved to your downloads).', en: 'Picture saved to your downloads.', fr: 'Image enregistrée dans vos téléchargements.' },
+    'pic.dl.toast':  { rn: 'Ifoto yarakuwe', en: 'Picture saved', fr: 'Image téléchargée' },
+
+    // ---- bookmarks, highlights, notes, sharing
+    'marks.title':   { rn: 'Ivyo nabitse', en: 'Saved', fr: 'Favoris' },
+    'marks.sub':     { rn: 'Bookmarks, highlights & notes', en: 'Bookmarks, highlights & notes', fr: 'Favoris, surlignages et notes' },
+    'marks.empty':   { rn: 'Nta kintu cabitswe. Fyonda ku murongo uwariwo wose ubike, shirako irangi canke wandike ijambo.', en: 'Nothing saved yet. Tap any verse to bookmark it, highlight it or write a note.', fr: 'Rien d’enregistré pour le moment. Touchez un verset pour le mettre en favori, le surligner ou écrire une note.' },
+    'badge.bm':      { rn: 'Bookmark', en: 'Bookmark', fr: 'Favori' },
+    'badge.hl':      { rn: 'Highlight', en: 'Highlight', fr: 'Surlignage' },
+    'badge.note':    { rn: 'Note', en: 'Note', fr: 'Note' },
+    'bm.added':      { rn: 'Vyabitswe', en: 'Bookmarked', fr: 'Ajouté aux favoris' },
+    'bm.removed':    { rn: 'Vyakuwemo', en: 'Removed', fr: 'Retiré' },
+    'share':         { rn: 'Sangiza', en: 'Share', fr: 'Partager' },
+    'copied':        { rn: 'Vyanditswe (copied)', en: 'Copied', fr: 'Copié' },
+    'note.title':    { rn: 'Icatwa', en: 'Note', fr: 'Note' },
+    'note.ph':       { rn: 'Andika icatwa cawe hano...', en: 'Write your note here…', fr: 'Écrivez votre note ici…' },
+    'note.del':      { rn: 'Siba (delete)', en: 'Delete', fr: 'Supprimer' },
+    'note.cancel':   { rn: 'Reka (cancel)', en: 'Cancel', fr: 'Annuler' },
+    'note.save':     { rn: 'Bika (save)', en: 'Save', fr: 'Enregistrer' },
+    'note.saved':    { rn: 'Icatwa cabitswe', en: 'Note saved', fr: 'Note enregistrée' },
+
+    // ---- search and book lists
+    'search.ph':     { rn: 'Rondera ijambo canke umurongo...', en: 'Search a Kirundi word or verse…', fr: 'Rechercher un mot ou un verset en kirundi…' },
+    'search.hint':   { rn: 'Andika ijambo ushaka gushaka.', en: 'Type the word you are looking for (the text is in Kirundi).', fr: 'Saisissez le mot recherché (le texte est en kirundi).' },
+    'search.busy':   { rn: 'Birimo gushakishwa...', en: 'Searching…', fr: 'Recherche…' },
+    'search.none':   { rn: 'Nta kintu caboneste.', en: 'Nothing found.', fr: 'Aucun résultat.' },
+    'book.chapters': { rn: function(p){ return p.n + ' ' + (p.n === 1 ? 'igice' : 'ibice'); },
+                       en: function(p){ return p.n + ' ' + (p.n === 1 ? 'chapter' : 'chapters'); },
+                       fr: function(p){ return p.n + ' ' + (p.n === 1 ? 'chapitre' : 'chapitres'); } },
+
+    // ---- appearance and language
+    'appr.title':    { rn: 'Ishusho', en: 'Appearance', fr: 'Apparence' },
+    'appr.sub':      { rn: 'Appearance', en: '', fr: '' },
+    'appr.size':     { rn: 'Ingene inyandiko igaragara (Text size)', en: 'Text size', fr: 'Taille du texte' },
+    'appr.color':    { rn: 'Ibara (Color)', en: 'Color', fr: 'Couleur' },
+    'appr.mode':     { rn: 'Umuco canke umwijima (Light or dark)', en: 'Light or dark', fr: 'Clair ou sombre' },
+    'appr.auto':     { rn: 'Nka telefone', en: 'Like the phone', fr: 'Comme le téléphone' },
+    'appr.light':    { rn: 'Umuco', en: 'Light', fr: 'Clair' },
+    'appr.dark':     { rn: 'Umwijima', en: 'Dark', fr: 'Sombre' },
+    'appr.preview':  { rn: 'Ukuntu bisa (Preview)', en: 'Preview', fr: 'Aperçu' },
+    'done':          { rn: 'Nivyo (Done)', en: 'Done', fr: 'Terminé' },
+    'lang.title':    { rn: 'Ururimi', en: 'Language', fr: 'Langue' },
+    'lang.sub':      { rn: 'Language · Langue', en: 'Ururimi · Langue', fr: 'Language · Ururimi' },
+    'lang.group':    { rn: 'Ururimi (Language)', en: 'Language', fr: 'Langue' },
+    'lang.choose':   { rn: 'Hitamwo ururimi', en: 'Hitamwo ururimi', fr: 'Hitamwo ururimi' },
+    'lang.chooseSub': { rn: 'Choose your language · Choisissez votre langue', en: 'Choose your language · Choisissez votre langue', fr: 'Choose your language · Choisissez votre langue' },
+    'lang.note':     { rn: 'Ivyanditswe n’amajwi bizoguma mu Kirundi.', en: 'This changes the app’s menus and messages. The Bible text and audio stay in Kirundi.', fr: 'Cela change les menus et les messages de l’application. Le texte de la Bible et l’audio restent en kirundi.' },
+
+    // ---- downloads (offline)
+    'dlSheet.title': { rn: 'Downloads', en: 'Downloads', fr: 'Téléchargements' },
+    'dlSheet.sub':   { rn: 'Audio iramutse ikuwemwo, urayumviriza udafise internet', en: 'Once audio is downloaded, you can listen with no internet', fr: 'Une fois l’audio téléchargé, vous pouvez l’écouter sans internet' },
+    'auto.label':    { rn: 'Kubika ijwi uyumviriza', en: 'Save audio as you listen', fr: 'Enregistrer l’audio pendant l’écoute' },
+    'auto.on':       { rn: 'Kubika ijwi: rirakora', en: 'Save audio: on', fr: 'Enregistrement de l’audio : activé' },
+    'auto.off':      { rn: 'Kubika ijwi: ryazimye', en: 'Save audio: off', fr: 'Enregistrement de l’audio : désactivé' },
+    'auto.hint':     { rn: 'Igice uyumviriza gihita kibikwa kuri telefone, ubutaha ukiyumvirize udafise internet. Ku nshuro ya mbere bikoresha amakuru y’inyongera angana n’igice.',
+                       en: 'The chapter you listen to is saved on your phone, so next time you can listen with no internet. The first time it uses extra data equal to the size of the chapter.',
+                       fr: 'Le chapitre que vous écoutez est enregistré sur votre téléphone ; la prochaine fois, vous pourrez l’écouter sans internet. La première fois, cela utilise des données supplémentaires équivalentes à la taille du chapitre.' },
+    'auto.toastOn':  { rn: 'Ijwi rizobikwa uko urikumviriza.', en: 'Audio will be saved as you listen.', fr: 'L’audio sera enregistré pendant l’écoute.' },
+    'auto.toastOff': { rn: 'Ijwi ntirizobikwa.', en: 'Audio will not be saved.', fr: 'L’audio ne sera pas enregistré.' },
+    'auto.told':     { rn: 'Ijwi uriko urumviriza, ribitswe kuri telephone. Uzoryumviriza udafise internet.', en: 'The audio you are listening to is saved on your phone. You will be able to listen with no internet.', fr: 'L’audio que vous écoutez est enregistré sur votre téléphone. Vous pourrez l’écouter sans internet.' },
+    'text.dlAll':    { rn: 'Kwega ivyanditswe vyose', en: 'Download the whole text', fr: 'Télécharger tout le texte' },
+    'text.done':     { rn: 'Ivyanditswe vyose vyarakwezwe!', en: 'The whole text is downloaded!', fr: 'Tout le texte est téléchargé !' },
+    'text.allSaved': { rn: 'Ivyanditswe vyose vya Bibiliya yera biri muri telephone. Urashobora kubisoma udafise internet.', en: 'The whole text of the Bible is on your phone. You can read it with no internet.', fr: 'Tout le texte de la Bible est sur votre téléphone. Vous pouvez le lire sans internet.' },
+    'text.partial':  { rn: 'Ivyanditswe: ibitabo {n} muri {m} biri muri telephone.',
+                       en: function(p){ return 'Text: ' + p.n + ' of ' + p.m + ' books ' + (p.n === 1 ? 'is' : 'are') + ' on your phone.'; },
+                       fr: function(p){ return 'Texte\u00a0: ' + p.n + (p.n < 2 ? ' livre' : ' livres') + ' sur ' + p.m + (p.n < 2 ? ' est' : ' sont') + ' sur votre téléphone.'; } },
+    'book.dlLabel':  { rn: 'Kwega igitabo cose', en: 'Download a whole book', fr: 'Télécharger un livre entier' },
+    'book.dl':       { rn: 'Kwega igitabo', en: 'Download book', fr: 'Télécharger le livre' },
+    'chaptersN':     { rn: 'Ibice {n}', en: function(p){ return p.n + (p.n === 1 ? ' chapter' : ' chapters'); }, fr: function(p){ return p.n + (p.n === 1 ? ' chapitre' : ' chapitres'); } },
+    'chaptersSize':  { rn: 'Ibice {n} · ~{mb} MB', en: function(p){ return p.n + (p.n === 1 ? ' chapter' : ' chapters') + ' · ~' + p.mb + ' MB'; }, fr: function(p){ return p.n + (p.n === 1 ? ' chapitre' : ' chapitres') + ' · ~' + p.mb + ' Mo'; } },
+    'wifi.tip':      { rn: 'Koresha WiFi kugira udakoresha amakuru menshi.', en: 'Use WiFi so you do not use a lot of mobile data.', fr: 'Utilisez le WiFi pour ne pas consommer beaucoup de données mobiles.' },
+    'dl.listLabel':  { rn: 'Vyamaze gukwegwa', en: 'Already downloaded', fr: 'Déjà téléchargés' },
+    'dl.empty':      { rn: 'Nta gice kiracagurwa. Fyonda akamenyetso ko gukwega (↓) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.', en: 'No chapter downloaded yet. Tap the download icon (↓) next to a chapter’s audio to use it with no internet.', fr: 'Aucun chapitre téléchargé pour le moment. Touchez l’icône de téléchargement (↓) à côté de l’audio d’un chapitre pour l’utiliser sans internet.' },
+    'dl.storage':    { rn: 'Storage used by this app: ~{mb} MB', en: 'Storage used by this app: ~{mb} MB', fr: 'Espace utilisé par l’application : ~{mb} Mo' },
+    'dl.rowChapters': { rn: '· ibice {n}', en: function(p){ return '· ' + p.n + (p.n === 1 ? ' chapter' : ' chapters'); }, fr: function(p){ return '· ' + p.n + (p.n === 1 ? ' chapitre' : ' chapitres'); } },
+    'dl.clearAll':   { rn: 'Kuraho vyose', en: 'Remove all', fr: 'Tout supprimer' },
+    'dl.progress':   { rn: 'Biriko birakwega… {done}/{total}', en: 'Downloading… {done}/{total}', fr: 'Téléchargement… {done}/{total}' },
+    'dl.unsupported': { rn: 'Iyi telefone ntishobora kubika ibi.', en: 'This phone cannot save this.', fr: 'Ce téléphone ne peut pas enregistrer ceci.' },
+    'dl.busy':       { rn: 'Biriko birakwega…', en: 'Downloading…', fr: 'Téléchargement…' },
+    'net.retry':     { rn: 'Nta internet. Gerageza ukundi.', en: 'No internet. Please try again.', fr: 'Pas d’internet. Réessayez.' },
+    'dl.cancelled':  { rn: 'Vyahagaritswe.', en: 'Cancelled.', fr: 'Annulé.' },
+    'dl.someFailed': { rn: 'Ibice {n} ntivyakunze. Gerageza ukundi.', en: function(p){ return p.n + (p.n === 1 ? ' chapter' : ' chapters') + ' did not work. Please try again.'; }, fr: function(p){ return p.n + (p.n === 1 ? ' chapitre a échoué' : ' chapitres ont échoué') + '. Réessayez.'; } },
+    'dl.done':       { rn: 'Vyarakwezwe! Urashobora kubisoma no kubiyumva udafise internet.', en: 'Downloaded! You can read and listen with no internet.', fr: 'Téléchargé ! Vous pouvez lire et écouter sans internet.' },
+    'dl.allHave':    { rn: 'Vyose vyakuwe. Urashobora kubisoma udafise internet.', en: 'All downloaded. You can read with no internet.', fr: 'Tout est téléchargé. Vous pouvez lire sans internet.' },
+    'dl.haveN':      { rn: 'Vyakuwe: {have}/{total}', en: 'Downloaded: {have}/{total}', fr: 'Téléchargé : {have}/{total}' },
+    'dl.removed':    { rn: 'Vyakuwe (removed)', en: 'Removed', fr: 'Supprimé' },
+    'dl.chapterDone': { rn: 'Vyarakwezwe, urashobora kuyumva udafise internet', en: 'Downloaded — you can listen with no internet', fr: 'Téléchargé — vous pouvez écouter sans internet' },
+    'cancel':        { rn: 'Hagarika', en: 'Cancel', fr: 'Annuler' },
+
+    // ---- no audio / no internet
+    'noaudio.none':  { rn: 'Nta majwi ahari kuri iki gice (audio not added yet)', en: 'There is no audio for this chapter yet', fr: 'Il n’y a pas encore d’audio pour ce chapitre' },
+    'noaudio.net':   { rn: 'Nta internet. Kwega iki gice (↓) ufise internet kugira ukiyumvire udafise internet.', en: 'No internet. Download this chapter (↓) while you have internet to listen to it offline.', fr: 'Pas d’internet. Téléchargez ce chapitre (↓) quand vous avez internet pour l’écouter hors ligne.' },
+    'lf.title':      { rn: 'Nta internet.', en: 'No internet.', fr: 'Pas d’internet.' },
+    'lf.body':       { rn: 'Iki gice ntikiraba kuri iyi telefone.', en: 'This chapter is not on this phone.', fr: 'Ce chapitre n’est pas sur ce téléphone.' },
+    'lf.sub':        { rn: 'Ongera ugerageze iyo ubonye internet. Kugira usome udafise internet, ugurura Downloads ukwege ivyanditswe vyose.', en: 'Try again when you have internet. To read with no internet, open Downloads and download the whole text.', fr: 'Réessayez quand vous aurez internet. Pour lire sans internet, ouvrez Téléchargements et téléchargez tout le texte.' },
+    'lf.retry':      { rn: 'Ongera ugerageze', en: 'Try again', fr: 'Réessayer' },
+
+    // ---- about and support
+    'about.sub':     { rn: 'Ikirundi · Kirundi audio scripture reader', en: 'Ikirundi · Kirundi audio scripture reader', fr: 'Ikirundi · Lecteur biblique audio en kirundi' },
+    'about.p':       { rn: 'This reader shows the full Bible text in Kirundi, synced verse-by-verse to audio recordings as they are added chapter by chapter.',
+                       en: 'This reader shows the full Bible text in Kirundi, synced verse-by-verse to audio recordings as they are added chapter by chapter.',
+                       fr: 'Ce lecteur affiche le texte complet de la Bible en kirundi, synchronisé verset par verset avec des enregistrements audio ajoutés chapitre après chapitre.' },
+    'support.title': { rn: 'Twandikire', en: 'Contact us', fr: 'Nous contacter' },
+    'support.sub':   { rn: 'Support & contact', en: '', fr: '' },
+    'support.p1':    { rn: 'Nimba ufise ikibazo, iciyumviro, canke ikintu kitagenda neza muri iyi porogaramu, twandikire — turakwishura.', en: 'If you run into a problem, have feedback, or just want to say hello, send us a note — we read every message.', fr: 'Si vous rencontrez un problème, avez une suggestion ou souhaitez simplement nous dire bonjour, écrivez-nous — nous lisons chaque message.' },
+    'support.p2':    { rn: 'If you run into a problem, have feedback, or just want to say hello, send a note — we read every message.', en: '', fr: '' },
+    'support.email': { rn: 'Twandikire kuri imeyili', en: 'Email us', fr: 'Nous écrire' },
+    'support.privacy': { rn: 'Iyi porogaramu ntibika amakuru yawe bwite. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.',
+                         en: 'This app does not store your personal information. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> (English).',
+                         fr: 'Cette application ne conserve pas vos informations personnelles. Voir notre <a href="privacy.html" target="_blank" rel="noopener">politique de confidentialité</a> (en anglais).' },
+
+    // ---- daily reminder (phone notifications)
+    'notif.title':   { rn: 'Ijambo ry’uno musi — {ref}', en: 'Verse of the day — {ref}', fr: 'Verset du jour — {ref}' },
+    'notif.plan':    { rn: 'Gahunda yawe: {line}', en: 'Your plan: {line}', fr: 'Votre plan : {line}' },
+    'notif.onToast': { rn: 'Rizokubibutsa saa moya za mugitondo.', en: 'You will be reminded at 7:00 every morning.', fr: 'Un rappel vous sera envoyé chaque matin à 7 h.' },
+    'notif.perm':    { rn: 'Emera amatangazo muri Settings ya telefone.', en: 'Allow notifications in your phone’s Settings.', fr: 'Autorisez les notifications dans les Réglages du téléphone.' },
+    'notif.offToast': { rn: 'Ibutsa ryazimye.', en: 'Reminder turned off.', fr: 'Rappel désactivé.' }
+  };
+
+  function langChosen(){ return LANGS.indexOf(safeGet('lang')) !== -1; }
+  var LANG = (function(){
+    var s = safeGet('lang');
+    return LANGS.indexOf(s) !== -1 ? s : 'rn';
+  })();
+  // What the phone itself is set to (used only for a shared-verse link, where
+  // we do not stop the person to ask).
+  function detectLang(){
+    var l = '';
+    try { l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase(); } catch(e){}
+    if (l.indexOf('fr') === 0) return 'fr';
+    if (l.indexOf('en') === 0) return 'en';
+    return 'rn';
+  }
+
+  function rawText(key, p){
+    var e = I18N[key];
+    var v = e ? (e[LANG] !== undefined ? e[LANG] : e.rn) : undefined;
+    if (v === undefined) return key;
+    return (typeof v === 'function') ? v(p || {}) : v;
+  }
+  // mode: 'text' (plain), 'esc' (safe to put inside HTML), 'html' (the table
+  // text is trusted markup; only the filled-in values are escaped)
+  function fmtStr(s, p, mode){
+    s = String(s);
+    if (s.indexOf('{') === -1) return mode === 'esc' ? esc(s) : s;
+    return s.split(/(\{\w+\})/).map(function(part){
+      var m = /^\{(\w+)\}$/.exec(part);
+      if (m){
+        var v = (p && p[m[1]] != null) ? String(p[m[1]]) : '';
+        return mode === 'text' ? v : esc(v);
+      }
+      return mode === 'esc' ? esc(part) : part;
+    }).join('');
+  }
+  function tx(key, p){ return fmtStr(rawText(key, p), p, 'text'); }
+  function th(key, p){ return fmtStr(rawText(key, p), p, 'esc'); }
+  function thr(key, p){ return fmtStr(rawText(key, p), p, 'html'); }
+
+  // Heading of a sheet; the small second line is left out when it is empty.
+  function sheetHead(titleKey, subKey){
+    var sub = subKey ? rawText(subKey) : '';
+    return '<h2' + (sub ? '' : ' class="no-sub"') + '>' + th(titleKey) + '</h2>' + (sub ? '<p class="sub">' + th(subKey) + '</p>' : '');
+  }
+
+  // Fills in the words that are written directly in the page.
+  //   data-i18n="key"        -> the element's text
+  //   data-i18n-aria="key"   -> its aria-label
+  //   data-i18n-title="key"  -> its title tooltip
+  //   data-i18n-ph="key"     -> its placeholder
+  function applyStaticI18n(){
+    var q = function(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); };
+    q('[data-i18n]', function(el){ el.textContent = tx(el.getAttribute('data-i18n')); });
+    q('[data-i18n-aria]', function(el){ el.setAttribute('aria-label', tx(el.getAttribute('data-i18n-aria'))); });
+    q('[data-i18n-title]', function(el){ el.setAttribute('title', tx(el.getAttribute('data-i18n-title'))); });
+    q('[data-i18n-ph]', function(el){ el.setAttribute('placeholder', tx(el.getAttribute('data-i18n-ph'))); });
+    var ls = document.getElementById('langState');
+    if (ls) ls.textContent = '(' + LANG_NAMES[LANG] + ')';
+  }
+
+  function langButtonsHtml(){
+    return LANGS.map(function(c){
+      return '<button class="lang-opt' + (c === LANG ? ' sel' : '') + '" data-lang="' + c + '" lang="' + c + '">' + esc(LANG_NAMES[c]) + '</button>';
+    }).join('');
+  }
+  function wireLangButtons(root, after){
+    Array.prototype.forEach.call(root.querySelectorAll('.lang-opt'), function(b){
+      b.addEventListener('click', function(){
+        setLanguage(b.getAttribute('data-lang'));
+        if (after) after();
+      });
+    });
+  }
+
+  function setLanguage(code){
+    if (LANGS.indexOf(code) === -1) return;
+    LANG = code;
+    safeSet('lang', code);
+    applyLanguage();
+  }
+  // Re-draws everything that is already on screen in the chosen language.
+  function applyLanguage(initial){
+    document.documentElement.setAttribute('lang', LANG);
+    applyStaticI18n();
+    try { refreshPickerLabels(); } catch(e){}
+    try { updateTestamentCounts(); } catch(e){}
+    try { renderHomeFeatureCards(); } catch(e){}
+    try { msUpdateMetadata(); } catch(e){}
+    try { setVersePlayUi(els.hvcPlayBtn.classList.contains('playing')); } catch(e){}
+    try { renderNotifState(); } catch(e){}
+    try { renderSleepBtn(); } catch(e){}
+    try { setNoAudioText(state.noAudioKind || 'none'); } catch(e){}
+    try { if (state.loadFail && document.getElementById('retryLoad')) showLoadFail(); } catch(e){}
+    if (!initial){ try { rescheduleForPlan(); } catch(e){} }      // phone reminders are worded in the new language
+    // The language pickers live in two sheets; show them again in the new language.
+    var sh = state.sheet;
+    if (sh && !els.sheetBackdrop.hidden && (sh.view === 'language' || sh.view === 'appearance')){
+      var keep = els.sheet.scrollTop;
+      openSheet(sh.view, sh.params);
+      els.sheet.scrollTop = keep;
+    }
   }
 
   // ---------- appearance: text size, color, light/dark ----------
@@ -1683,9 +2075,9 @@ main{
   // ---------- nav population ----------
   function populateBookSelect(){
     var ot = document.createElement('optgroup');
-    ot.label = 'Old Testament';
+    ot.label = tx('ot');
     var nt = document.createElement('optgroup');
-    nt.label = 'New Testament';
+    nt.label = tx('nt');
     state.index.books.forEach(function(b){
       var opt = document.createElement('option');
       opt.value = b.code;
@@ -1706,9 +2098,17 @@ main{
     for (var i=1;i<=meta.chapters;i++){
       var opt = document.createElement('option');
       opt.value = i;
-      opt.textContent = 'Ch ' + i;
+      opt.textContent = tx('chShort', { n: i });
       els.chapterSelect.appendChild(opt);
     }
+  }
+
+  // after a language change: the group titles and "Ch N" labels (book names stay Kirundi)
+  function refreshPickerLabels(){
+    var groups = els.bookSelect.querySelectorAll('optgroup');
+    if (groups[0]) groups[0].label = tx('ot');
+    if (groups[1]) groups[1].label = tx('nt');
+    Array.prototype.forEach.call(els.chapterSelect.options, function(o){ o.textContent = tx('chShort', { n: o.value }); });
   }
 
   // ---------- marks (bookmarks / highlights / notes) ----------
@@ -1739,6 +2139,7 @@ main{
     return loadBook(code).then(function(book){
       var ch = book.chapters[String(chNum)];
       state.renderedKey = code + '.' + chNum;
+      state.loadFail = null;
       state.verses = ch.verses;
       state.activeVerseIdx = -1;
       state.selectedIdx = -1;
@@ -1879,7 +2280,7 @@ main{
     });
     els.vaBookmark.classList.toggle('on', newVal);
     refreshVerseEl(v.n);
-    showToast(newVal ? 'Vyabitswe' : 'Vyakuwemo');
+    showToast(newVal ? tx('bm.added') : tx('bm.removed'));
   });
 
   els.vaHighlight.addEventListener('click', function(e){
@@ -1922,12 +2323,12 @@ main{
     var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Yera)\n' + link;
     var SHn = nativeShare();
     if (SHn){
-      SHn.share({ text: text, dialogTitle: 'Sangiza' }).catch(function(){});
+      SHn.share({ text: text, dialogTitle: tx('share') }).catch(function(){});
     } else if (navigator.share){
       navigator.share({ text: text }).catch(function(){});
     } else if (navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(function(){
-        showToast('Vyanditswe (copied)');
+        showToast(tx('copied'));
       }).catch(function(){ showToast(text); });
     } else {
       showToast(text);
@@ -2104,7 +2505,7 @@ main{
     return blobToBase64(blob).then(function(b64){
       return FS.writeFile({ path: 'ijambo-ryuno-musi.jpg', data: b64, directory: 'CACHE' });
     }).then(function(r){
-      return SH.share({ title: 'Bibiliya Yera', files: [r.uri], dialogTitle: 'Sangiza ifoto' });
+      return SH.share({ title: 'Bibiliya Yera', files: [r.uri], dialogTitle: tx('sharePic') });
     }).then(function(){ return true; }).catch(function(e){
       return /cancel/i.test(String(e && (e.message || e))) ? true : false;
     });
@@ -2149,8 +2550,8 @@ main{
     if (mode === 'download' && !skipNative && nativeMedia()){
       nativeSaveToGallery(blob).then(function(saved){
         if (saved){
-          if (statusEl) statusEl.textContent = 'Ifoto yabitswe muri Galerie yawe.';
-          showToast('Ifoto yabitswe muri Galerie');
+          if (statusEl) statusEl.textContent = tx('pic.savedGallery.long');
+          showToast(tx('pic.savedGallery'));
         } else {
           // Couldn't write to the gallery (e.g. permission refused): let the
           // person pick "Save" from the phone's share sheet instead.
@@ -2189,20 +2590,20 @@ main{
     setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
     if (statusEl){
       statusEl.textContent = mode === 'share'
-        ? 'Ifoto yarakuwe — uyishireho mu WhatsApp Status canke Instagram Story wenyene.'
-        : 'Ifoto yarakuwe (saved to your downloads).';
+        ? tx('pic.dl.share')
+        : tx('pic.dl');
     }
-    showToast('Ifoto yarakuwe');
+    showToast(tx('pic.dl.toast'));
   }
 
   function shareOrDownloadVerseCard(mode, text, ref, bgUrl, statusElId){
     var statusEl = statusElId ? document.getElementById(statusElId) : null;
-    if (statusEl) statusEl.textContent = 'Turiko turategura ifoto...';
+    if (statusEl) statusEl.textContent = tx('pic.preparing');
     buildVerseCardBlob(text, ref, bgUrl).then(function(blob){
       downloadOrShareBlob(mode, blob, statusElId);
     }).catch(function(){
-      if (statusEl) statusEl.textContent = 'Ntivyakunze. Gerageza ukundi.';
-      showToast('Ntivyakunze. Gerageza ukundi.');
+      if (statusEl) statusEl.textContent = tx('err.retry');
+      showToast(tx('err.retry'));
     });
   }
 
@@ -2260,13 +2661,15 @@ main{
   // days), so nothing needs to be stored except the person's progress.
   // "Today" is simply the first day not finished yet: missing a day never
   // makes the plan fall behind or turn red, it just waits.
+  // (the plan names are in the language table: plan.<id>)
   var PLAN_DEFS = [
-    { id: 'gospels30',  title: 'Ibitabo bine mu minsi 30',       days: 30,  books: ['MAT', 'MRK', 'LUK', 'JHN'] },
-    { id: 'psalms30',   title: 'Zaburi mu minsi 30',              days: 30,  books: ['PSA'] },
-    { id: 'proverbs31', title: 'Imigani mu minsi 31',             days: 31,  books: ['PRO'] },
-    { id: 'nt90',       title: 'Isezerano Rishasha mu minsi 90',  days: 90,  testament: 'NT' },
-    { id: 'bible365',   title: 'Bibiliya yose mu mwaka umwe',     days: 365, all: true }
+    { id: 'gospels30',  days: 30,  books: ['MAT', 'MRK', 'LUK', 'JHN'] },
+    { id: 'psalms30',   days: 30,  books: ['PSA'] },
+    { id: 'proverbs31', days: 31,  books: ['PRO'] },
+    { id: 'nt90',       days: 90,  testament: 'NT' },
+    { id: 'bible365',   days: 365, all: true }
   ];
+  function planTitle(d){ return tx('plan.' + d.id); }
   var planCache = {};
   var planShowAll = false, planConfirmChange = false, planConfirmTimer = null;
 
@@ -2346,7 +2749,7 @@ main{
     if (finished.length) plan.lastDoneDate = todayStr();
     savePlan(plan);
     if (finished.length){
-      showToast('Umusi wa ' + (finished[finished.length - 1] + 1) + ' uraheze!');
+      showToast(tx('plan.dayDone', { n: finished[finished.length - 1] + 1 }));
       rescheduleForPlan();
     }
     renderHomeFeatureCards();
@@ -2397,7 +2800,7 @@ main{
     st.log.push(today);
     st.log = st.log.slice(-30);
     safeSet('streak', JSON.stringify(st));
-    if (st.count >= 2) showToast(st.count + ' imisi ikurikirana!');
+    if (st.count >= 2) showToast(tx('streak.toast', { n: st.count }));
     renderStreak();
   }
   function renderStreak(){
@@ -2405,10 +2808,10 @@ main{
     var st = loadStreak(), cur = streakCurrent(st), today = daysAgoKey(0);
     els.homeStreak.classList.toggle('off', cur === 0);
     els.hsCount.textContent = String(cur);
-    els.hsLabel.textContent = cur === 1 ? ' umusi ukurikirana' : ' imisi ikurikirana';
-    els.hsSub.textContent = st.last === today ? 'Wasomye uno musi. Garuka ejo!'
-      : (cur > 0 ? 'Soma uno musi kugira ukomeze' : 'Soma uno musi kugira utangure');
-    els.homeStreak.title = st.best ? 'Ndende kuruta izindi: ' + st.best : '';
+    els.hsLabel.textContent = ' ' + tx('streak.label', { n: cur });
+    els.hsSub.textContent = st.last === today ? tx('streak.today')
+      : (cur > 0 ? tx('streak.keep') : tx('streak.start'));
+    els.homeStreak.title = st.best ? tx('streak.best', { n: st.best }) : '';
     var dots = '';
     for (var i = 6; i >= 0; i--){
       dots += '<span class="hs-dot' + (st.log.indexOf(daysAgoKey(i)) !== -1 ? ' on' : '') + (i === 0 ? ' today' : '') + '"></span>';
@@ -2444,17 +2847,17 @@ main{
     if (!els.homePlanCard || !state.index) return;
     var plan = loadPlan();
     if (!plan){
-      els.hpcTitle.textContent = 'Gahunda yo gusoma';
-      els.hpcSub.textContent = 'Soma Bibiliya buke buke buri musi';
+      els.hpcTitle.textContent = tx('plan.title');
+      els.hpcSub.textContent = tx('plan.tagline');
       els.hpcBar.hidden = true;
       return;
     }
     var def = planDef(plan.id), days = planDays(def);
     var cur = planCurrentDay(plan, days), done = planDoneCount(plan, days);
-    els.hpcTitle.textContent = def.title;
+    els.hpcTitle.textContent = planTitle(def);
     els.hpcSub.textContent = cur >= days.length
-      ? 'Warayirangije! Hitamwo indi gahunda.'
-      : 'Umusi wa ' + (cur + 1) + ' muri ' + days.length + ' · ' + chapterRangeLabel(days[cur]);
+      ? tx('plan.finishedPick')
+      : tx('plan.dayOf', { n: cur + 1, m: days.length, range: chapterRangeLabel(days[cur]) });
     els.hpcBar.hidden = false;
     els.hpcBarFill.style.width = Math.round(done / days.length * 100) + '%';
   }
@@ -2472,19 +2875,19 @@ main{
     var plan = loadPlan();
 
     if (!plan){
-      body.innerHTML = '<p>Hitamwo gahunda, usome buke buke buri musi. Aho ugeze harabikwa.</p>' +
+      body.innerHTML = '<p>' + th('plan.intro') + '</p>' +
         PLAN_DEFS.map(function(d){
           var total = planChapters(d).length;
           var per = (total / d.days).toFixed(1).replace(/\.0$/, '');
-          return '<div class="plan-card"><h3>' + esc(d.title) + '</h3>' +
-            '<p class="pc-sub">Ibice ' + total + ' · ~' + per + ' ku musi</p>' +
-            '<button class="done" data-start="' + d.id + '">Tangura</button></div>';
+          return '<div class="plan-card"><h3>' + esc(planTitle(d)) + '</h3>' +
+            '<p class="pc-sub">' + th('plan.chaptersPerDay', { n: total, per: per }) + '</p>' +
+            '<button class="done" data-start="' + d.id + '">' + th('start') + '</button></div>';
         }).join('');
       Array.prototype.forEach.call(body.querySelectorAll('[data-start]'), function(b){
         b.addEventListener('click', function(){
           startPlan(b.getAttribute('data-start'));
           renderPlanSheet();
-          showToast('Gahunda yatanguye');
+          showToast(tx('plan.started'));
         });
       });
       return;
@@ -2493,41 +2896,41 @@ main{
     var def = planDef(plan.id), days = planDays(def);
     var cur = planCurrentDay(plan, days), done = planDoneCount(plan, days);
     var pct = Math.round(done / days.length * 100);
-    var h = '<div class="plan-card"><h3>' + esc(def.title) + '</h3>' +
-      '<p class="pc-sub">Iminsi ' + done + ' muri ' + days.length + ' iraheze · ' + pct + '%</p>' +
+    var h = '<div class="plan-card"><h3>' + esc(planTitle(def)) + '</h3>' +
+      '<p class="pc-sub">' + th('plan.progress', { n: done, m: days.length, pct: pct }) + '</p>' +
       '<div class="hf-bar" style="margin-top:0"><i style="width:' + pct + '%"></i></div></div>';
 
     if (cur >= days.length){
-      h += '<p class="opt-note">Warangije iyi gahunda. Imana ishimwe!</p>';
+      h += '<p class="opt-note">' + th('plan.allDone') + '</p>';
     } else {
-      h += '<p class="appr-label">Umusi wa ' + (cur + 1) + ' · ivyo gusoma uno musi</p><div class="plan-chips">' +
+      h += '<p class="appr-label">' + th('plan.todayLabel', { n: cur + 1 }) + '</p><div class="plan-chips">' +
         days[cur].map(function(p){
           var seen = plan.seen[p[0] + '.' + p[1]];
           return '<button class="plan-chip' + (seen ? ' seen' : '') + '" data-code="' + p[0] + '" data-ch="' + p[1] + '">' +
             esc(bookMeta(p[0]).title) + ' ' + p[1] + (seen ? ' ✓' : '') + '</button>';
         }).join('') + '</div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:0">' +
-          '<button class="done" id="planReadBtn">Tangura gusoma</button>' +
-          '<button class="secondary" id="planDoneBtn">Nasomye uno musi</button>' +
+          '<button class="done" id="planReadBtn">' + th('plan.read') + '</button>' +
+          '<button class="secondary" id="planDoneBtn">' + th('plan.markDone') + '</button>' +
         '</div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:10px">' +
-          '<button class="secondary dl-start" id="planDlToday">Kwega ivyo gusoma uno musi</button>' +
-          '<button class="secondary dl-start" id="planDlWeek">Kwega imisi 7</button>' +
+          '<button class="secondary dl-start" id="planDlToday">' + th('plan.dlToday') + '</button>' +
+          '<button class="secondary dl-start" id="planDlWeek">' + th('plan.dlWeek') + '</button>' +
         '</div>' + dlProgBoxHtml() +
         '<p class="pc-sub" id="planDlStatus" style="margin:8px 0 0"></p>';
     }
 
     var from = 0, to = days.length;
     if (!planShowAll){ from = Math.min(cur, Math.max(0, days.length - 7)); to = Math.min(days.length, from + 7); }
-    h += '<p class="appr-label" style="margin-top:22px">' + (planShowAll ? 'Imisi yose' : 'Imisi iri imbere') + '</p><div>';
+    h += '<p class="appr-label" style="margin-top:22px">' + th(planShowAll ? 'plan.allDays' : 'plan.upcoming') + '</p><div>';
     for (var i = from; i < to; i++){
       h += '<div class="plan-day' + (i === cur ? ' cur' : '') + '" data-day="' + i + '">' +
-        '<div class="pd-main"><span class="pd-n">Umusi wa ' + (i + 1) + '</span>' + esc(chapterRangeLabel(days[i])) + '</div>' +
-        '<button class="plan-tick' + (plan.done[i] ? ' on' : '') + '" data-tick="' + i + '" aria-label="Narangije">' + CHECK_SVG + '</button></div>';
+        '<div class="pd-main"><span class="pd-n">' + th('plan.dayN', { n: i + 1 }) + '</span>' + esc(chapterRangeLabel(days[i])) + '</div>' +
+        '<button class="plan-tick' + (plan.done[i] ? ' on' : '') + '" data-tick="' + i + '" aria-label="' + th('plan.tick') + '">' + CHECK_SVG + '</button></div>';
     }
     h += '</div><div class="sheet-actions-row">' +
-      '<button class="danger-link" id="planChange" style="color:var(--ink-dim)">Hindura gahunda</button>' +
-      '<button class="secondary" id="planToggleAll" style="padding:9px 16px;min-height:40px">' + (planShowAll ? 'Hisha' : 'Raba imisi yose') + '</button></div>';
+      '<button class="danger-link" id="planChange" style="color:var(--ink-dim)">' + th('plan.change') + '</button>' +
+      '<button class="secondary" id="planToggleAll" style="padding:9px 16px;min-height:40px">' + th(planShowAll ? 'plan.hide' : 'plan.showAll') + '</button></div>';
     body.innerHTML = h;
 
     function afterChange(){
@@ -2568,7 +2971,7 @@ main{
       plan.lastDoneDate = todayStr();
       savePlan(plan);
       streakNoteRead();
-      showToast('Umusi wa ' + (cur + 1) + ' uraheze!');
+      showToast(tx('plan.dayDone', { n: cur + 1 }));
       afterChange();
     });
     Array.prototype.forEach.call(body.querySelectorAll('.plan-tick'), function(b){
@@ -2602,7 +3005,7 @@ main{
     chg.addEventListener('click', function(){
       if (!planConfirmChange){
         planConfirmChange = true;
-        chg.textContent = 'Fyonda none kugira wemeze (aho ugeze hazohera)';
+        chg.textContent = tx('plan.changeConfirm');
         chg.style.color = 'var(--danger)';
         clearTimeout(planConfirmTimer);
         planConfirmTimer = setTimeout(function(){ planConfirmChange = false; renderPlanSheet(); }, 5000);
@@ -2619,12 +3022,12 @@ main{
   function renderSleepSheet(){
     var body = document.getElementById('sleepBody');
     if (!body) return;
-    var opts = [[10, 'Iminuta 10'], [15, 'Iminuta 15'], [30, 'Iminuta 30'], [45, 'Iminuta 45'], [60, 'Isaha imwe'], ['chapter', 'Igice kirangiye']];
+    var opts = [[10, tx('sleep.min', { n: 10 })], [15, tx('sleep.min', { n: 15 })], [30, tx('sleep.min', { n: 30 })], [45, tx('sleep.min', { n: 45 })], [60, tx('sleep.hour')], ['chapter', tx('sleep.chapterEnd')]];
     var html = '';
-    if (sleepState.atChapterEnd) html += '<p class="opt-note">Ijwi rizozimywa igice kirangiye.</p>';
-    else if (sleepState.deadline) html += '<p class="opt-note">Ijwi rizozimywa mu minuta ' + sleepMinutesLeft() + '.</p>';
-    html += opts.map(function(o){ return '<button class="opt-row" data-sleep="' + o[0] + '">' + o[1] + '</button>'; }).join('');
-    if (sleepOn()) html += '<button class="opt-row" data-sleep="0" style="color:var(--danger)">Kuraho igihe</button>';
+    if (sleepState.atChapterEnd) html += '<p class="opt-note">' + th('sleep.noteChapter') + '</p>';
+    else if (sleepState.deadline) html += '<p class="opt-note">' + th('sleep.noteMin', { n: sleepMinutesLeft() }) + '</p>';
+    html += opts.map(function(o){ return '<button class="opt-row" data-sleep="' + o[0] + '">' + esc(o[1]) + '</button>'; }).join('');
+    if (sleepOn()) html += '<button class="opt-row" data-sleep="0" style="color:var(--danger)">' + th('sleep.cancel') + '</button>';
     body.innerHTML = html;
     Array.prototype.forEach.call(body.querySelectorAll('.opt-row'), function(b){
       b.addEventListener('click', function(){
@@ -2632,7 +3035,7 @@ main{
         if (v === 'chapter') setSleep('chapter');
         else setSleep(parseInt(v, 10));
         closeSheet();
-        showToast(v === '0' ? 'Igihe cakuweho' : 'Ijwi rizozimywa wenyene');
+        showToast(v === '0' ? tx('sleep.removed') : tx('sleep.set'));
       });
     });
   }
@@ -2645,7 +3048,7 @@ main{
     var sel = dayOfYear() % DAILY_BG.length;      // start on today's background
     var blobs = {}, seq = 0, curUrl = null;
     bgsEl.innerHTML = DAILY_BG.map(function(u, i){
-      return '<button class="vp-bg" data-i="' + i + '" style="background-image:url(' + u + ')" aria-label="Ishusho ' + (i + 1) + '"></button>';
+      return '<button class="vp-bg" data-i="' + i + '" style="background-image:url(' + u + ')" aria-label="' + th('vp.bg', { n: i + 1 }) + '"></button>';
     }).join('');
     function getBlob(){
       if (blobs[sel]) return Promise.resolve(blobs[sel]);
@@ -2657,14 +3060,14 @@ main{
       Array.prototype.forEach.call(bgsEl.children, function(b){
         b.classList.toggle('sel', parseInt(b.getAttribute('data-i'), 10) === sel);
       });
-      if (!blobs[sel]) wrap.innerHTML = '<p class="daily-img-loading">Turiko turategura ifoto...</p>';
+      if (!blobs[sel]) wrap.innerHTML = '<p class="daily-img-loading">' + th('pic.preparing') + '</p>';
       getBlob().then(function(b){
         if (mySeq !== seq || !document.getElementById('vpWrap')) return;
         if (curUrl) URL.revokeObjectURL(curUrl);
         curUrl = URL.createObjectURL(b);
         wrap.innerHTML = '<img alt="" src="' + curUrl + '">';
       }).catch(function(){
-        if (mySeq === seq) wrap.innerHTML = '<p class="daily-img-loading">Ntivyakunze. Gerageza ukundi.</p>';
+        if (mySeq === seq) wrap.innerHTML = '<p class="daily-img-loading">' + th('err.retry') + '</p>';
       });
     }
     Array.prototype.forEach.call(bgsEl.children, function(b){
@@ -2672,10 +3075,10 @@ main{
     });
     function act(mode){
       var st = document.getElementById('vpStatus');
-      if (st) st.textContent = 'Turiko turategura ifoto...';
+      if (st) st.textContent = tx('pic.preparing');
       getBlob().then(function(b){ downloadOrShareBlob(mode, b, 'vpStatus'); }).catch(function(){
-        if (st) st.textContent = 'Ntivyakunze. Gerageza ukundi.';
-        showToast('Ntivyakunze. Gerageza ukundi.');
+        if (st) st.textContent = tx('err.retry');
+        showToast(tx('err.retry'));
       });
     }
     document.getElementById('vpShare').addEventListener('click', function(){ act('share'); });
@@ -2712,10 +3115,10 @@ main{
         if (when <= now) continue;
         var v = verses[dayOfYearFor(when) % verses.length];
         var planLine = planReadingLabelFor(i);
-        var bodyText = v.text + (planLine ? '\n\nGahunda yawe: ' + planLine : '');
+        var bodyText = v.text + (planLine ? '\n\n' + tx('notif.plan', { line: planLine }) : '');
         list.push({
           id: NOTIF_ID_BASE + list.length,
-          title: 'Ijambo ry’uno musi — ' + v.title + ' ' + v.ch + ':' + v.vn,
+          title: tx('notif.title', { ref: v.title + ' ' + v.ch + ':' + v.vn }),
           body: bodyText,
           largeBody: bodyText,
           channelId: 'daily-verse',
@@ -2725,7 +3128,7 @@ main{
       var ids = [];
       for (i = 0; i < NOTIF_DAYS + 1; i++) ids.push({ id: NOTIF_ID_BASE + i });
       return Promise.resolve(LN.createChannel
-          ? LN.createChannel({ id: 'daily-verse', name: 'Ijambo ry’uno musi', importance: 4, visibility: 1 }).catch(function(){})
+          ? LN.createChannel({ id: 'daily-verse', name: tx('daily.label'), importance: 4, visibility: 1 }).catch(function(){})
           : null)
         .then(function(){ return LN.cancel({ notifications: ids }); })
         .then(function(){ return LN.schedule({ notifications: list }); })
@@ -2748,7 +3151,7 @@ main{
       var v = verses[dayOfYearFor(new Date()) % verses.length];
       return LN.schedule({ notifications: [{
         id: NOTIF_ID_BASE - 1,
-        title: 'Ijambo ry\u2019uno musi \u2014 ' + v.title + ' ' + v.ch + ':' + v.vn,
+        title: tx('notif.title', { ref: v.title + ' ' + v.ch + ':' + v.vn }),
         body: v.text, largeBody: v.text, channelId: 'daily-verse',
         schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true }
       }] });
@@ -2756,7 +3159,7 @@ main{
   }
   function renderNotifState(){
     var el = document.getElementById('notifState');
-    if (el) el.textContent = safeGet('dailyReminder') === 'off' ? '(ryazimye)' : '(rirakora)';
+    if (el) el.textContent = safeGet('dailyReminder') === 'off' ? tx('notif.off') : tx('notif.on');
   }
   function enableDailyReminders(){
     var LN = notifPlugin();
@@ -2783,14 +3186,14 @@ main{
     row.addEventListener('click', function(){
       if (safeGet('dailyReminder') === 'off'){
         enableDailyReminders().then(function(ok){
-          showToast(ok ? 'Rizokubibutsa saa moya za mugitondo.'
-                       : 'Emera amatangazo muri Settings ya telefone.');
+          showToast(ok ? tx('notif.onToast')
+                       : tx('notif.perm'));
           if (ok) sendTestReminder();
         });
       } else {
         safeSet('dailyReminder', 'off');
         renderNotifState();
-        cancelDailyReminders().then(function(){ showToast('Ibutsa ryazimye.'); });
+        cancelDailyReminders().then(function(){ showToast(tx('notif.offToast')); });
       }
     });
     // First launch: ask once. After that, just keep the next 30 days topped up.
@@ -2876,7 +3279,7 @@ main{
   }
   function setVersePlayUi(playing){
     els.hvcPlayBtn.classList.toggle('playing', playing);
-    els.hvcPlayLabel.textContent = playing ? 'Hagarika' : 'Umviriza';
+    els.hvcPlayLabel.textContent = playing ? tx('vod.stop') : tx('vod.listen');
   }
   function stopVerseAudio(){
     clearTimeout(verseEndTimer);
@@ -2923,7 +3326,7 @@ main{
     }, { once: true });
     var p = va.play();
     if (p && typeof p.catch === 'function'){
-      p.catch(function(){ setVersePlayUi(false); showToast('Ntivyakunze. Gerageza ukundi.'); });
+      p.catch(function(){ setVersePlayUi(false); showToast(tx('err.retry')); });
     }
   });
 
@@ -2931,8 +3334,8 @@ main{
     if (!state.index || !state.index.books) return;
     var otCount = state.index.books.filter(function(b){ return b.testament === 'OT'; }).length;
     var ntCount = state.index.books.filter(function(b){ return b.testament === 'NT'; }).length;
-    if (els.htcOTCount) els.htcOTCount.textContent = otCount + ' ibitabo';
-    if (els.htcNTCount) els.htcNTCount.textContent = ntCount + ' ibitabo';
+    if (els.htcOTCount) els.htcOTCount.textContent = tx('home.books', { n: otCount });
+    if (els.htcNTCount) els.htcNTCount.textContent = tx('home.books', { n: ntCount });
   }
   if (els.homeOTCard) els.homeOTCard.addEventListener('click', function(){ openSheet('books', { testament: 'OT' }); });
   if (els.homeNTCard) els.homeNTCard.addEventListener('click', function(){ openSheet('books', { testament: 'NT' }); });
@@ -2948,6 +3351,7 @@ main{
   document.getElementById('dRowMarks').addEventListener('click', function(){ closeDrawer(); openSheet('marks'); });
   document.getElementById('dRowDownloads').addEventListener('click', function(){ closeDrawer(); openSheet('downloads'); });
   document.getElementById('dRowAppearance').addEventListener('click', function(){ closeDrawer(); openSheet('appearance'); });
+  document.getElementById('dRowLang').addEventListener('click', function(){ closeDrawer(); openSheet('language'); });
   document.getElementById('dRowSupport').addEventListener('click', function(){ closeDrawer(); openSheet('support'); });
   document.getElementById('dRowAbout').addEventListener('click', function(){ closeDrawer(); openSheet('about'); });
 
@@ -3043,7 +3447,7 @@ main{
         if (audioPathFor(state.code, state.chapter) === url) refreshDownloadButton();
         if (safeGet('autoSaveTold') !== '1'){
           safeSet('autoSaveTold', '1');
-          showToast('Ijwi uriko urumviriza, ribitswe kuri telephone. Uzoryumviriza udafise internet.', 4200);
+          showToast(tx('auto.told'), 4200);
         }
       }).catch(function(){});
     }).then(function(){ delete autoSaving[url]; }, function(){ delete autoSaving[url]; });
@@ -3126,7 +3530,7 @@ main{
       '<div class="hf-bar" style="margin:0 0 6px"><i id="dlProgFill" style="width:0%"></i></div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
         '<span id="dlProgText" style="font-size:.86rem;color:var(--ink-dim)"></span>' +
-        '<button class="danger-link" id="dlProgCancel">Hagarika</button>' +
+        '<button class="danger-link" id="dlProgCancel">' + th('cancel') + '</button>' +
       '</div></div>';
   }
   function wireDlProg(){
@@ -3139,14 +3543,14 @@ main{
     if (!offlineJob || !offlineProg){ box.hidden = true; return; }
     box.hidden = false;
     document.getElementById('dlProgFill').style.width = Math.round(offlineProg.done / offlineProg.total * 100) + '%';
-    document.getElementById('dlProgText').textContent = 'Biriko birakwega… ' + offlineProg.done + '/' + offlineProg.total;
+    document.getElementById('dlProgText').textContent = tx('dl.progress', { done: offlineProg.done, total: offlineProg.total });
   }
   function updateDownloadButtons(){
     Array.prototype.forEach.call(document.querySelectorAll('.dl-start'), function(b){ b.disabled = !!offlineJob; });
   }
   function beginOfflineDownload(list){
-    if (!hasCaches){ showToast('Iyi telefone ntishobora kubika ibi.'); return; }
-    if (offlineJob){ showToast('Biriko birakwega…'); return; }
+    if (!hasCaches){ showToast(tx('dl.unsupported')); return; }
+    if (offlineJob){ showToast(tx('dl.busy')); return; }
     if (!list.length) return;
     offlineProg = { done: 0, total: list.length };
     var p = downloadChaptersOffline(list, function(d, t){ offlineProg = { done: d, total: t }; paintOfflineProgress(); });
@@ -3159,10 +3563,10 @@ main{
       refreshDownloadButton();
       if (document.getElementById('downloadsBody')) refreshDownloadsSheet();
       if (document.getElementById('planBody')) renderPlanSheet();
-      if (res.noNetwork) showToast('Nta internet. Gerageza ukundi.', 3200);
-      else if (res.cancelled) showToast('Vyahagaritswe.');
-      else if (res.failed) showToast('Ibice ' + res.failed + ' ntivyakunze. Gerageza ukundi.', 3200);
-      else showToast('Vyarakwezwe! Urashobora kubisoma no kubiyumva udafise internet.', 3400);
+      if (res.noNetwork) showToast(tx('net.retry'), 3200);
+      else if (res.cancelled) showToast(tx('dl.cancelled'));
+      else if (res.failed) showToast(tx('dl.someFailed', { n: res.failed }), 3200);
+      else showToast(tx('dl.done'), 3400);
     });
   }
   // The whole Bible text (not the audio) is small, so it is saved to the phone
@@ -3212,10 +3616,10 @@ main{
       var total = state.index.books.length;
       if (!document.getElementById('dlTextStatus')) return;
       if (n >= total){
-        el.textContent = 'Ivyanditswe vyose vya Bibiliya yera biri muri telephone. Urashobora kubisoma udafise internet.';
+        el.textContent = tx('text.allSaved');
         if (btn) btn.hidden = true;
       } else {
-        el.textContent = 'Ivyanditswe: ibitabo ' + n + ' muri ' + total + ' biri muri telephone.';
+        el.textContent = tx('text.partial', { n: n, m: total });
         if (btn) btn.hidden = false;
       }
     });
@@ -3229,8 +3633,8 @@ main{
       var el = document.getElementById(elId);
       if (!el) return;
       el.textContent = have === list.length
-        ? 'Vyose vyakuwe. Urashobora kubisoma udafise internet.'
-        : (have ? 'Vyakuwe: ' + have + '/' + list.length : '');
+        ? tx('dl.allHave')
+        : (have ? tx('dl.haveN', { have: have, total: list.length }) : '');
     });
   }
   // total size of a book's recordings (asks the server for file sizes only)
@@ -3271,7 +3675,7 @@ main{
     var url = audioPathFor(state.code, state.chapter);
     if (els.dlBtn.classList.contains('done')){
       removeChapterAudio(url).then(function(){
-        showToast('Vyakuwe (removed)');
+        showToast(tx('dl.removed'));
         refreshDownloadButton();
       });
       return;
@@ -3280,11 +3684,11 @@ main{
     downloadChapterAudio(url).then(function(){
       autoUnmark(url);
       els.dlBtn.classList.remove('busy');
-      showToast('Vyarakwezwe, urashobora kuyumva udafise internet');
+      showToast(tx('dl.chapterDone'));
       refreshDownloadButton();
     }).catch(function(){
       els.dlBtn.classList.remove('busy');
-      showToast('Ntivyakunze. Gerageza ukundi.');
+      showToast(tx('err.retry'));
     });
   });
 
@@ -3389,7 +3793,7 @@ main{
     var md = {
       title: meta.title + ' ' + state.chapter,
       artist: 'Bibiliya Yera',
-      album: 'Mu Kirundi',
+      album: tx('home.subtitle'),
       artwork: [{ src: msArtworkUrl(), sizes: '512x512', type: 'image/jpeg' }]
     };
     try {
@@ -3463,7 +3867,7 @@ main{
     var mins = sleepMinutesLeft();
     els.sleepBtn.classList.toggle('on', sleepOn());
     els.sleepBtn.classList.toggle('has-min', mins > 0);
-    if (els.sleepTxt) els.sleepTxt.textContent = mins ? mins + 'm' : '';
+    if (els.sleepTxt) els.sleepTxt.textContent = mins ? tx('sleep.short', { n: mins }) : '';
   }
   function setSleep(mode){            // 0 = off, number = minutes, 'chapter' = end of this chapter
     sleepState.deadline = 0;
@@ -3511,7 +3915,7 @@ main{
     els.noAudioNote.hidden = false;
     audio.pause();
     audio.removeAttribute('src');
-    els.noAudioText.textContent = NO_AUDIO_TEXT;
+    setNoAudioText('none');
     audioKey = code + '.' + chNum;
     var url = audioPathFor(code, chNum);
     getPlayableUrl(url).then(function(playUrl){
@@ -3521,18 +3925,21 @@ main{
     refreshDownloadButton();
   }
 
-  var NO_AUDIO_TEXT = 'Nta majwi ahari kuri iki gice (audio not added yet)';
-  var NO_NET_TEXT = 'Nta internet. Kwega iki gice (\u2193) ufise internet kugira ukiyumvire udafise internet.';
+  // 'none' = the recording does not exist yet, 'net' = just no internet
+  function setNoAudioText(kind){
+    state.noAudioKind = kind;
+    els.noAudioText.textContent = tx(kind === 'net' ? 'noaudio.net' : 'noaudio.none');
+  }
   // Why is there no sound: the recording does not exist, or just no internet?
   function explainNoAudio(){
     var key = audioKey, url = audioPathFor(state.code, state.chapter);
-    els.noAudioText.textContent = NO_AUDIO_TEXT;
+    setNoAudioText('none');
     fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function(r){
       if (key !== audioKey) return;
-      els.noAudioText.textContent = (r.status === 404) ? NO_AUDIO_TEXT : NO_NET_TEXT;
+      setNoAudioText(r.status === 404 ? 'none' : 'net');
     }, function(){
       if (key !== audioKey) return;
-      els.noAudioText.textContent = NO_NET_TEXT;
+      setNoAudioText('net');
     });
   }
   audio.addEventListener('error', function(){
@@ -3649,7 +4056,7 @@ main{
       var nx = nextChapterOf(state.code, state.chapter);
       if (nx) saveResume(nx[0], nx[1], 0);
       msSetState('paused');
-      showToast('Ijwi ryazimye.');
+      showToast(tx('sleep.fired'));
       return;
     }
     // Auto-advance into the next chapter and keep playing, like a podcast
@@ -3805,12 +4212,8 @@ main{
         state.activeVerseIdx = -1;
         state.selectedIdx = -1;
         hideVerseActionBar();
-        els.reading.innerHTML = '<div class="load-fail">' +
-          '<p><strong>Nta internet.</strong> Iki gice ntikiraba kuri iyi telefone.</p>' +
-          '<p class="lf-sub">Ongera ugerageze iyo ubonye internet. Kugira usome udafise internet, ugurura Downloads ukwege ivyanditswe vyose.</p>' +
-          '<button class="secondary" id="retryLoad">Ongera ugerageze</button></div>';
-        var rb = document.getElementById('retryLoad');
-        if (rb) rb.addEventListener('click', function(){ goTo(code, chNum, { noHash: true }); });
+        state.loadFail = { code: code, ch: chNum };
+        showLoadFail();
         loadAudioForChapter(code, chNum);
       });
     }
@@ -3842,6 +4245,18 @@ main{
       setReadingTransform(0, 0);
       applyRender();
     }
+  }
+
+  // The "no internet, this chapter is not saved" page (also redrawn when the language changes).
+  function showLoadFail(){
+    var f = state.loadFail;
+    if (!f) return;
+    els.reading.innerHTML = '<div class="load-fail">' +
+      '<p><strong>' + th('lf.title') + '</strong> ' + th('lf.body') + '</p>' +
+      '<p class="lf-sub">' + th('lf.sub') + '</p>' +
+      '<button class="secondary" id="retryLoad">' + th('lf.retry') + '</button></div>';
+    var rb = document.getElementById('retryLoad');
+    if (rb) rb.addEventListener('click', function(){ goTo(f.code, f.ch, { noHash: true }); });
   }
 
   function goToNextChapter(opts){
@@ -3935,12 +4350,14 @@ main{
   })();
 
   // ================= generic sheet system =================
-  function closeSheet(){ els.sheetBackdrop.hidden = true; els.sheet.innerHTML = ''; }
+  function closeSheet(){ els.sheetBackdrop.hidden = true; els.sheet.innerHTML = ''; state.sheet = null; }
   els.sheetBackdrop.addEventListener('click', function(e){
-    if (e.target === els.sheetBackdrop) closeSheet();
+    // the first-launch language question must be answered, so a tap outside does not close it
+    if (e.target === els.sheetBackdrop && !(state.sheet && state.sheet.view === 'langfirst')) closeSheet();
   });
 
   function openSheet(view, params){
+    state.sheet = { view: view, params: params || {} };
     els.sheet.innerHTML = buildSheetHtml(view, params || {});
     els.sheetBackdrop.hidden = false;
     mountSheet(view, params || {});
@@ -3950,8 +4367,8 @@ main{
     if (view === 'about'){
       return '' +
         '<h2>Bibiliya Yera</h2>' +
-        '<p class="sub">Ikirundi &middot; Kirundi audio scripture reader</p>' +
-        '<p>This reader shows the full Bible text in Kirundi, synced verse-by-verse to audio recordings as they are added chapter by chapter.</p>' +
+        '<p class="sub">' + th('about.sub') + '</p>' +
+        '<p>' + th('about.p') + '</p>' +
         '<div class="credit-block">' +
           'Bible text: <strong>Biblica® Open Kirundi Contemporary Bible</strong>, © 2021, 2025 Biblica, Inc.<br>' +
           'Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.<br>' +
@@ -3963,76 +4380,79 @@ main{
           'reformatted for verse-synced audio playback and combined with separately ' +
           'produced audio recordings. It is not published or endorsed by Biblica, Inc.' +
         '</div>' +
-        '<div class="close-row"><button class="done" id="sheetDone">Nivyo (Done)</button></div>';
+        '<div class="close-row"><button class="done" id="sheetDone">' + th('done') + '</button></div>';
     }
     if (view === 'daily'){
-      return '<h2>Ijambo ry’uno musi</h2><p class="sub">Verse of the day</p><div id="dailyImgWrap" class="daily-img-wrap"><p class="daily-img-loading" id="dailyImgLoading">Turiko turategura ifoto...</p></div><div id="dailyBody"></div>';
+      return sheetHead('daily.label', 'daily.sub') + '<div id="dailyImgWrap" class="daily-img-wrap"><p class="daily-img-loading" id="dailyImgLoading">' + th('pic.preparing') + '</p></div><div id="dailyBody"></div>';
     }
     if (view === 'marks'){
-      return '<h2>Ivyo nabitse</h2><p class="sub">Bookmarks, highlights &amp; notes</p><div id="marksBody"></div>';
+      return sheetHead('marks.title', 'marks.sub') + '<div id="marksBody"></div>';
     }
     if (view === 'support'){
       return '' +
-        '<h2>Twandikire</h2>' +
-        '<p class="sub">Support &amp; contact</p>' +
-        '<p>Nimba ufise ikibazo, iciyumviro, canke ikintu kitagenda neza muri iyi porogaramu, twandikire &mdash; turakwishura.</p>' +
-        '<p>If you run into a problem, have feedback, or just want to say hello, send a note &mdash; we read every message.</p>' +
+        sheetHead('support.title', 'support.sub') +
+        '<p>' + th('support.p1') + '</p>' +
+        (rawText('support.p2') ? '<p>' + th('support.p2') + '</p>' : '') +
         '<div class="close-row" style="justify-content:flex-start">' +
-          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Yera') + '">Twandikire kuri imeyili</a>' +
+          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Yera') + '">' + th('support.email') + '</a>' +
         '</div>' +
-        '<p style="margin-top:18px;font-size:.78rem;color:var(--ink-dim)">Iyi porogaramu ntibika amakuru yawe bwite. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>';
+        '<p style="margin-top:18px;font-size:.78rem;color:var(--ink-dim)">' + thr('support.privacy') + '</p>';
     }
     if (view === 'note'){
       return '' +
-        '<h2>Icatwa</h2>' +
+        '<h2>' + th('note.title') + '</h2>' +
         '<p class="sub">' + esc(p.ref) + '</p>' +
         '<p style="font-family:var(--font-scripture);font-size:.92rem;color:var(--ink-dim);font-style:italic">' + esc(p.text) + '</p>' +
-        '<textarea id="noteTextarea" placeholder="Andika icatwa cawe hano...">' + esc(p.existing || '') + '</textarea>' +
+        '<textarea id="noteTextarea" placeholder="' + th('note.ph') + '">' + esc(p.existing || '') + '</textarea>' +
         '<div class="sheet-actions-row">' +
-          '<button class="danger-link" id="noteDelete">Siba (delete)</button>' +
+          '<button class="danger-link" id="noteDelete">' + th('note.del') + '</button>' +
           '<div style="display:flex;gap:8px">' +
-            '<button class="secondary" id="noteCancel">Reka (cancel)</button>' +
-            '<button class="done" id="noteSave">Bika (save)</button>' +
+            '<button class="secondary" id="noteCancel">' + th('note.cancel') + '</button>' +
+            '<button class="done" id="noteSave">' + th('note.save') + '</button>' +
           '</div>' +
         '</div>';
     }
     if (view === 'downloads'){
-      return '<h2>Downloads</h2><p class="sub">Audio iramutse ikuwemwo, urayumviriza udafise internet</p>' +
+      return '<h2>' + th('dlSheet.title') + '</h2><p class="sub">' + th('dlSheet.sub') + '</p>' +
         '<div class="appr-group">' +
-          '<p class="appr-label">Kubika ijwi uyumviriza</p>' +
+          '<p class="appr-label">' + th('auto.label') + '</p>' +
           '<button class="secondary" id="autoSaveBtn"></button>' +
-          '<p class="pc-sub" style="margin:8px 0 0">Igice uyumviriza gihita kibikwa kuri telefone, ubutaha ukiyumvirize udafise internet. Ku nshuro ya mbere bikoresha amakuru y&rsquo;inyongera angana n&rsquo;igice.</p>' +
+          '<p class="pc-sub" style="margin:8px 0 0">' + th('auto.hint') + '</p>' +
         '</div>' +
         '<p class="pc-sub" id="dlTextStatus" style="margin:0 0 6px"></p>' +
-        '<button class="secondary" id="dlTextBtn" hidden style="margin-bottom:16px">Kwega ivyanditswe vyose</button>' +
+        '<button class="secondary" id="dlTextBtn" hidden style="margin-bottom:16px">' + th('text.dlAll') + '</button>' +
         '<div class="appr-group">' +
-          '<p class="appr-label">Kwega igitabo cose</p>' +
-          '<select id="dlBookSel" aria-label="Igitabo" style="width:100%;flex:none"></select>' +
+          '<p class="appr-label">' + th('book.dlLabel') + '</p>' +
+          '<select id="dlBookSel" aria-label="' + th('a.bookSel') + '" style="width:100%;flex:none"></select>' +
           '<p class="pc-sub" id="dlBookInfo" style="margin:8px 0 10px"></p>' +
-          '<button class="done dl-start" id="dlBookBtn">Kwega igitabo</button>' +
-          '<p class="pc-sub" style="margin:10px 0 0">Koresha WiFi kugira udakoresha amakuru menshi.</p>' +
+          '<button class="done dl-start" id="dlBookBtn">' + th('book.dl') + '</button>' +
+          '<p class="pc-sub" style="margin:10px 0 0">' + th('wifi.tip') + '</p>' +
         '</div>' +
         dlProgBoxHtml() +
-        '<p class="appr-label">Vyamaze gukwegwa</p>' +
+        '<p class="appr-label">' + th('dl.listLabel') + '</p>' +
         '<div id="downloadsBody"><p>...</p></div>';
     }
     if (view === 'search'){
       return '' +
-        '<div class="search-input-wrap"><input type="text" id="searchInput" placeholder="Rondera ijambo canke umurongo..." autocomplete="off"></div>' +
-        '<div id="searchResults"><p class="search-status">Andika ijambo ushaka gushaka.</p></div>';
+        '<div class="search-input-wrap"><input type="text" id="searchInput" placeholder="' + th('search.ph') + '" autocomplete="off"></div>' +
+        '<div id="searchResults"><p class="search-status">' + th('search.hint') + '</p></div>';
     }
     if (view === 'books'){
       var isOT = p.testament === 'OT';
-      return '<h2>' + (isOT ? 'Isezerano rya Kera' : 'Isezerano Rishasha') + '</h2>' +
-        '<p class="sub">' + (isOT ? 'Old Testament' : 'New Testament') + '</p>' +
+      return sheetHead(isOT ? 'ot' : 'nt', isOT ? 'ot.sub' : 'nt.sub') +
         '<div id="booksListBody"></div>';
     }
     if (view === 'appearance'){
       return '' +
-        '<h2>Ishusho</h2><p class="sub">Appearance</p>' +
+        sheetHead('appr.title', 'appr.sub') +
 
         '<div class="appr-group">' +
-          '<p class="appr-label">Ingene inyandiko igaragara (Text size)</p>' +
+          '<p class="appr-label">' + th('lang.group') + '</p>' +
+          '<div class="lang-row">' + langButtonsHtml() + '</div>' +
+        '</div>' +
+
+        '<div class="appr-group">' +
+          '<p class="appr-label">' + th('appr.size') + '</p>' +
           '<div class="appr-size-row">' +
             '<button class="appr-size-btn" data-size="0.88" style="font-size:.82rem">A</button>' +
             '<button class="appr-size-btn" data-size="1" style="font-size:1rem">A</button>' +
@@ -4044,25 +4464,25 @@ main{
         '</div>' +
 
         '<div class="appr-group">' +
-          '<p class="appr-label">Ibara (Color)</p>' +
+          '<p class="appr-label">' + th('appr.color') + '</p>' +
           '<div class="appr-color-row">' +
-            '<button class="appr-color-btn" data-accent="teal"><span class="appr-swatch" style="background:#2f4858"></span>Isanzwe</button>' +
-            '<button class="appr-color-btn" data-accent="wood"><span class="appr-swatch" style="background:#dcad8b"></span>Igiti</button>' +
-            '<button class="appr-color-btn" data-accent="beige"><span class="appr-swatch" style="background:#a9825a"></span>Umusenyi</button>' +
+            '<button class="appr-color-btn" data-accent="teal"><span class="appr-swatch" style="background:#2f4858"></span>' + th('col.teal') + '</button>' +
+            '<button class="appr-color-btn" data-accent="wood"><span class="appr-swatch" style="background:#dcad8b"></span>' + th('col.wood') + '</button>' +
+            '<button class="appr-color-btn" data-accent="beige"><span class="appr-swatch" style="background:#a9825a"></span>' + th('col.beige') + '</button>' +
           '</div>' +
         '</div>' +
 
         '<div class="appr-group">' +
-          '<p class="appr-label">Umuco canke umwijima (Light or dark)</p>' +
+          '<p class="appr-label">' + th('appr.mode') + '</p>' +
           '<div class="appr-mode-row">' +
-            '<button class="appr-mode-btn" data-mode="auto">Nka telefone</button>' +
-            '<button class="appr-mode-btn" data-mode="light">Umuco</button>' +
-            '<button class="appr-mode-btn" data-mode="dark">Umwijima</button>' +
+            '<button class="appr-mode-btn" data-mode="auto">' + th('appr.auto') + '</button>' +
+            '<button class="appr-mode-btn" data-mode="light">' + th('appr.light') + '</button>' +
+            '<button class="appr-mode-btn" data-mode="dark">' + th('appr.dark') + '</button>' +
           '</div>' +
         '</div>' +
 
         '<div class="appr-group">' +
-          '<p class="appr-label">Ukuntu bisa (Preview)</p>' +
+          '<p class="appr-label">' + th('appr.preview') + '</p>' +
           '<div class="appr-preview">' +
             '<p class="book-title">YOHANA</p>' +
             '<p class="chapter-num">3</p>' +
@@ -4070,24 +4490,34 @@ main{
           '</div>' +
         '</div>' +
 
-        '<div class="close-row"><button class="done" id="sheetDone">Nivyo (Done)</button></div>';
+        '<div class="close-row"><button class="done" id="sheetDone">' + th('done') + '</button></div>';
+    }
+    if (view === 'language'){
+      return sheetHead('lang.title', 'lang.sub') +
+        '<div class="lang-row lang-col">' + langButtonsHtml() + '</div>' +
+        '<p class="pc-sub" style="margin-top:14px">' + th('lang.note') + '</p>' +
+        '<div class="close-row"><button class="done" id="sheetDone">' + th('done') + '</button></div>';
+    }
+    if (view === 'langfirst'){
+      return '<h2>' + th('lang.choose') + '</h2><p class="sub">' + th('lang.chooseSub') + '</p>' +
+        '<div class="lang-row lang-col">' + langButtonsHtml() + '</div>';
     }
     if (view === 'plan'){
-      return '<h2>Gahunda yo gusoma</h2><p class="sub">Reading plan</p><div id="planBody"></div>';
+      return sheetHead('plan.title', 'plan.sub') + '<div id="planBody"></div>';
     }
     if (view === 'sleep'){
-      return '<h2>Kuzimya ijwi</h2><p class="sub">Sleep timer</p><div id="sleepBody"></div>';
+      return sheetHead('sleep.title', 'sleep.sub') + '<div id="sleepBody"></div>';
     }
     if (view === 'versepic'){
       return '' +
-        '<h2>Ifoto y&rsquo;umurongo</h2>' +
+        '<h2>' + th('vp.title') + '</h2>' +
         '<p class="sub">' + esc(p.ref) + '</p>' +
         '<div class="vp-wrap" id="vpWrap"></div>' +
-        '<p class="appr-label" style="margin-bottom:6px">Hitamwo ishusho</p>' +
+        '<p class="appr-label" style="margin-bottom:6px">' + th('vp.choose') + '</p>' +
         '<div class="vp-bgs" id="vpBgs"></div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:4px">' +
-          '<button class="done" id="vpShare">Sangiza ifoto</button>' +
-          '<button class="secondary" id="vpSave">Kwega ifoto</button>' +
+          '<button class="done" id="vpShare">' + th('sharePic') + '</button>' +
+          '<button class="secondary" id="vpSave">' + th('dlPic') + '</button>' +
         '</div>' +
         '<p id="vpStatus" style="margin-top:12px;font-size:.86rem;color:var(--ink-dim)"></p>';
     }
@@ -4108,14 +4538,14 @@ main{
         if (!body) return;
         body.innerHTML = '' +
           '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">' +
-            '<button class="done" id="dailyReadBtn">Soma mu gitabu</button>' +
+            '<button class="done" id="dailyReadBtn">' + th('daily.read') + '</button>' +
             '<button class="secondary" id="dailyDownloadBtn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>' +
-              'Kwega ifoto' +
+              th('dlPic') +
             '</button>' +
             '<button class="secondary" id="dailyShareBtn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
-              'Sangiza kuri Status' +
+              th('daily.shareStatus') +
             '</button>' +
           '</div>' +
           '<p id="dailyCardStatus" style="margin-top:12px;font-size:.86rem;color:var(--ink-dim)"></p>';
@@ -4153,14 +4583,14 @@ main{
         return (state.marks[b].ts||0) - (state.marks[a].ts||0);
       });
       if (!keys.length){
-        body.innerHTML = '<p style="color:var(--ink-dim)">Nta kintu cabitswe. Fyonda ku murongo uwariwo wose ubike, shirako irangi canke wandike ijambo.</p>';
+        body.innerHTML = '<p style="color:var(--ink-dim)">' + th('marks.empty') + '</p>';
       } else {
         body.innerHTML = keys.map(function(k){
           var m = state.marks[k];
           var badges = '';
-          if (m.bookmark) badges += '<span>&#9733; Bookmark</span>';
-          if (m.highlight) badges += '<span>&#9679; Highlight</span>';
-          if (m.note && m.note.trim()) badges += '<span>&#9998; Note</span>';
+          if (m.bookmark) badges += '<span>&#9733; ' + th('badge.bm') + '</span>';
+          if (m.highlight) badges += '<span>&#9679; ' + th('badge.hl') + '</span>';
+          if (m.note && m.note.trim()) badges += '<span>&#9998; ' + th('badge.note') + '</span>';
           return '' +
             '<div class="mark-row">' +
               '<div class="mark-main" data-key="' + k + '">' +
@@ -4168,7 +4598,7 @@ main{
                 '<div class="mark-text">' + esc(m.ref) + ' — ' + esc((m.text||'').slice(0,90)) + ((m.text||'').length>90?'…':'') + '</div>' +
                 (m.note && m.note.trim() ? '<div class="mark-note-text">' + esc(m.note) + '</div>' : '') +
               '</div>' +
-              '<button class="mark-del" data-key="' + k + '" aria-label="Siba">' +
+              '<button class="mark-del" data-key="' + k + '" aria-label="' + th('a.delete') + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
               '</button>' +
             '</div>';
@@ -4208,7 +4638,7 @@ main{
         setMark(p.key, { note: ta.value }, { ref: p.ref, text: p.text, code: p.code, ch: p.ch, vn: p.vn });
         if (state.selectedIdx >= 0) { els.vaNote.classList.toggle('on', !!ta.value.trim()); refreshVerseEl(p.vn); }
         closeSheet();
-        showToast('Icatwa cabitswe');
+        showToast(tx('note.saved'));
       });
       document.getElementById('noteDelete').addEventListener('click', function(){
         setMark(p.key, { note: '' }, { ref: p.ref, text: p.text, code: p.code, ch: p.ch, vn: p.vn });
@@ -4226,13 +4656,13 @@ main{
       var results = document.getElementById('searchResults');
       input.focus();
       ensureSearchIndex().then(function(){
-        if (results.querySelector('.search-status')) results.innerHTML = '<p class="search-status">Andika ijambo ushaka gushaka.</p>';
+        if (results.querySelector('.search-status')) results.innerHTML = '<p class="search-status">' + th('search.hint') + '</p>';
       });
       var t = null;
       input.addEventListener('input', function(){
         clearTimeout(t);
         var q = input.value.trim();
-        if (!q){ results.innerHTML = '<p class="search-status">Andika ijambo ushaka gushaka.</p>'; return; }
+        if (!q){ results.innerHTML = '<p class="search-status">' + th('search.hint') + '</p>'; return; }
         t = setTimeout(function(){ runSearch(q, results); }, 150);
       });
     }
@@ -4245,7 +4675,7 @@ main{
         books.forEach(function(b){
           html += '<div class="dl-row book-row" data-code="' + b.code + '" style="cursor:pointer">' +
             '<span class="dl-main">' + esc(b.title) + '</span>' +
-            '<span style="color:var(--ink-dim);font-size:.8rem">' + b.chapters + ' ' + (b.chapters===1?'igice':'ibice') + '</span>' +
+            '<span style="color:var(--ink-dim);font-size:.8rem">' + esc(tx('book.chapters', { n: b.chapters })) + '</span>' +
           '</div>';
         });
         listBody.innerHTML = html;
@@ -4261,6 +4691,8 @@ main{
     if (view === 'plan') renderPlanSheet();
     if (view === 'sleep') renderSleepSheet();
     if (view === 'versepic') mountVersePicSheet(p);
+
+    if (view === 'language' || view === 'appearance') wireLangButtons(els.sheet);
 
     if (view === 'appearance'){
       var sizeBtns = els.sheet.querySelectorAll('.appr-size-btn');
@@ -4302,25 +4734,25 @@ main{
   function mountDownloadsSheet(){
     var asBtn = document.getElementById('autoSaveBtn');
     if (asBtn){
-      var paintAs = function(){ asBtn.textContent = autoSaveOn() ? 'Kubika ijwi: rirakora' : 'Kubika ijwi: ryazimye'; };
+      var paintAs = function(){ asBtn.textContent = autoSaveOn() ? tx('auto.on') : tx('auto.off'); };
       paintAs();
       asBtn.addEventListener('click', function(){
         safeSet('autoSave', autoSaveOn() ? 'off' : 'on');
         if (!autoSaveOn()){ clearTimeout(autoTimer); autoTimer = null; }
         paintAs();
-        showToast(autoSaveOn() ? 'Ijwi rizobikwa uko urikumviriza.' : 'Ijwi ntirizobikwa.');
+        showToast(autoSaveOn() ? tx('auto.toastOn') : tx('auto.toastOff'));
       });
     }
     paintTextStatus();
     var textBtn = document.getElementById('dlTextBtn');
     if (textBtn) textBtn.addEventListener('click', function(){
       textBtn.disabled = true;
-      textBtn.textContent = 'Biriko birakwega…';
+      textBtn.textContent = tx('dl.busy');
       saveAllText().then(function(all){
         textBtn.disabled = false;
-        textBtn.textContent = 'Kwega ivyanditswe vyose';
+        textBtn.textContent = tx('text.dlAll');
         paintTextStatus();
-        showToast(all ? 'Ivyanditswe vyose vyarakwezwe!' : 'Nta internet. Gerageza ukundi.', 2600);
+        showToast(all ? tx('text.done') : tx('net.retry'), 2600);
       });
     });
     var sel = document.getElementById('dlBookSel');
@@ -4332,10 +4764,10 @@ main{
       var infoEl = document.getElementById('dlBookInfo');
       var showInfo = function(){
         var code = sel.value, meta = bookMeta(code);
-        infoEl.textContent = 'Ibice ' + meta.chapters;
+        infoEl.textContent = tx('chaptersN', { n: meta.chapters });
         probeBookSize(code).then(function(r){
           if (sel.value !== code || !document.getElementById('dlBookInfo') || !r.bytes) return;
-          infoEl.textContent = 'Ibice ' + meta.chapters + ' · ~' + Math.max(1, Math.round(r.bytes / 1048576)) + ' MB';
+          infoEl.textContent = tx('chaptersSize', { n: meta.chapters, mb: Math.max(1, Math.round(r.bytes / 1048576)) });
         });
       };
       sel.addEventListener('change', showInfo);
@@ -4362,11 +4794,11 @@ main{
         navigator.storage.estimate().then(function(est){
           var mb = ((est.usage||0)/1048576).toFixed(0);
           var n = body.querySelector('.storage-note');
-          if (n) n.textContent = 'Storage used by this app: ~' + mb + ' MB';
+          if (n) n.textContent = tx('dl.storage', { mb: mb });
         });
       }
       if (!list.length){
-        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracagurwa. Fyonda akamenyetso ko gukwega (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
+        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">' + th('dl.empty') + '</p>';
         return;
       }
       // one row per book (so a whole downloaded book is a single line)
@@ -4381,12 +4813,12 @@ main{
       body.innerHTML = '<p class="storage-note">...</p>' + groups.map(function(g){
         return '' +
           '<div class="dl-row">' +
-            '<div class="dl-main">' + esc(g.title) + ' <span style="color:var(--ink-dim);font-size:.8rem">· ibice ' + g.items.length + '</span></div>' +
-            '<button class="mark-del" data-code="' + g.code + '" aria-label="Siba">' +
+            '<div class="dl-main">' + esc(g.title) + ' <span style="color:var(--ink-dim);font-size:.8rem">' + th('dl.rowChapters', { n: g.items.length }) + '</span></div>' +
+            '<button class="mark-del" data-code="' + g.code + '" aria-label="' + th('a.delete') + '">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
             '</button>' +
           '</div>';
-      }).join('') + '<div class="close-row" style="justify-content:flex-start;margin-top:10px"><button class="secondary" id="clearAllDl">Kuraho vyose</button></div>';
+      }).join('') + '<div class="close-row" style="justify-content:flex-start;margin-top:10px"><button class="secondary" id="clearAllDl">' + th('dl.clearAll') + '</button></div>';
       Array.prototype.forEach.call(body.querySelectorAll('.mark-del'), function(btn){
         btn.addEventListener('click', function(){
           var g = byCode[btn.getAttribute('data-code')];
@@ -4421,7 +4853,7 @@ main{
   }
 
   function runSearch(q, resultsEl){
-    resultsEl.innerHTML = '<p class="search-status">Birimo gushakishwa...</p>';
+    resultsEl.innerHTML = '<p class="search-status">' + th('search.busy') + '</p>';
     ensureSearchIndex().then(function(idx){
       var needle = q.toLowerCase().replace(/[’‘]/g, "'");
       var out = [];
@@ -4431,7 +4863,7 @@ main{
         if (hay.indexOf(needle) !== -1) out.push(row);
       }
       if (!out.length){
-        resultsEl.innerHTML = '<p class="search-status">Nta kintu caboneste.</p>';
+        resultsEl.innerHTML = '<p class="search-status">' + th('search.none') + '</p>';
         return;
       }
       var reNeedle = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -4475,8 +4907,19 @@ main{
     if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   }
 
+  // First launch: the person picks a language once (it can be changed later in the menu).
+  function openLangFirst(done){
+    openSheet('langfirst');
+    wireLangButtons(els.sheet, function(){ closeSheet(); if (done) done(); });
+  }
+
   function start(){
     registerOfflineWorker();
+    // A shared-verse link opens straight into the reader, so there we follow the phone's language instead of asking.
+    var askLang = !langChosen();
+    if (askLang && parseHash()){ LANG = detectLang(); safeSet('lang', LANG); askLang = false; }
+    applyLanguage(true);
+    var langReady = askLang ? new Promise(function(resolve){ openLangFirst(resolve); }) : Promise.resolve();
     applyAppearancePrefs();
     refreshHomeColorSelection();
     loadMarks();
@@ -4497,7 +4940,7 @@ main{
         showHome();
       }
       initDailyBanner();
-      initDailyReminders();
+      langReady.then(initDailyReminders);        // the phone's notification question comes after the language question
       renderHomeHero();
       updateTestamentCounts();
       cacheOfflineAsset('images/bible-cover.jpg');
