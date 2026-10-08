@@ -1947,6 +1947,12 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     var t = TEXT_PREF === 'auto' ? LANG : TEXT_PREF;
     return TEXT_AVAILABLE[t] ? t : 'rn';
   }
+  // Book names follow the language of the Bible text (Kirundi names are the ones in data/index.json).
+  var BOOK_NAMES = {
+    en: { GEN: 'Genesis', EXO: 'Exodus', LEV: 'Leviticus', NUM: 'Numbers', DEU: 'Deuteronomy', JOS: 'Joshua', JDG: 'Judges', RUT: 'Ruth', '1SA': '1 Samuel', '2SA': '2 Samuel', '1KI': '1 Kings', '2KI': '2 Kings', '1CH': '1 Chronicles', '2CH': '2 Chronicles', EZR: 'Ezra', NEH: 'Nehemiah', EST: 'Esther', JOB: 'Job', PSA: 'Psalms', PRO: 'Proverbs', ECC: 'Ecclesiastes', SNG: 'Song of Solomon', ISA: 'Isaiah', JER: 'Jeremiah', LAM: 'Lamentations', EZK: 'Ezekiel', DAN: 'Daniel', HOS: 'Hosea', JOL: 'Joel', AMO: 'Amos', OBA: 'Obadiah', JON: 'Jonah', MIC: 'Micah', NAM: 'Nahum', HAB: 'Habakkuk', ZEP: 'Zephaniah', HAG: 'Haggai', ZEC: 'Zechariah', MAL: 'Malachi', MAT: 'Matthew', MRK: 'Mark', LUK: 'Luke', JHN: 'John', ACT: 'Acts', ROM: 'Romans', '1CO': '1 Corinthians', '2CO': '2 Corinthians', GAL: 'Galatians', EPH: 'Ephesians', PHP: 'Philippians', COL: 'Colossians', '1TH': '1 Thessalonians', '2TH': '2 Thessalonians', '1TI': '1 Timothy', '2TI': '2 Timothy', TIT: 'Titus', PHM: 'Philemon', HEB: 'Hebrews', JAS: 'James', '1PE': '1 Peter', '2PE': '2 Peter', '1JN': '1 John', '2JN': '2 John', '3JN': '3 John', JUD: 'Jude', REV: 'Revelation' },
+    fr: { GEN: 'Genèse', EXO: 'Exode', LEV: 'Lévitique', NUM: 'Nombres', DEU: 'Deutéronome', JOS: 'Josué', JDG: 'Juges', RUT: 'Ruth', '1SA': '1 Samuel', '2SA': '2 Samuel', '1KI': '1 Rois', '2KI': '2 Rois', '1CH': '1 Chroniques', '2CH': '2 Chroniques', EZR: 'Esdras', NEH: 'Néhémie', EST: 'Esther', JOB: 'Job', PSA: 'Psaumes', PRO: 'Proverbes', ECC: 'Ecclésiaste', SNG: 'Cantique des cantiques', ISA: 'Ésaïe', JER: 'Jérémie', LAM: 'Lamentations', EZK: 'Ézéchiel', DAN: 'Daniel', HOS: 'Osée', JOL: 'Joël', AMO: 'Amos', OBA: 'Abdias', JON: 'Jonas', MIC: 'Michée', NAM: 'Nahum', HAB: 'Habakuk', ZEP: 'Sophonie', HAG: 'Aggée', ZEC: 'Zacharie', MAL: 'Malachie', MAT: 'Matthieu', MRK: 'Marc', LUK: 'Luc', JHN: 'Jean', ACT: 'Actes', ROM: 'Romains', '1CO': '1 Corinthiens', '2CO': '2 Corinthiens', GAL: 'Galates', EPH: 'Éphésiens', PHP: 'Philippiens', COL: 'Colossiens', '1TH': '1 Thessaloniciens', '2TH': '2 Thessaloniciens', '1TI': '1 Timothée', '2TI': '2 Timothée', TIT: 'Tite', PHM: 'Philémon', HEB: 'Hébreux', JAS: 'Jacques', '1PE': '1 Pierre', '2PE': '2 Pierre', '1JN': '1 Jean', '2JN': '2 Jean', '3JN': '3 Jean', JUD: 'Jude', REV: 'Apocalypse' }
+  };
+  function bookName(code, rn){ var m = BOOK_NAMES[textLang()]; return (m && m[code]) || rn; }
   function textUrl(tl, file){ return 'data/' + (tl === 'rn' ? '' : tl + '/') + file; }
   // What the phone itself is set to (used only for a shared-verse link, where
   // we do not stop the person to ask).
@@ -2057,7 +2063,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   }
   function refreshDailyBanner(){
     if (els.dailyBanner.hidden) return;
-    resolveDailyVerse().then(function(d){ els.dbVerseText.textContent = d.text; }).catch(function(){});
+    resolveDailyVerse().then(function(d){ els.dbVerseText.textContent = d.text; els.dbRefText.textContent = d.title + ' ' + d.ch + ':' + d.vn; }).catch(function(){});
   }
   function rerenderCurrentChapter(){
     if (!state.code || !state.chapter) return;
@@ -2076,6 +2082,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // Re-draws everything that is already on screen in the chosen language.
   function applyLanguage(initial){
     document.documentElement.setAttribute('lang', LANG);
+    try { applyBookNames(); } catch(e){}
     applyStaticI18n();
     try { renderLangQuick(); } catch(e){}
     try { refreshPickerLabels(); } catch(e){}
@@ -2288,6 +2295,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function loadIndex(){
     return fetchDataJson('data/index.json').then(function(idx){
       state.index = idx;
+      applyBookNames();
       populateBookSelect();
     });
   }
@@ -2354,6 +2362,19 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function bookMeta(code){
     return state.index.books.find(function(b){ return b.code === code; });
   }
+  // Every book's title is set to its name in the Bible text language (b.rn keeps the Kirundi name).
+  function applyBookNames(){
+    if (!state.index) return;
+    state.index.books.forEach(function(b){
+      if (b.rn === undefined) b.rn = b.title;
+      b.title = bookName(b.code, b.rn);
+    });
+  }
+  // "Genesis 1:1" in the language of the text; code/title fall back to what is given
+  function refLabel(code, ch, vn, fallbackTitle){
+    var m = state.index && bookMeta(code);
+    return (m ? m.title : (fallbackTitle || code)) + ' ' + ch + ':' + vn;
+  }
 
   function populateChapterSelect(code){
     var meta = bookMeta(code);
@@ -2366,12 +2387,13 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     }
   }
 
-  // after a language change: the group titles and "Ch N" labels (book names stay Kirundi)
+  // after a language change: the group titles, the book names and the "Ch N" labels
   function refreshPickerLabels(){
     var groups = els.bookSelect.querySelectorAll('optgroup');
     if (groups[0]) groups[0].label = tx('ot');
     if (groups[1]) groups[1].label = tx('nt');
     Array.prototype.forEach.call(els.chapterSelect.options, function(o){ o.textContent = tx('chShort', { n: o.value }); });
+    Array.prototype.forEach.call(els.bookSelect.options, function(o){ var m = state.index && bookMeta(o.value); if (m) o.textContent = m.title; });
   }
 
   // ---------- marks (bookmarks / highlights / notes) ----------
@@ -2409,7 +2431,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       hideVerseActionBar();
 
       var meta = bookMeta(code);
-      var html = '<p class="book-title">' + esc(book.title) + '</p>';
+      var html = '<p class="book-title">' + esc(meta.title) + '</p>';
       html += '<h2 class="chapter-num">' + chNum + '</h2>';
 
       var headingsByVerse = {};
@@ -3381,7 +3403,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         var bodyText = v.text + (planLine ? '\n\n' + tx('notif.plan', { line: planLine }) : '');
         list.push({
           id: NOTIF_ID_BASE + list.length,
-          title: tx('notif.title', { ref: v.title + ' ' + v.ch + ':' + v.vn }),
+          title: tx('notif.title', { ref: refLabel(v.code, v.ch, v.vn, v.title) }),
           body: bodyText,
           largeBody: bodyText,
           channelId: 'daily-verse',
@@ -3414,7 +3436,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       var v = verses[dayOfYearFor(new Date()) % verses.length];
       return LN.schedule({ notifications: [{
         id: NOTIF_ID_BASE - 1,
-        title: tx('notif.title', { ref: v.title + ' ' + v.ch + ':' + v.vn }),
+        title: tx('notif.title', { ref: refLabel(v.code, v.ch, v.vn, v.title) }),
         body: v.text, largeBody: v.text, channelId: 'daily-verse',
         schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true }
       }] });
@@ -4875,7 +4897,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
             '<div class="mark-row">' +
               '<div class="mark-main" data-key="' + k + '">' +
                 '<div class="mark-badges">' + badges + '</div>' +
-                '<div class="mark-text">' + esc(m.ref) + ' — ' + esc((m.text||'').slice(0,90)) + ((m.text||'').length>90?'…':'') + '</div>' +
+                '<div class="mark-text">' + esc(m.code && m.ch ? refLabel(m.code, m.ch, m.vn, m.ref) : m.ref) + ' — ' + esc((m.text||'').slice(0,90)) + ((m.text||'').length>90?'…':'') + '</div>' +
                 (m.note && m.note.trim() ? '<div class="mark-note-text">' + esc(m.note) + '</div>' : '') +
               '</div>' +
               '<button class="mark-del" data-key="' + k + '" aria-label="' + th('a.delete') + '">' +
@@ -4883,6 +4905,18 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
               '</button>' +
             '</div>';
         }).join('');
+        // Show each saved verse in the current Bible text language (it may have been saved in another one).
+        keys.forEach(function(k){
+          var m = state.marks[k];
+          if (!m || !m.code || !m.ch) return;
+          loadBook(m.code).then(function(book){
+            var chd = book.chapters[String(m.ch)];
+            var v = chd && chd.verses.filter(function(x){ return x.n === m.vn; })[0];
+            var el = body.querySelector('.mark-main[data-key="' + k + '"] .mark-text');
+            if (!v || !el || !v.text || v.text === '—') return;
+            el.textContent = refLabel(m.code, m.ch, m.vn, m.ref) + ' — ' + v.text.slice(0, 90) + (v.text.length > 90 ? '…' : '');
+          }).catch(function(){});
+        });
         Array.prototype.forEach.call(body.querySelectorAll('.mark-main'), function(el){
           el.addEventListener('click', function(){
             var k = el.getAttribute('data-key');
@@ -5193,7 +5227,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         var snippet = folded ? highlightFolded(row.x, needle) : esc(row.x).replace(re, '<mark>$1</mark>');
         return '' +
           '<div class="search-result" data-code="' + row.c + '" data-ch="' + row.n + '" data-vn="' + row.v + '">' +
-            '<div class="sr-ref">' + esc(row.t) + ' ' + row.n + ':' + row.v + '</div>' +
+            '<div class="sr-ref">' + esc(refLabel(row.c, row.n, row.v, row.t)) + '</div>' +
             '<div class="sr-text">' + snippet + '</div>' +
           '</div>';
       }).join('');
