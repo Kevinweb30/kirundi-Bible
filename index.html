@@ -521,6 +521,11 @@ main{
   margin:28px 0 10px;
   clear:both;
 }
+.heading.sub{
+  font-weight:400;
+  font-size:calc(.94rem * var(--reading-scale, 1));
+  margin:6px 0 12px;
+}
 .verses{
   font-family:var(--font-scripture);
   font-optical-sizing:auto;
@@ -1694,9 +1699,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     // ---- home
     'home.subtitle': { rn: 'Mu Kirundi', en: 'In Kirundi', fr: 'En kirundi' },
     'home.tagline': {
-      rn: function(){ return textLang() === 'fr' ? 'Soma kandi wumve Ijambo ry’Imana. Amajwi ari mu Kirundi, umwandiko uri mu Gifaransa.' : 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.'; },
-      en: function(){ return textLang() === 'fr' ? 'Read and listen to the Word of God. The audio is in Kirundi; the text is in French.' : 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.'; },
-      fr: function(){ return textLang() === 'fr' ? 'Lisez et écoutez la Parole de Dieu. L’audio est en kirundi ; le texte est en français.' : 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.'; } },
+      rn: function(){ var t = textLang(); return t === 'rn' ? 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.' : 'Soma kandi wumve Ijambo ry’Imana. Amajwi ari mu Kirundi, umwandiko uri mu ' + (t === 'en' ? 'Congereza' : 'Gifaransa') + '.'; },
+      en: function(){ var t = textLang(); return t === 'rn' ? 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.' : 'Read and listen to the Word of God. The audio is in Kirundi; the text is in ' + (t === 'en' ? 'English' : 'French') + '.'; },
+      fr: function(){ var t = textLang(); return t === 'rn' ? 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.' : 'Lisez et écoutez la Parole de Dieu. L’audio est en kirundi ; le texte est en ' + (t === 'en' ? 'anglais' : 'français') + '.'; } },
     'home.resume': { rn: 'Subira aho War’ugeze', en: 'Continue where you left off', fr: 'Reprendre là où vous en étiez' },
     'ot':          { rn: 'Isezerano rya Kera', en: 'Old Testament', fr: 'Ancien Testament' },
     'nt':          { rn: 'Isezerano Rishasha', en: 'New Testament', fr: 'Nouveau Testament' },
@@ -1818,11 +1823,11 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 
     // ---- search and book lists
     'search.ph':     { rn: 'Rondera ijambo canke umurongo...',
-                       en: function(){ return textLang() === 'fr' ? 'Search a French word or verse…' : 'Search a Kirundi word or verse…'; },
-                       fr: function(){ return textLang() === 'fr' ? 'Rechercher un mot ou un verset en français…' : 'Rechercher un mot ou un verset en kirundi…'; } },
+                       en: function(){ return 'Search ' + ({ rn: 'a Kirundi', en: 'an English', fr: 'a French' }[textLang()]) + ' word or verse…'; },
+                       fr: function(){ return 'Rechercher un mot ou un verset en ' + ({ rn: 'kirundi', en: 'anglais', fr: 'français' }[textLang()]) + '…'; } },
     'search.hint':   { rn: 'Andika ijambo ushaka gushaka.',
-                       en: function(){ return textLang() === 'fr' ? 'Type the word you are looking for (the text is in French).' : 'Type the word you are looking for (the text is in Kirundi).'; },
-                       fr: function(){ return textLang() === 'fr' ? 'Saisissez le mot recherché (le texte est en français).' : 'Saisissez le mot recherché (le texte est en kirundi).'; } },
+                       en: function(){ return 'Type the word you are looking for (the text is in ' + ({ rn: 'Kirundi', en: 'English', fr: 'French' }[textLang()]) + ').'; },
+                       fr: function(){ return 'Saisissez le mot recherché (le texte est en ' + ({ rn: 'kirundi', en: 'anglais', fr: 'français' }[textLang()]) + ').'; } },
     'search.busy':   { rn: 'Birimo gushakishwa...', en: 'Searching…', fr: 'Recherche…' },
     'search.none':   { rn: 'Nta kintu caboneste.', en: 'Nothing found.', fr: 'Aucun résultat.' },
     'book.chapters': { rn: function(p){ return p.n + ' ' + (p.n === 1 ? 'igice' : 'ibice'); },
@@ -1845,12 +1850,13 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     'lang.group':    { rn: 'Ururimi (Language)', en: 'Language', fr: 'Langue' },
     'lang.choose':   { rn: 'Hitamwo ururimi', en: 'Hitamwo ururimi', fr: 'Hitamwo ururimi' },
     'lang.chooseSub': { rn: 'Choose your language · Choisissez votre langue', en: 'Choose your language · Choisissez votre langue', fr: 'Choose your language · Choisissez votre langue' },
-    'lang.note':     { rn: 'Amajwi aguma ari mu Kirundi. Umwandiko wa Bibiliya ushobora kuba mu Kirundi canke mu Gifaransa (Icongereza kiraza).',
-                       en: 'Menus and messages follow the language you choose. The Bible text can be in Kirundi or French (English is coming). The audio is always in Kirundi.',
-                       fr: 'Les menus et les messages suivent la langue choisie. Le texte de la Bible peut être en kirundi ou en français (l’anglais viendra). L’audio reste toujours en kirundi.' },
+    'lang.note':     { rn: 'Amajwi aguma ari mu Kirundi. Umwandiko wa Bibiliya ushobora kuba mu Kirundi, mu Congereza canke mu Gifaransa.',
+                       en: 'Menus and messages follow the language you choose. The Bible text can be in Kirundi, English or French. The audio is always in Kirundi.',
+                       fr: 'Les menus et les messages suivent la langue choisie. Le texte de la Bible peut être en kirundi, en anglais ou en français. L’audio reste toujours en kirundi.' },
     'lang.textGroup': { rn: 'Ururimi rw’umwandiko wa Bibiliya', en: 'Bible text language', fr: 'Langue du texte biblique' },
     'lang.textAuto': { rn: 'Nk’ururimi rwatoranijwe', en: 'Same as app language', fr: 'Comme la langue de l’application' },
     'text.toFr':     { rn: 'Umwandiko wa Bibiliya ubu uri mu Gifaransa. Amajwi aguma ari mu Kirundi.', en: 'Bible text is now in French. The audio stays in Kirundi.', fr: 'Texte de la Bible en français. L’audio reste en kirundi.' },
+    'text.toEn':     { rn: 'Umwandiko wa Bibiliya ubu uri mu Congereza. Amajwi aguma ari mu Kirundi.', en: 'Bible text is now in English. The audio stays in Kirundi.', fr: 'Texte de la Bible en anglais. L’audio reste en kirundi.' },
     'text.toRn':     { rn: 'Umwandiko wa Bibiliya ubu uri mu Kirundi.', en: 'Bible text is now in Kirundi.', fr: 'Texte de la Bible en kirundi.' },
 
     // ---- downloads (offline)
@@ -1932,10 +1938,10 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // Which language the Bible text is shown in. Picking a language ('auto') puts the text in it too
   // when we have the text in that language; it can also be set by hand. The audio is always Kirundi
   // and the chapters and verses are numbered as in the Kirundi Bible, in every language.
-  var TEXT_AVAILABLE = { rn: true, fr: true };           // English text: coming
+  var TEXT_AVAILABLE = { rn: true, en: true, fr: true };
   var TEXT_PREF = (function(){
     var s = safeGet('textLang');
-    return (s === 'rn' || s === 'fr') ? s : 'auto';
+    return (s === 'rn' || s === 'en' || s === 'fr') ? s : 'auto';
   })();
   function textLang(){
     var t = TEXT_PREF === 'auto' ? LANG : TEXT_PREF;
@@ -2010,9 +2016,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       });
     });
   }
-  // "Bible text language": same as the app language, or Kirundi, or French
+  // "Bible text language": same as the app language, or Kirundi, English or French
   function textLangButtonsHtml(){
-    return ['auto', 'rn', 'fr'].map(function(c){
+    return ['auto', 'rn', 'en', 'fr'].map(function(c){
       var name = c === 'auto' ? tx('lang.textAuto') : LANG_NAMES[c];
       return '<button class="lang-opt' + (TEXT_PREF === c ? ' sel' : '') + '" data-text="' + c + '"' + (c === 'auto' ? '' : ' lang="' + c + '"') + '>' +
         (c === 'auto' ? '<span class="flag" aria-hidden="true">&#8596;&#xFE0E;</span>' : flagHtml(c)) + '<span class="lo-name">' + esc(name) + '</span></button>';
@@ -2034,7 +2040,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     if (textLang() !== before) textLangChanged(!(state.sheet && state.sheet.view === 'langfirst'));
   }
   function setTextPref(pref){
-    if (pref !== 'auto' && pref !== 'rn' && pref !== 'fr') return;
+    if (pref !== 'auto' && pref !== 'rn' && pref !== 'en' && pref !== 'fr') return;
     var before = textLang();
     TEXT_PREF = pref; safeSet('textLang', pref);
     applyLanguage();
@@ -2047,7 +2053,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     try { rerenderCurrentChapter(); } catch(e){}
     try { ensureSearchIndex(textLang()).catch(function(){}); } catch(e){}
     try { saveAllTextQuietly(); } catch(e){}
-    if (announce){ try { showToast(tx(textLang() === 'fr' ? 'text.toFr' : 'text.toRn'), 3200); } catch(e){} }
+    if (announce){ try { showToast(tx({ fr: 'text.toFr', en: 'text.toEn' }[textLang()] || 'text.toRn'), 3200); } catch(e){} }
   }
   function refreshDailyBanner(){
     if (els.dailyBanner.hidden) return;
@@ -2311,7 +2317,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         o.text = tc.v[i];
         return o;
       });
-      nc.headings = tc.t ? [{ before_verse: rc.verses[0].n, text: tc.t }] : [];
+      nc.headings = tc.h ? tc.h.map(function(h){ var o = { before_verse: h[0], text: h[1] }; if (h[2]) o.sub = true; return o; })
+                  : (tc.t ? [{ before_verse: rc.verses[0].n, text: tc.t }] : []);
       out.chapters[c] = nc;
     });
     return out;
@@ -2409,13 +2416,13 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       (ch.headings || []).forEach(function(h){
         var key = h.before_verse == null ? 'end' : h.before_verse;
         headingsByVerse[key] = headingsByVerse[key] || [];
-        headingsByVerse[key].push(h.text);
+        headingsByVerse[key].push(h);
       });
 
       ch.verses.forEach(function(v, i){
         if (headingsByVerse[v.n]){
-          headingsByVerse[v.n].forEach(function(t){
-            html += '<div class="heading">' + esc(t) + '</div>';
+          headingsByVerse[v.n].forEach(function(h){
+            html += '<div class="heading' + (h.sub ? ' sub' : '') + '">' + esc(h.text) + '</div>';
           });
         }
         var key = markKey(code, chNum, v.n);
@@ -2434,8 +2441,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         html += '</span>';
       });
       if (headingsByVerse['end']){
-        headingsByVerse['end'].forEach(function(t){
-          html += '<div class="heading">' + esc(t) + '</div>';
+        headingsByVerse['end'].forEach(function(h){
+          html += '<div class="heading' + (h.sub ? ' sub' : '') + '">' + esc(h.text) + '</div>';
         });
       }
 
@@ -4642,6 +4649,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
           'The original work by Biblica, Inc. is available for free at ' +
           '<a href="https://www.biblica.com" target="_blank" rel="noopener">biblica.com</a> and ' +
           '<a href="https://open.bible" target="_blank" rel="noopener">open.bible</a>.' +
+          '<br><br>' +
+          'English Bible text: <strong>Berean Standard Bible</strong> (BSB), public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a>' +
           '<br><br>' +
           'French Bible text: <strong>J. N. Darby</strong> (traduction française, <em>La Bible</em>), public domain.' +
           '<br><br>' +
