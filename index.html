@@ -1472,8 +1472,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     audioAvailable: false,
     selectedIdx: -1,
     marks: {},
-    searchIndex: null,
-    searchIndexLoading: null,
+    searchIndex: {},            // one per Bible-text language
+    searchIndexLoading: {},
     pendingAutoplay: false,
     sheet: null,              // { view, params } while a sheet is open
     loadFail: null,           // { code, ch } while the "no internet" page is showing
@@ -1693,7 +1693,10 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 
     // ---- home
     'home.subtitle': { rn: 'Mu Kirundi', en: 'In Kirundi', fr: 'En kirundi' },
-    'home.tagline': { rn: 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.', en: 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.', fr: 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.' },
+    'home.tagline': {
+      rn: function(){ return textLang() === 'fr' ? 'Soma kandi wumve Ijambo ry’Imana. Amajwi ari mu Kirundi, umwandiko uri mu Gifaransa.' : 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.'; },
+      en: function(){ return textLang() === 'fr' ? 'Read and listen to the Word of God. The audio is in Kirundi; the text is in French.' : 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.'; },
+      fr: function(){ return textLang() === 'fr' ? 'Lisez et écoutez la Parole de Dieu. L’audio est en kirundi ; le texte est en français.' : 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.'; } },
     'home.resume': { rn: 'Subira aho War’ugeze', en: 'Continue where you left off', fr: 'Reprendre là où vous en étiez' },
     'ot':          { rn: 'Isezerano rya Kera', en: 'Old Testament', fr: 'Ancien Testament' },
     'nt':          { rn: 'Isezerano Rishasha', en: 'New Testament', fr: 'Nouveau Testament' },
@@ -1814,8 +1817,12 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     'note.saved':    { rn: 'Icatwa cabitswe', en: 'Note saved', fr: 'Note enregistrée' },
 
     // ---- search and book lists
-    'search.ph':     { rn: 'Rondera ijambo canke umurongo...', en: 'Search a Kirundi word or verse…', fr: 'Rechercher un mot ou un verset en kirundi…' },
-    'search.hint':   { rn: 'Andika ijambo ushaka gushaka.', en: 'Type the word you are looking for (the text is in Kirundi).', fr: 'Saisissez le mot recherché (le texte est en kirundi).' },
+    'search.ph':     { rn: 'Rondera ijambo canke umurongo...',
+                       en: function(){ return textLang() === 'fr' ? 'Search a French word or verse…' : 'Search a Kirundi word or verse…'; },
+                       fr: function(){ return textLang() === 'fr' ? 'Rechercher un mot ou un verset en français…' : 'Rechercher un mot ou un verset en kirundi…'; } },
+    'search.hint':   { rn: 'Andika ijambo ushaka gushaka.',
+                       en: function(){ return textLang() === 'fr' ? 'Type the word you are looking for (the text is in French).' : 'Type the word you are looking for (the text is in Kirundi).'; },
+                       fr: function(){ return textLang() === 'fr' ? 'Saisissez le mot recherché (le texte est en français).' : 'Saisissez le mot recherché (le texte est en kirundi).'; } },
     'search.busy':   { rn: 'Birimo gushakishwa...', en: 'Searching…', fr: 'Recherche…' },
     'search.none':   { rn: 'Nta kintu caboneste.', en: 'Nothing found.', fr: 'Aucun résultat.' },
     'book.chapters': { rn: function(p){ return p.n + ' ' + (p.n === 1 ? 'igice' : 'ibice'); },
@@ -1838,7 +1845,13 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     'lang.group':    { rn: 'Ururimi (Language)', en: 'Language', fr: 'Langue' },
     'lang.choose':   { rn: 'Hitamwo ururimi', en: 'Hitamwo ururimi', fr: 'Hitamwo ururimi' },
     'lang.chooseSub': { rn: 'Choose your language · Choisissez votre langue', en: 'Choose your language · Choisissez votre langue', fr: 'Choose your language · Choisissez votre langue' },
-    'lang.note':     { rn: 'Ivyanditswe n’amajwi bizoguma mu Kirundi.', en: 'This changes the app’s menus and messages. The Bible text and audio stay in Kirundi.', fr: 'Cela change les menus et les messages de l’application. Le texte de la Bible et l’audio restent en kirundi.' },
+    'lang.note':     { rn: 'Amajwi aguma ari mu Kirundi. Umwandiko wa Bibiliya ushobora kuba mu Kirundi canke mu Gifaransa (Icongereza kiraza).',
+                       en: 'Menus and messages follow the language you choose. The Bible text can be in Kirundi or French (English is coming). The audio is always in Kirundi.',
+                       fr: 'Les menus et les messages suivent la langue choisie. Le texte de la Bible peut être en kirundi ou en français (l’anglais viendra). L’audio reste toujours en kirundi.' },
+    'lang.textGroup': { rn: 'Ururimi rw’umwandiko wa Bibiliya', en: 'Bible text language', fr: 'Langue du texte biblique' },
+    'lang.textAuto': { rn: 'Nk’ururimi rwatoranijwe', en: 'Same as app language', fr: 'Comme la langue de l’application' },
+    'text.toFr':     { rn: 'Umwandiko wa Bibiliya ubu uri mu Gifaransa. Amajwi aguma ari mu Kirundi.', en: 'Bible text is now in French. The audio stays in Kirundi.', fr: 'Texte de la Bible en français. L’audio reste en kirundi.' },
+    'text.toRn':     { rn: 'Umwandiko wa Bibiliya ubu uri mu Kirundi.', en: 'Bible text is now in Kirundi.', fr: 'Texte de la Bible en kirundi.' },
 
     // ---- downloads (offline)
     'dlSheet.title': { rn: 'Downloads', en: 'Downloads', fr: 'Téléchargements' },
@@ -1916,6 +1929,19 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     var s = safeGet('lang');
     return LANGS.indexOf(s) !== -1 ? s : 'rn';
   })();
+  // Which language the Bible text is shown in. Picking a language ('auto') puts the text in it too
+  // when we have the text in that language; it can also be set by hand. The audio is always Kirundi
+  // and the chapters and verses are numbered as in the Kirundi Bible, in every language.
+  var TEXT_AVAILABLE = { rn: true, fr: true };           // English text: coming
+  var TEXT_PREF = (function(){
+    var s = safeGet('textLang');
+    return (s === 'rn' || s === 'fr') ? s : 'auto';
+  })();
+  function textLang(){
+    var t = TEXT_PREF === 'auto' ? LANG : TEXT_PREF;
+    return TEXT_AVAILABLE[t] ? t : 'rn';
+  }
+  function textUrl(tl, file){ return 'data/' + (tl === 'rn' ? '' : tl + '/') + file; }
   // What the phone itself is set to (used only for a shared-verse link, where
   // we do not stop the person to ask).
   function detectLang(){
@@ -1977,19 +2003,69 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     }).join('');
   }
   function wireLangButtons(root, after){
-    Array.prototype.forEach.call(root.querySelectorAll('.lang-opt'), function(b){
+    Array.prototype.forEach.call(root.querySelectorAll('.lang-opt[data-lang]'), function(b){
       b.addEventListener('click', function(){
         setLanguage(b.getAttribute('data-lang'));
         if (after) after();
       });
     });
   }
+  // "Bible text language": same as the app language, or Kirundi, or French
+  function textLangButtonsHtml(){
+    return ['auto', 'rn', 'fr'].map(function(c){
+      var name = c === 'auto' ? tx('lang.textAuto') : LANG_NAMES[c];
+      return '<button class="lang-opt' + (TEXT_PREF === c ? ' sel' : '') + '" data-text="' + c + '"' + (c === 'auto' ? '' : ' lang="' + c + '"') + '>' +
+        (c === 'auto' ? '<span class="flag" aria-hidden="true">&#8596;&#xFE0E;</span>' : flagHtml(c)) + '<span class="lo-name">' + esc(name) + '</span></button>';
+    }).join('');
+  }
+  function wireTextButtons(root){
+    Array.prototype.forEach.call(root.querySelectorAll('.lang-opt[data-text]'), function(b){
+      b.addEventListener('click', function(){ setTextPref(b.getAttribute('data-text')); });
+    });
+  }
 
   function setLanguage(code){
     if (LANGS.indexOf(code) === -1) return;
+    var before = textLang();
     LANG = code;
     safeSet('lang', code);
+    TEXT_PREF = 'auto'; safeSet('textLang', 'auto');      // choosing a language puts the Bible text in it too (when we have it)
     applyLanguage();
+    if (textLang() !== before) textLangChanged(!(state.sheet && state.sheet.view === 'langfirst'));
+  }
+  function setTextPref(pref){
+    if (pref !== 'auto' && pref !== 'rn' && pref !== 'fr') return;
+    var before = textLang();
+    TEXT_PREF = pref; safeSet('textLang', pref);
+    applyLanguage();
+    if (textLang() !== before) textLangChanged(true);
+  }
+  // The Bible text changed language: everything that shows verse text is redrawn.
+  function textLangChanged(announce){
+    try { renderHomeHero(); } catch(e){}
+    try { refreshDailyBanner(); } catch(e){}
+    try { rerenderCurrentChapter(); } catch(e){}
+    try { ensureSearchIndex(textLang()).catch(function(){}); } catch(e){}
+    try { saveAllTextQuietly(); } catch(e){}
+    if (announce){ try { showToast(tx(textLang() === 'fr' ? 'text.toFr' : 'text.toRn'), 3200); } catch(e){} }
+  }
+  function refreshDailyBanner(){
+    if (els.dailyBanner.hidden) return;
+    resolveDailyVerse().then(function(d){ els.dbVerseText.textContent = d.text; }).catch(function(){});
+  }
+  function rerenderCurrentChapter(){
+    if (!state.code || !state.chapter) return;
+    var code = state.code, ch = state.chapter, idx = state.activeVerseIdx, main = els.main, top = main ? main.scrollTop : 0;
+    renderChapter(code, ch).then(function(){
+      if (main) main.scrollTop = top;
+      if (idx >= 0 && idx < state.verses.length) setActiveVerse(idx);
+    }, function(){
+      if (state.code !== code || state.chapter !== ch) return;
+      state.verses = []; state.activeVerseIdx = -1; state.selectedIdx = -1;
+      hideVerseActionBar();
+      state.loadFail = { code: code, ch: ch };
+      showLoadFail();
+    });
   }
   // Re-draws everything that is already on screen in the chosen language.
   function applyLanguage(initial){
@@ -2210,11 +2286,45 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     });
   }
 
-  function loadBook(code){
+  // The Kirundi book carries the chapter/verse structure and the audio times.
+  function loadBookRn(code){
     if (state.bookCache[code]) return Promise.resolve(state.bookCache[code]);
     return fetchDataJson('data/books/' + code + '.json').then(function(book){
       state.bookCache[code] = book;
       return book;
+    });
+  }
+  // The Bible text in another language is laid over the Kirundi structure, verse for verse
+  // (same verse numbers, same audio times), so everything else in the app works unchanged.
+  // Only the Psalm titles are kept as headings; the Kirundi section headings belong to the Kirundi text.
+  function mergeBookText(rn, tr){
+    var out = {}, k;
+    for (k in rn) if (k !== 'chapters') out[k] = rn[k];
+    out.chapters = {};
+    Object.keys(rn.chapters).forEach(function(c){
+      var rc = rn.chapters[c], tc = tr && tr.chapters && tr.chapters[c];
+      if (!tc || !tc.v || tc.v.length !== rc.verses.length){ out.chapters[c] = rc; return; }
+      var nc = {};
+      for (k in rc) if (k !== 'verses' && k !== 'headings') nc[k] = rc[k];
+      nc.verses = rc.verses.map(function(v, i){
+        var o = {}; for (k in v) o[k] = v[k];
+        o.text = tc.v[i];
+        return o;
+      });
+      nc.headings = tc.t ? [{ before_verse: rc.verses[0].n, text: tc.t }] : [];
+      out.chapters[c] = nc;
+    });
+    return out;
+  }
+  function loadBook(code){
+    var tl = textLang();
+    if (tl === 'rn') return loadBookRn(code);
+    var key = tl + ':' + code;
+    if (state.bookCache[key]) return Promise.resolve(state.bookCache[key]);
+    return Promise.all([loadBookRn(code), fetchDataJson(textUrl(tl, 'books/' + code + '.json'))]).then(function(a){
+      var merged = mergeBookText(a[0], a[1]);
+      state.bookCache[key] = merged;
+      return merged;
     });
   }
 
@@ -2316,7 +2426,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         html += '<span class="vnum">' + v.n + '</span>';
         if (mark && mark.bookmark) html += '<span class="mk-star">&#9733;</span>';
         if (mark && mark.note && mark.note.trim()) html += '<span class="mk-note">&#9998;</span>';
-        if (i === 0 && v.text){
+        if (i === 0 && v.text && /^[A-Za-zÀ-ÖØ-öø-ÿŒœ]/.test(v.text)){
           html += '<span class="dropcap">' + esc(v.text.charAt(0)) + '</span>' + esc(v.text.slice(1)) + ' ';
         } else {
           html += esc(v.text) + ' ';
@@ -3254,7 +3364,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function scheduleDailyReminders(){
     var LN = notifPlugin();
     if (!LN) return Promise.resolve(false);
-    return fetch('data/daily-verses.json').then(function(r){ return r.json(); }).then(function(verses){
+    return fetch(textUrl(textLang(), 'daily-verses.json')).then(function(r){ return r.json(); }).then(function(verses){
       var now = new Date(), list = [], i;
       for (i = 0; i < NOTIF_DAYS + 1 && list.length < NOTIF_DAYS; i++){
         var when = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, NOTIF_HOUR, NOTIF_MINUTE, 0);
@@ -3293,7 +3403,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function sendTestReminder(){
     var LN = notifPlugin();
     if (!LN) return Promise.resolve();
-    return fetch('data/daily-verses.json').then(function(r){ return r.json(); }).then(function(verses){
+    return fetch(textUrl(textLang(), 'daily-verses.json')).then(function(r){ return r.json(); }).then(function(verses){
       var v = verses[dayOfYearFor(new Date()) % verses.length];
       return LN.schedule({ notifications: [{
         id: NOTIF_ID_BASE - 1,
@@ -3620,14 +3730,22 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   var offlineProg = null;     // { done, total } for the progress bar
   var bookSizeCache = {};
 
+  // A book's saved text: the Kirundi book (verse structure and audio times) plus,
+  // when the Bible text is shown in another language, that language's text.
+  function textUrlsFor(code){
+    var urls = ['data/books/' + code + '.json'], tl = textLang();
+    if (tl !== 'rn') urls.push(textUrl(tl, 'books/' + code + '.json'));
+    return urls;
+  }
   function offlineText(code){
     if (!hasCaches) return Promise.resolve();
-    var url = 'data/books/' + code + '.json';
     return caches.open(OFFLINE_CACHE).then(function(cache){
-      return cache.match(url).then(function(hit){
-        if (hit) return;
-        return fetch(url).then(function(resp){ if (resp.ok) return cache.put(url, resp); });
-      });
+      return Promise.all(textUrlsFor(code).map(function(url){
+        return cache.match(url).then(function(hit){
+          if (hit) return;
+          return fetch(url).then(function(resp){ if (resp.ok) return cache.put(url, resp); });
+        });
+      }));
     });
   }
   // resolves 'have' | 'cached' | 'missing'; rejects when the network fails
@@ -3719,13 +3837,15 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // The whole Bible text (not the audio) is small, so it is saved to the phone
   // once, quietly, after the first visit. Then every chapter can be read with no
   // internet. (About 1.8 MB over the network in total.)
-  var TEXT_ALL_KEY = 'textAllSaved';
+  function textAllKey(){ var tl = textLang(); return tl === 'rn' ? 'textAllSaved' : 'textAllSaved_' + tl; }
   var textSaveJob = false;
   function savedTextCount(){
     if (!hasCaches || !state.index) return Promise.resolve(0);
     return caches.open(OFFLINE_CACHE).then(function(cache){
       return Promise.all(state.index.books.map(function(b){
-        return cache.match('data/books/' + b.code + '.json').then(function(r){ return r ? 1 : 0; });
+        return Promise.all(textUrlsFor(b.code).map(function(u){
+          return cache.match(u).then(function(r){ return r ? 1 : 0; });
+        })).then(function(a){ return a.every(function(x){ return x; }) ? 1 : 0; });
       }));
     }).then(function(a){ return a.reduce(function(x, y){ return x + y; }, 0); }, function(){ return 0; });
   }
@@ -3743,12 +3863,12 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     return Promise.all([worker(), worker()]).then(savedTextCount).then(function(n){
       textSaveJob = false;
       var all = n >= state.index.books.length;
-      if (all) safeSet(TEXT_ALL_KEY, '1');
+      if (all) safeSet(textAllKey(), '1');
       return all;
     });
   }
   function saveAllTextQuietly(){
-    if (!hasCaches || safeGet(TEXT_ALL_KEY) === '1') return;
+    if (!hasCaches || safeGet(textAllKey()) === '1') return;
     try { if (navigator.connection && navigator.connection.saveData) return; } catch(e){}
     setTimeout(function(){
       if (navigator.onLine === false) return;
@@ -4523,6 +4643,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
           '<a href="https://www.biblica.com" target="_blank" rel="noopener">biblica.com</a> and ' +
           '<a href="https://open.bible" target="_blank" rel="noopener">open.bible</a>.' +
           '<br><br>' +
+          'French Bible text: <strong>J. N. Darby</strong> (traduction française, <em>La Bible</em>), public domain.' +
+          '<br><br>' +
           'This reader is an independent, unofficial derivative work: the text has been ' +
           'reformatted for verse-synced audio playback and combined with separately ' +
           'produced audio recordings. It is not published or endorsed by Biblica, Inc.' +
@@ -4642,6 +4764,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     if (view === 'language'){
       return sheetHead('lang.title', 'lang.sub') +
         '<div class="lang-row lang-col">' + langButtonsHtml() + '</div>' +
+        '<p class="appr-label" style="margin:22px 0 8px">' + th('lang.textGroup') + '</p>' +
+        '<div class="lang-row lang-col">' + textLangButtonsHtml() + '</div>' +
         '<p class="pc-sub" style="margin-top:14px">' + th('lang.note') + '</p>' +
         '<div class="close-row"><button class="done" id="sheetDone">' + th('done') + '</button></div>';
     }
@@ -4840,6 +4964,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     if (view === 'versepic') mountVersePicSheet(p);
 
     if (view === 'language' || view === 'appearance') wireLangButtons(els.sheet);
+    if (view === 'language') wireTextButtons(els.sheet);
 
     if (view === 'appearance'){
       var sizeBtns = els.sheet.querySelectorAll('.appr-size-btn');
@@ -4986,27 +5111,67 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   }
 
   // ---------- search ----------
-  function ensureSearchIndex(){
-    if (state.searchIndex) return Promise.resolve(state.searchIndex);
-    if (state.searchIndexLoading) return state.searchIndexLoading;
-    state.searchIndexLoading = fetchDataJson('data/search-index.json').then(function(idx){
-      state.searchIndex = idx;
+  function ensureSearchIndex(tl){
+    tl = tl || textLang();
+    if (state.searchIndex[tl]) return Promise.resolve(state.searchIndex[tl]);
+    if (state.searchIndexLoading[tl]) return state.searchIndexLoading[tl];
+    state.searchIndexLoading[tl] = fetchDataJson(textUrl(tl, 'search-index.json')).then(function(idx){
+      state.searchIndex[tl] = idx;
+      if (tl !== 'rn') prefoldIndex(idx);
       return idx;
     }, function(err){
-      state.searchIndexLoading = null;     // allow another try later
+      state.searchIndexLoading[tl] = null;     // allow another try later
       throw err;
     });
-    return state.searchIndexLoading;
+    return state.searchIndexLoading[tl];
+  }
+
+  // French search ignores capitals and accents (é = e, œ = oe, ’ = '), so "Eternel" finds "Éternel".
+  var FOLD_MAP = { 'œ': 'oe', 'Œ': 'oe', 'æ': 'ae', 'Æ': 'ae', '’': "'", '‘': "'", '\u00a0': ' ', '\u202f': ' ' };
+  function foldInfo(str, wantMap){
+    var f = '', m = wantMap ? [] : null, i, ch, d, k;
+    for (i = 0; i < str.length; i++){
+      ch = str.charAt(i);
+      d = FOLD_MAP[ch];
+      if (d === undefined){
+        d = ch.toLowerCase();
+        if (d.charCodeAt(0) > 127 && d.normalize) d = d.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      }
+      f += d;
+      if (m) for (k = 0; k < d.length; k++) m.push(i);
+    }
+    return wantMap ? { f: f, m: m } : f;
+  }
+  // folds every verse once, in small steps, so the first search is quick
+  function prefoldIndex(idx){
+    var i = 0;
+    (function step(){
+      var end = Math.min(idx.length, i + 2500);
+      for (; i < end; i++) if (!idx[i]._f) idx[i]._f = foldInfo(idx[i].x);
+      if (i < idx.length) setTimeout(step, 25);
+    })();
+  }
+  // the verse text with the found word marked (works on the original spelling)
+  function highlightFolded(text, needle){
+    var fi = foldInfo(text, true), f = fi.f, m = fi.m, out = '', pos = 0, from = 0, at, s0, e0;
+    while ((at = f.indexOf(needle, from)) !== -1){
+      s0 = m[at]; e0 = m[at + needle.length - 1] + 1;
+      if (s0 < pos){ from = at + 1; continue; }
+      out += esc(text.slice(pos, s0)) + '<mark>' + esc(text.slice(s0, e0)) + '</mark>';
+      pos = e0; from = at + needle.length;
+    }
+    return out + esc(text.slice(pos));
   }
 
   function runSearch(q, resultsEl){
     resultsEl.innerHTML = '<p class="search-status">' + th('search.busy') + '</p>';
-    ensureSearchIndex().then(function(idx){
-      var needle = q.toLowerCase().replace(/[’‘]/g, "'");
+    var tl = textLang(), folded = (tl !== 'rn');
+    ensureSearchIndex(tl).then(function(idx){
+      var needle = folded ? foldInfo(q.replace(/\s+/g, ' ').trim()) : q.toLowerCase().replace(/[’‘]/g, "'");
       var out = [];
-      for (var i=0;i<idx.length && out.length<80;i++){
+      for (var i=0;i<idx.length && out.length<80 && needle;i++){
         var row = idx[i];
-        var hay = row.x.toLowerCase().replace(/[’‘]/g, "'");
+        var hay = folded ? (row._f || (row._f = foldInfo(row.x))) : row.x.toLowerCase().replace(/[’‘]/g, "'");
         if (hay.indexOf(needle) !== -1) out.push(row);
       }
       if (!out.length){
@@ -5014,9 +5179,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         return;
       }
       var reNeedle = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      var re = new RegExp('(' + reNeedle + ')', 'ig');
+      var re = folded ? null : new RegExp('(' + reNeedle + ')', 'ig');
       resultsEl.innerHTML = out.map(function(row){
-        var snippet = esc(row.x).replace(re, '<mark>$1</mark>');
+        var snippet = folded ? highlightFolded(row.x, needle) : esc(row.x).replace(re, '<mark>$1</mark>');
         return '' +
           '<div class="search-result" data-code="' + row.c + '" data-ch="' + row.n + '" data-vn="' + row.v + '">' +
             '<div class="sr-ref">' + esc(row.t) + ' ' + row.n + ':' + row.v + '</div>' +
