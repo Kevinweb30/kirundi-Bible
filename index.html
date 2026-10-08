@@ -1246,7 +1246,7 @@ main{
     </button>
     <button class="home-tile" id="homeTileDownloads">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-      <span>Gukura</span>
+      <span>Gukwega</span>
     </button>
     <button class="home-tile" id="homeTileAppearance">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
@@ -1281,7 +1281,7 @@ main{
       </li>
       <li class="menu-row" id="dRowDownloads">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-        <span class="ml-label">Gukura ngo wumve udafise internet</span>
+        <span class="ml-label">Gukwega ngo wumve udafise internet</span>
       </li>
       <li class="menu-row" id="dRowAppearance">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
@@ -1373,7 +1373,7 @@ main{
           </svg>
         </button>
       </div>
-      <button class="dl-btn" id="dlBtn" aria-label="Kuramwo kugira wumve udafise internet">
+      <button class="dl-btn" id="dlBtn" aria-label="Kwega kugira wumve udafise internet">
         <svg id="dlIconDown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
         <svg id="dlIconDone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M20 6 9 17l-5-5"/></svg>
       </button>
@@ -2201,8 +2201,8 @@ main{
     buildVerseCardBlob(text, ref, bgUrl).then(function(blob){
       downloadOrShareBlob(mode, blob, statusElId);
     }).catch(function(){
-      if (statusEl) statusEl.textContent = 'Ntibyakunze. Gerageza ukundi.';
-      showToast('Ntibyakunze. Gerageza ukundi.');
+      if (statusEl) statusEl.textContent = 'Ntivyakunze. Gerageza ukundi.';
+      showToast('Ntivyakunze. Gerageza ukundi.');
     });
   }
 
@@ -2511,8 +2511,8 @@ main{
           '<button class="secondary" id="planDoneBtn">Nasomye uno musi</button>' +
         '</div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:10px">' +
-          '<button class="secondary dl-start" id="planDlToday">Kuramwo ivyo gusoma uno musi</button>' +
-          '<button class="secondary dl-start" id="planDlWeek">Kuramwo imisi 7</button>' +
+          '<button class="secondary dl-start" id="planDlToday">Kwega ivyo gusoma uno musi</button>' +
+          '<button class="secondary dl-start" id="planDlWeek">Kwega imisi 7</button>' +
         '</div>' + dlProgBoxHtml() +
         '<p class="pc-sub" id="planDlStatus" style="margin:8px 0 0"></p>';
     }
@@ -2664,7 +2664,7 @@ main{
         curUrl = URL.createObjectURL(b);
         wrap.innerHTML = '<img alt="" src="' + curUrl + '">';
       }).catch(function(){
-        if (mySeq === seq) wrap.innerHTML = '<p class="daily-img-loading">Ntibyakunze. Gerageza ukundi.</p>';
+        if (mySeq === seq) wrap.innerHTML = '<p class="daily-img-loading">Ntivyakunze. Gerageza ukundi.</p>';
       });
     }
     Array.prototype.forEach.call(bgsEl.children, function(b){
@@ -2674,8 +2674,8 @@ main{
       var st = document.getElementById('vpStatus');
       if (st) st.textContent = 'Turiko turategura ifoto...';
       getBlob().then(function(b){ downloadOrShareBlob(mode, b, 'vpStatus'); }).catch(function(){
-        if (st) st.textContent = 'Ntibyakunze. Gerageza ukundi.';
-        showToast('Ntibyakunze. Gerageza ukundi.');
+        if (st) st.textContent = 'Ntivyakunze. Gerageza ukundi.';
+        showToast('Ntivyakunze. Gerageza ukundi.');
       });
     }
     document.getElementById('vpShare').addEventListener('click', function(){ act('share'); });
@@ -2923,7 +2923,7 @@ main{
     }, { once: true });
     var p = va.play();
     if (p && typeof p.catch === 'function'){
-      p.catch(function(){ setVersePlayUi(false); showToast('Ntibyakunze. Gerageza ukundi.'); });
+      p.catch(function(){ setVersePlayUi(false); showToast('Ntivyakunze. Gerageza ukundi.'); });
     }
   });
 
@@ -3043,7 +3043,7 @@ main{
         if (audioPathFor(state.code, state.chapter) === url) refreshDownloadButton();
         if (safeGet('autoSaveTold') !== '1'){
           safeSet('autoSaveTold', '1');
-          showToast('Ijwi urimo kuyumviriza ribitswe kuri telefone. Uzaryumvirize udafise internet.', 4200);
+          showToast('Ijwi uriko urumviriza, ribitswe kuri telephone. Uzoryumviriza udafise internet.', 4200);
         }
       }).catch(function(){});
     }).then(function(){ delete autoSaving[url]; }, function(){ delete autoSaving[url]; });
@@ -3139,14 +3139,14 @@ main{
     if (!offlineJob || !offlineProg){ box.hidden = true; return; }
     box.hidden = false;
     document.getElementById('dlProgFill').style.width = Math.round(offlineProg.done / offlineProg.total * 100) + '%';
-    document.getElementById('dlProgText').textContent = 'Birimo gukurwa... ' + offlineProg.done + '/' + offlineProg.total;
+    document.getElementById('dlProgText').textContent = 'Biriko birakwega… ' + offlineProg.done + '/' + offlineProg.total;
   }
   function updateDownloadButtons(){
     Array.prototype.forEach.call(document.querySelectorAll('.dl-start'), function(b){ b.disabled = !!offlineJob; });
   }
   function beginOfflineDownload(list){
     if (!hasCaches){ showToast('Iyi telefone ntishobora kubika ibi.'); return; }
-    if (offlineJob){ showToast('Hari ibirimo gukurwa. Tegereza.'); return; }
+    if (offlineJob){ showToast('Biriko birakwega…'); return; }
     if (!list.length) return;
     offlineProg = { done: 0, total: list.length };
     var p = downloadChaptersOffline(list, function(d, t){ offlineProg = { done: d, total: t }; paintOfflineProgress(); });
@@ -3161,8 +3161,8 @@ main{
       if (document.getElementById('planBody')) renderPlanSheet();
       if (res.noNetwork) showToast('Nta internet. Gerageza ukundi.', 3200);
       else if (res.cancelled) showToast('Vyahagaritswe.');
-      else if (res.failed) showToast('Ibice ' + res.failed + ' ntibyakunze. Gerageza ukundi.', 3200);
-      else showToast('Vyarakuwe! Urashobora kubisoma no kubiyumva udafise internet.', 3400);
+      else if (res.failed) showToast('Ibice ' + res.failed + ' ntivyakunze. Gerageza ukundi.', 3200);
+      else showToast('Vyarakwezwe! Urashobora kubisoma no kubiyumva udafise internet.', 3400);
     });
   }
   // The whole Bible text (not the audio) is small, so it is saved to the phone
@@ -3212,10 +3212,10 @@ main{
       var total = state.index.books.length;
       if (!document.getElementById('dlTextStatus')) return;
       if (n >= total){
-        el.textContent = 'Inyandiko yose y\u2019Ibibiliya iri kuri iyi telefone. Urashobora kuyisoma udafise internet.';
+        el.textContent = 'Ivyanditswe vyose vya Bibiliya yera biri muri telephone. Urashobora kubisoma udafise internet.';
         if (btn) btn.hidden = true;
       } else {
-        el.textContent = 'Inyandiko: ibitabo ' + n + ' muri ' + total + ' biri kuri iyi telefone.';
+        el.textContent = 'Ivyanditswe: ibitabo ' + n + ' muri ' + total + ' biri muri telephone.';
         if (btn) btn.hidden = false;
       }
     });
@@ -3280,11 +3280,11 @@ main{
     downloadChapterAudio(url).then(function(){
       autoUnmark(url);
       els.dlBtn.classList.remove('busy');
-      showToast('Vyarakuwe, urashobora kuyumva udafise internet');
+      showToast('Vyarakwezwe, urashobora kuyumva udafise internet');
       refreshDownloadButton();
     }).catch(function(){
       els.dlBtn.classList.remove('busy');
-      showToast('Ntibyakunze. Gerageza ukundi.');
+      showToast('Ntivyakunze. Gerageza ukundi.');
     });
   });
 
@@ -3522,7 +3522,7 @@ main{
   }
 
   var NO_AUDIO_TEXT = 'Nta majwi ahari kuri iki gice (audio not added yet)';
-  var NO_NET_TEXT = 'Nta internet. Kuramwo iki gice (\u2193) ufise internet kugira ukiyumvire udafise internet.';
+  var NO_NET_TEXT = 'Nta internet. Kwega iki gice (\u2193) ufise internet kugira ukiyumvire udafise internet.';
   // Why is there no sound: the recording does not exist, or just no internet?
   function explainNoAudio(){
     var key = audioKey, url = audioPathFor(state.code, state.chapter);
@@ -3807,7 +3807,7 @@ main{
         hideVerseActionBar();
         els.reading.innerHTML = '<div class="load-fail">' +
           '<p><strong>Nta internet.</strong> Iki gice ntikiraba kuri iyi telefone.</p>' +
-          '<p class="lf-sub">Ongera ugerageze iyo ubonye internet. Kugira usome udafise internet, fungura &ldquo;Downloads&rdquo; ukuremwo inyandiko yose.</p>' +
+          '<p class="lf-sub">Ongera ugerageze iyo ubonye internet. Kugira usome udafise internet, ugurura Downloads ukwege ivyanditswe vyose.</p>' +
           '<button class="secondary" id="retryLoad">Ongera ugerageze</button></div>';
         var rb = document.getElementById('retryLoad');
         if (rb) rb.addEventListener('click', function(){ goTo(code, chNum, { noHash: true }); });
@@ -3997,23 +3997,23 @@ main{
         '</div>';
     }
     if (view === 'downloads'){
-      return '<h2>Downloads</h2><p class="sub">Audio uramutse ukuyemwo, urayumviriza udafise internet</p>' +
+      return '<h2>Downloads</h2><p class="sub">Audio iramutse ikuwemwo, urayumviriza udafise internet</p>' +
         '<div class="appr-group">' +
           '<p class="appr-label">Kubika ijwi uyumviriza</p>' +
           '<button class="secondary" id="autoSaveBtn"></button>' +
           '<p class="pc-sub" style="margin:8px 0 0">Igice uyumviriza gihita kibikwa kuri telefone, ubutaha ukiyumvirize udafise internet. Ku nshuro ya mbere bikoresha amakuru y&rsquo;inyongera angana n&rsquo;igice.</p>' +
         '</div>' +
         '<p class="pc-sub" id="dlTextStatus" style="margin:0 0 6px"></p>' +
-        '<button class="secondary" id="dlTextBtn" hidden style="margin-bottom:16px">Kuramwo inyandiko yose</button>' +
+        '<button class="secondary" id="dlTextBtn" hidden style="margin-bottom:16px">Kwega ivyanditswe vyose</button>' +
         '<div class="appr-group">' +
-          '<p class="appr-label">Kuramwo igitabo cose</p>' +
+          '<p class="appr-label">Kwega igitabo cose</p>' +
           '<select id="dlBookSel" aria-label="Igitabo" style="width:100%;flex:none"></select>' +
           '<p class="pc-sub" id="dlBookInfo" style="margin:8px 0 10px"></p>' +
-          '<button class="done dl-start" id="dlBookBtn">Kuramwo igitabo</button>' +
+          '<button class="done dl-start" id="dlBookBtn">Kwega igitabo</button>' +
           '<p class="pc-sub" style="margin:10px 0 0">Koresha WiFi kugira udakoresha amakuru menshi.</p>' +
         '</div>' +
         dlProgBoxHtml() +
-        '<p class="appr-label">Vyamaze gukurwa</p>' +
+        '<p class="appr-label">Vyamaze gukwegwa</p>' +
         '<div id="downloadsBody"><p>...</p></div>';
     }
     if (view === 'search'){
@@ -4087,7 +4087,7 @@ main{
         '<div class="vp-bgs" id="vpBgs"></div>' +
         '<div class="close-row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:4px">' +
           '<button class="done" id="vpShare">Sangiza ifoto</button>' +
-          '<button class="secondary" id="vpSave">Kuramwo ifoto</button>' +
+          '<button class="secondary" id="vpSave">Kwega ifoto</button>' +
         '</div>' +
         '<p id="vpStatus" style="margin-top:12px;font-size:.86rem;color:var(--ink-dim)"></p>';
     }
@@ -4111,7 +4111,7 @@ main{
             '<button class="done" id="dailyReadBtn">Soma mu gitabu</button>' +
             '<button class="secondary" id="dailyDownloadBtn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>' +
-              'Kuramwo ifoto' +
+              'Kwega ifoto' +
             '</button>' +
             '<button class="secondary" id="dailyShareBtn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
@@ -4315,12 +4315,12 @@ main{
     var textBtn = document.getElementById('dlTextBtn');
     if (textBtn) textBtn.addEventListener('click', function(){
       textBtn.disabled = true;
-      textBtn.textContent = 'Birimo gukurwa...';
+      textBtn.textContent = 'Biriko birakwega…';
       saveAllText().then(function(all){
         textBtn.disabled = false;
-        textBtn.textContent = 'Kuramwo inyandiko yose';
+        textBtn.textContent = 'Kwega ivyanditswe vyose';
         paintTextStatus();
-        showToast(all ? 'Inyandiko yose yarakuwe!' : 'Nta internet. Gerageza ukundi.', 2600);
+        showToast(all ? 'Ivyanditswe vyose vyarakwezwe!' : 'Nta internet. Gerageza ukundi.', 2600);
       });
     });
     var sel = document.getElementById('dlBookSel');
@@ -4366,7 +4366,7 @@ main{
         });
       }
       if (!list.length){
-        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracagurwa. Fyonda akamenyetso ko gukura (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
+        body.innerHTML = '<p class="storage-note">...</p><p style="color:var(--ink-dim)">Nta gice kiracagurwa. Fyonda akamenyetso ko gukwega (&darr;) iruhande y’ijwi ry’igice kugira ngo ushobore kugisoma udafise internet.</p>';
         return;
       }
       // one row per book (so a whole downloaded book is a single line)
