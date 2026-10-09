@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bibiliya Yera</title>
+<title>Bibiliya Yera 25</title>
 <style>
 /* ============================================================
    DESIGN PLAN
@@ -1216,9 +1216,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 <div class="home-screen" id="homeScreen">
   <div class="home-header">
     <div class="home-book-icon">
-      <img src="images/bible-cover.jpg" alt="Bibiliya Yera" width="168" height="112">
+      <img src="images/bible-cover.jpg" alt="Bibiliya Yera 25" width="168" height="112">
     </div>
-    <h2 class="home-title">Bibiliya Yera</h2>
+    <h2 class="home-title">Bibiliya Yera 25</h2>
     <p class="home-subtitle" data-i18n="home.subtitle">Mu Kirundi</p>
     <p class="home-tagline" data-i18n="home.tagline">Soma kandi wumve Ijambo ry&rsquo;Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.</p>
   </div>
@@ -1325,7 +1325,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 
 <div class="drawer-backdrop" id="drawerBackdrop">
   <nav class="drawer" id="drawer">
-    <div class="drawer-head"><h2>Bibiliya Yera</h2></div>
+    <div class="drawer-head"><h2>Bibiliya Yera 25</h2></div>
     <ul class="menu-list">
       <li class="menu-row" id="dRowHome">
         <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
@@ -2605,7 +2605,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     var meta = bookMeta(state.code);
     var ref = meta.title + ' ' + state.chapter + ':' + v.n;
     var link = location.origin + location.pathname + '#' + state.code + '.' + state.chapter;
-    var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Yera)\n' + link;
+    var text = '"' + v.text + '" — ' + ref + ' (Bibiliya Yera 25)\n' + link;
     var SHn = nativeShare();
     if (SHn){
       SHn.share({ text: text, dialogTitle: tx('share') }).catch(function(){});
@@ -2790,7 +2790,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     return blobToBase64(blob).then(function(b64){
       return FS.writeFile({ path: 'ijambo-ryuno-musi.jpg', data: b64, directory: 'CACHE' });
     }).then(function(r){
-      return SH.share({ title: 'Bibiliya Yera', files: [r.uri], dialogTitle: tx('sharePic') });
+      return SH.share({ title: 'Bibiliya Yera 25', files: [r.uri], dialogTitle: tx('sharePic') });
     }).then(function(){ return true; }).catch(function(e){
       return /cancel/i.test(String(e && (e.message || e))) ? true : false;
     });
@@ -2859,7 +2859,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     try { file = new File([blob], 'ijambo-ryuyu-musi.jpg', { type: 'image/jpeg' }); } catch(e){}
 
     if (mode === 'share' && navigator.share && file && navigator.canShare && navigator.canShare({ files: [file] })){
-      navigator.share({ files: [file], title: 'Bibiliya Yera', text: '' }).then(function(){
+      navigator.share({ files: [file], title: 'Bibiliya Yera 25', text: '' }).then(function(){
         if (statusEl) statusEl.textContent = '';
       }).catch(function(){
         if (statusEl) statusEl.textContent = '';
@@ -4088,7 +4088,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     if (!meta) return;
     var md = {
       title: meta.title + ' ' + state.chapter,
-      artist: 'Bibiliya Yera',
+      artist: 'Bibiliya Yera 25',
       album: tx('home.subtitle'),
       artwork: [{ src: msArtworkUrl(), sizes: '512x512', type: 'image/jpeg' }]
     };
@@ -4662,7 +4662,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function buildSheetHtml(view, p){
     if (view === 'about'){
       return '' +
-        '<h2>Bibiliya Yera</h2>' +
+        '<h2>Bibiliya Yera 25</h2>' +
         '<p class="sub">' + th('about.sub') + '</p>' +
         '<p>' + th('about.p') + '</p>' +
         '<div class="credit-block">' +
@@ -4694,7 +4694,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
         '<p>' + th('support.p1') + '</p>' +
         (rawText('support.p2') ? '<p>' + th('support.p2') + '</p>' : '') +
         '<div class="close-row" style="justify-content:flex-start">' +
-          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Yera') + '">' + th('support.email') + '</a>' +
+          '<a class="done" style="text-decoration:none;display:inline-block" href="mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Bibiliya Yera 25') + '">' + th('support.email') + '</a>' +
         '</div>' +
         '<p style="margin-top:18px;font-size:.78rem;color:var(--ink-dim)">' + thr('support.privacy') + '</p>';
     }
