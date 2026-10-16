@@ -98,7 +98,6 @@
 }
 
 /* Type */
-@import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600;7..72,700&family=Work+Sans:wght@400;500;600;700&display=swap');
 :root{
   --font-scripture: 'Literata', Georgia, 'Times New Roman', serif;
   --font-ui: 'Work Sans', system-ui, -apple-system, sans-serif;
@@ -1902,10 +1901,12 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 
     // ---- no audio / no internet
     'noaudio.none':  { rn: 'Nta majwi ahari kuri iki gice (audio not added yet)', en: 'There is no audio for this chapter yet', fr: 'Il n’y a pas encore d’audio pour ce chapitre' },
+    'noaudio.loading': { rn: 'Amajwi ariko arakwega… Rindira gatoya.', en: 'Loading the audio… please wait a moment', fr: 'Chargement de l’audio… veuillez patienter' },
     'noaudio.net':   { rn: 'Nta internet. Kwega iki gice (↓) ufise internet kugira ukiyumvire udafise internet.', en: 'No internet. Download this chapter (↓) while you have internet to listen to it offline.', fr: 'Pas d’internet. Téléchargez ce chapitre (↓) quand vous avez internet pour l’écouter hors ligne.' },
     'lf.title':      { rn: 'Nta internet.', en: 'No internet.', fr: 'Pas d’internet.' },
     'lf.body':       { rn: 'Iki gice ntikiraba kuri iyi telefone.', en: 'This chapter is not on this phone.', fr: 'Ce chapitre n’est pas sur ce téléphone.' },
     'lf.sub':        { rn: 'Ongera ugerageze iyo ubonye internet. Kugira usome udafise internet, ugurura Downloads ukwege ivyanditswe vyose.', en: 'Try again when you have internet. To read with no internet, open Downloads and download the whole text.', fr: 'Réessayez quand vous aurez internet. Pour lire sans internet, ouvrez Téléchargements et téléchargez tout le texte.' },
+    'load.slow':     { rn: 'Internet igenda buke buke. Rindira gatoya.', en: 'Slow connection. Please wait a moment…', fr: 'Connexion lente. Veuillez patienter…' },
     'lf.retry':      { rn: 'Ongera ugerageze', en: 'Try again', fr: 'Réessayer' },
 
     // ---- about and support
@@ -2057,13 +2058,13 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     try { renderHomeHero(); } catch(e){}
     try { refreshDailyBanner(); } catch(e){}
     try { rerenderCurrentChapter(); } catch(e){}
-    try { ensureSearchIndex(textLang()).catch(function(){}); } catch(e){}
+    try { if (!verySlowLink()) whenQuiet(20000).then(function(){ return ensureSearchIndex(textLang(), true); }).catch(function(){}); } catch(e){}
     try { saveAllTextQuietly(); } catch(e){}
     if (announce){ try { showToast(tx({ fr: 'text.toFr', en: 'text.toEn' }[textLang()] || 'text.toRn'), 3200); } catch(e){} }
   }
   function refreshDailyBanner(){
     if (els.dailyBanner.hidden) return;
-    resolveDailyVerse().then(function(d){ els.dbVerseText.textContent = d.text; els.dbRefText.textContent = d.title + ' ' + d.ch + ':' + d.vn; }).catch(function(){});
+    resolveDailyVerseFast().then(function(d){ els.dbVerseText.textContent = d.text; els.dbRefText.textContent = d.title + ' ' + d.ch + ':' + d.vn; }).catch(function(){});
   }
   function rerenderCurrentChapter(){
     if (!state.code || !state.chapter) return;
@@ -2264,32 +2265,69 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // A saved copy is quietly re-checked once per visit (a tiny request that
   // answers "unchanged"), so corrections to the text still arrive.
   var dataChecked = {};
-  function fetchDataJson(url){
-    function fromNetwork(){
-      return fetch(url).then(function(r){
+  // Weak connections: the person's own requests (the page they opened) always come first.
+  // Background downloads (the search index, saving every book) wait until those are finished.
+  var fgActive = 0, lastFgDone = Date.now(), inflightData = {};
+  function whenQuiet(quietMs){
+    return new Promise(function(resolve){
+      (function check(){
+        if (fgActive === 0 && Date.now() - lastFgDone >= quietMs) resolve(); else setTimeout(check, 1500);
+      })();
+    });
+  }
+  function verySlowLink(){
+    try { var c = navigator.connection; return !!(c && (c.saveData || /^(slow-)?2g$/.test(c.effectiveType || ''))); } catch(e){ return false; }
+  }
+  function fetchDataJsonRaw(url, background){
+    function fromNetwork(attempt){
+      var ac = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      // 1) the server must start answering within 30 s (60 s on the second try)
+      var t = ac ? setTimeout(function(){ ac.abort(); }, attempt === 1 ? 30000 : 60000) : null;
+      return fetch(url, ac ? { signal: ac.signal } : undefined).then(function(r){
         if (!r.ok) throw new Error('http ' + r.status);
+        if (t){ clearTimeout(t); t = null; }
+        // 2) then a page still gets up to 3 minutes to finish downloading (slow links are normal);
+        //    background files are never cut short
+        if (ac && !background) t = setTimeout(function(){ ac.abort(); }, 180000);
         if (hasCaches){
           var copy = r.clone();
           caches.open(OFFLINE_CACHE).then(function(c){ return c.put(url, copy); }).catch(function(){});
         }
         return r.json();
+      }).then(function(j){ if (t) clearTimeout(t); return j; }, function(err){
+        if (t) clearTimeout(t);
+        // a stalled connection often works on a fresh attempt: try once more before giving up
+        if (!background && attempt < 2 && navigator.onLine !== false) return fromNetwork(attempt + 1);
+        throw err;
       });
     }
-    if (!hasCaches) return fromNetwork();
+    if (!hasCaches) return fromNetwork(1);
     return caches.open(OFFLINE_CACHE).then(function(c){ return c.match(url); }).then(function(hit){
-      if (!hit) return fromNetwork();
+      if (!hit) return fromNetwork(1);
       recheckSavedData(url);
       return hit.json();
-    }, function(){ return fromNetwork(); });
+    }, function(){ return fromNetwork(1); });
+  }
+  function fetchDataJson(url, background){
+    if (inflightData[url]) return inflightData[url];
+    if (!background) fgActive++;
+    var p = fetchDataJsonRaw(url, background);
+    inflightData[url] = p;
+    var done = function(){
+      delete inflightData[url];
+      if (!background){ fgActive = Math.max(0, fgActive - 1); lastFgDone = Date.now(); }
+    };
+    p.then(done, done);
+    return p;
   }
   function recheckSavedData(url){
     if (dataChecked[url] || navigator.onLine === false) return;
     dataChecked[url] = true;
-    setTimeout(function(){
-      fetch(url, { cache: 'no-cache' }).then(function(r){
+    whenQuiet(4000).then(function(){
+      return fetch(url, { cache: 'no-cache' }).then(function(r){
         if (r && r.ok) return caches.open(OFFLINE_CACHE).then(function(c){ return c.put(url, r); });
       }).catch(function(){});
-    }, 4000);
+    });
   }
 
   function loadIndex(){
@@ -2918,9 +2956,18 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
                start: (v.start == null ? null : v.start), end: (v.end == null ? null : v.end) };
     });
   }
+  function resolveDailyVerseFast(){
+    var ref = todaysVerseRef();
+    return fetchDataJson(textUrl(textLang(), 'daily-verses.json')).then(function(list){
+      var hit = list.filter(function(x){ return x.code === ref[0] && x.ch === ref[1] && x.vn === ref[2]; })[0];
+      if (!hit || !hit.text) throw new Error('no text');
+      var meta = bookMeta(hit.code);
+      return { code: hit.code, ch: hit.ch, vn: hit.vn, text: hit.text, title: meta ? meta.title : hit.title, start: null, end: null };
+    }).catch(function(){ return resolveDailyVerse(); });
+  }
   function initDailyBanner(){
     if (safeGet('dailyDismiss') === todayStr()) return;
-    resolveDailyVerse().then(function(d){
+    resolveDailyVerseFast().then(function(d){
       els.dbVerseText.textContent = d.text;
       els.dbRefText.textContent = d.title + ' ' + d.ch + ':' + d.vn;
       els.dailyBanner.classList.add('has-bg');
@@ -3515,7 +3562,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   var homeHeroData = null;
   function renderHomeHero(){
     if (!els.homeVerseCard) return;
-    resolveDailyVerse().then(function(d){
+    resolveDailyVerseFast().then(function(d){
       homeHeroData = d;
       var ref = d.title + ' ' + d.ch + ':' + d.vn;
       els.hvcText.textContent = d.text;
@@ -3532,6 +3579,13 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       els.homeVerseCard.style.backgroundSize = 'cover';
       els.homeVerseCard.style.backgroundPosition = 'center';
       cacheOfflineAsset(bg);
+      // the play button needs the book (audio times): fetched later, once the person's own pages are done
+      if (d.start == null){
+        whenQuiet(3000).then(function(){ return resolveDailyVerse(); }).then(function(full){
+          if (homeHeroData !== d || full.start == null) return;
+          homeHeroData = full; els.hvcPlayBtn.hidden = false; prepareVerseAudio(full);
+        }).catch(function(){});
+      }
     }).catch(function(){});
   }
   els.homeVerseCard.addEventListener('click', function(){
@@ -3772,7 +3826,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       return Promise.all(textUrlsFor(code).map(function(url){
         return cache.match(url).then(function(hit){
           if (hit) return;
-          return fetch(url).then(function(resp){ if (resp.ok) return cache.put(url, resp); });
+          var ac = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+          var t = ac ? setTimeout(function(){ ac.abort(); }, 90000) : null;
+          return fetch(url, ac ? { signal: ac.signal } : undefined).then(function(resp){ if (resp.ok) return cache.put(url, resp); }).then(function(v){ if (t) clearTimeout(t); return v; }, function(e){ if (t) clearTimeout(t); throw e; });
         });
       }));
     });
@@ -3878,18 +3934,21 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       }));
     }).then(function(a){ return a.reduce(function(x, y){ return x + y; }, 0); }, function(){ return 0; });
   }
-  function saveAllText(){
+  function saveAllText(quiet){
     if (textSaveJob || !hasCaches || !state.index) return Promise.resolve(false);
     textSaveJob = true;
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
     var codes = state.index.books.map(function(b){ return b.code; }), next = 0, failStreak = 0, stop = false;
     function worker(){
       if (stop || next >= codes.length) return Promise.resolve();
-      return offlineText(codes[next++]).then(function(){ failStreak = 0; }, function(){
-        if (++failStreak >= 3) stop = true;
-      }).then(worker);
+      return (quiet ? whenQuiet(8000) : Promise.resolve()).then(function(){
+        if (stop || next >= codes.length) return;
+        return offlineText(codes[next++]).then(function(){ failStreak = 0; }, function(){
+          if (++failStreak >= 3) stop = true;
+        }).then(worker);
+      });
     }
-    return Promise.all([worker(), worker()]).then(savedTextCount).then(function(n){
+    return Promise.all(quiet ? [worker()] : [worker(), worker()]).then(savedTextCount).then(function(n){
       textSaveJob = false;
       var all = n >= state.index.books.length;
       if (all) safeSet(textAllKey(), '1');
@@ -3898,11 +3957,12 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   }
   function saveAllTextQuietly(){
     if (!hasCaches || safeGet(textAllKey()) === '1') return;
-    try { if (navigator.connection && navigator.connection.saveData) return; } catch(e){}
-    setTimeout(function(){
+    if (verySlowLink()) return;
+    // starts only after the person's own pages have loaded and the connection has been quiet for 30 s
+    whenQuiet(30000).then(function(){
       if (navigator.onLine === false) return;
-      saveAllText();
-    }, 8000);
+      saveAllText(true);
+    });
   }
   function paintTextStatus(){
     var el = document.getElementById('dlTextStatus');
@@ -4211,7 +4271,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     els.noAudioNote.hidden = false;
     audio.pause();
     audio.removeAttribute('src');
-    setNoAudioText('none');
+    setNoAudioText('loading');
     audioKey = code + '.' + chNum;
     var url = audioPathFor(code, chNum);
     getPlayableUrl(url).then(function(playUrl){
@@ -4224,12 +4284,12 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // 'none' = the recording does not exist yet, 'net' = just no internet
   function setNoAudioText(kind){
     state.noAudioKind = kind;
-    els.noAudioText.textContent = tx(kind === 'net' ? 'noaudio.net' : 'noaudio.none');
+    els.noAudioText.textContent = tx(kind === 'net' ? 'noaudio.net' : kind === 'loading' ? 'noaudio.loading' : 'noaudio.none');
   }
   // Why is there no sound: the recording does not exist, or just no internet?
   function explainNoAudio(){
     var key = audioKey, url = audioPathFor(state.code, state.chapter);
-    setNoAudioText('none');
+    setNoAudioText('loading');
     fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function(r){
       if (key !== audioKey) return;
       setNoAudioText(r.status === 404 ? 'none' : 'net');
@@ -4494,7 +4554,10 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     schedulePlanRead(code, chNum);
 
     function applyRender(){
-      return renderChapter(code, chNum).then(function(){
+      var slowT = setTimeout(function(){
+        if (state.code === code && state.chapter === chNum && state.renderedKey !== code + '.' + chNum){ showToast(tx('load.slow'), 6000); }
+      }, 8000);
+      return renderChapter(code, chNum).then(function(r){ clearTimeout(slowT); return r; }, function(e){ clearTimeout(slowT); throw e; }).then(function(){
         loadAudioForChapter(code, chNum);
         if (opts.flashVerse != null){
           var idx = state.verses.findIndex(function(v){ return v.n === opts.flashVerse; });
@@ -5154,11 +5217,11 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   }
 
   // ---------- search ----------
-  function ensureSearchIndex(tl){
+  function ensureSearchIndex(tl, background){
     tl = tl || textLang();
     if (state.searchIndex[tl]) return Promise.resolve(state.searchIndex[tl]);
     if (state.searchIndexLoading[tl]) return state.searchIndexLoading[tl];
-    state.searchIndexLoading[tl] = fetchDataJson(textUrl(tl, 'search-index.json')).then(function(idx){
+    state.searchIndexLoading[tl] = fetchDataJson(textUrl(tl, 'search-index.json'), !!background).then(function(idx){
       state.searchIndex[tl] = idx;
       if (tl !== 'rn') prefoldIndex(idx);
       return idx;
@@ -5258,8 +5321,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function registerOfflineWorker(){
     if (!('serviceWorker' in navigator)) return;
     if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
-    var go = function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); };
-    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+    // waits until the person's own pages have loaded (no 'load' event needed: a slow font must not hold it up)
+    whenQuiet(10000).then(function(){ return navigator.serviceWorker.register('sw.js'); }).catch(function(){});
   }
 
   // First launch: the person picks a language once (it can be changed later in the menu).
@@ -5270,6 +5333,16 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 
   function start(){
     registerOfflineWorker();
+    // Fonts: never hold up the first page. Once they have loaded on this phone they come from its saved copy at once;
+    // before that they wait until the page is quiet, so on a weak connection the chapter text gets the bandwidth first.
+    var fontsDone = false;
+    function loadFonts(){
+      if (fontsDone) return; fontsDone = true;
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600;7..72,700&family=Work+Sans:wght@400;500;600;700&display=swap';
+      l.onload = function(){ safeSet('fontsOk', '1'); };
+      document.head.appendChild(l);
+    }
+    if (safeGet('fontsOk') === '1') loadFonts(); else whenQuiet(2000).then(loadFonts);
     // A shared-verse link opens straight into the reader, so there we follow the phone's language instead of asking.
     var askLang = !langChosen();
     if (askLang && parseHash()){ LANG = detectLang(); safeSet('lang', LANG); askLang = false; }
@@ -5280,7 +5353,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     loadMarks();
     msInstallHandlers();
     renderSleepBtn();
-    loadIndex().then(function(){
+    function afterIndex(){
       var fromHash = parseHash();
       if (fromHash){
         // Explicit deep link (shared verse, search result, etc.) — go
@@ -5299,10 +5372,29 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
       renderHomeHero();
       updateTestamentCounts();
       cacheOfflineAsset('images/bible-cover.jpg');
-      if (window.requestIdleCallback) requestIdleCallback(function(){ ensureSearchIndex().catch(function(){}); });
-      else setTimeout(function(){ ensureSearchIndex().catch(function(){}); }, 2500);
+      if (!verySlowLink()) whenQuiet(20000).then(function(){ return ensureSearchIndex(undefined, true); }).catch(function(){});
+      prefetchLastBook();
       saveAllTextQuietly();
-    });
+    }
+    function bootIndex(){ loadIndex().then(afterIndex, showIndexFail); }
+    function showIndexFail(){
+      els.reading.innerHTML = '<div class="load-fail">' +
+        '<p><strong>' + th('lf.title') + '</strong></p>' +
+        '<p class="lf-sub">' + th('lf.sub') + '</p>' +
+        '<button class="secondary" id="retryIndex">' + th('lf.retry') + '</button></div>';
+      var rb = document.getElementById('retryIndex');
+      if (rb) rb.addEventListener('click', function(){ els.reading.innerHTML = '<p class="empty-note">' + th('loading') + '</p>'; bootIndex(); });
+    }
+    bootIndex();
+  }
+
+  // Starts downloading the book the person was last reading, right after the book list arrived,
+  // so tapping "continue" opens it without a long wait.
+  function prefetchLastBook(){
+    try {
+      var lb = safeGet('lastBook');
+      if (lb && bookMeta(lb)) loadBook(lb).catch(function(){});
+    } catch(e){}
   }
 
   if (window.claude && window.claude.hot){

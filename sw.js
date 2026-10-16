@@ -3,14 +3,14 @@
  * Lets the app (and the website) OPEN without internet, so chapters the person
  * has downloaded can be read and heard offline.
  *
- *  - Pages (index.html, privacy.html): network first, so updates always show up
- *    right away; if the network fails or is very slow, the last saved copy is used.
+ *  - Pages (index.html, privacy.html): the saved copy opens instantly (good on weak
+ *    connections) and is refreshed quietly in the background for the next launch.
  *  - Small files (images, verse list): saved on first use and served
  *    from the saved copy next time, refreshed quietly in the background.
  *  - Audio is NOT handled here. Online it streams normally; downloaded audio is
  *    kept by the page itself (Cache Storage) and played from there.
  */
-var SHELL = 'bibiliya-shell-v4';
+var SHELL = 'bibiliya-shell-v5';
 var SHELL_FILES = [
   'index.html',
   'data/daily-verses.json',
@@ -62,26 +62,22 @@ function withTimeout(promise, ms) {
   });
 }
 
-function networkFirstPage(req) {
+function cachedFirstPage(req) {
+  // Weak connections: waiting for the network before showing the saved page made every
+  // launch slow. Now the saved page opens at once and is refreshed quietly for next time.
   var key = pageKey(req.url);
-  var net = fetch(req);
-  return withTimeout(net, PAGE_TIMEOUT_MS).then(function (resp) {
-    if (resp && resp.ok) {
-      var copy = resp.clone();
-      caches.open(SHELL).then(function (c) { c.put(key, copy); });
-    }
-    return resp;
-  }).catch(function () {
-    return caches.match(key).then(function (hit) {
-      if (hit) {
-        // keep the slow request going so the saved copy still gets refreshed
-        net.then(function (resp) {
-          if (resp && resp.ok) caches.open(SHELL).then(function (c) { c.put(key, resp.clone()); });
-        }).catch(function () {});
-        return hit;
+  return caches.match(key).then(function (hit) {
+    var net = fetch(req).then(function (resp) {
+      if (resp && resp.ok) {
+        var copy = resp.clone();
+        caches.open(SHELL).then(function (c) { c.put(key, copy); });
       }
+      return resp;
+    });
+    if (hit) { net.catch(function () {}); return hit; }
+    return net.catch(function () {
       return caches.match(new URL('index.html', self.registration.scope).href).then(function (home) {
-        return home || net;
+        return home || Response.error();
       });
     });
   });
@@ -110,6 +106,6 @@ self.addEventListener('fetch', function (e) {
   // itself (so it also works on iPhone, where this worker may be unavailable).
   if (/\/data\/(?:[a-z]{2}\/)?(books\/|index\.json|search-index\.json)/.test(url.pathname)) return;
   if (req.headers.has('range')) return;
-  if (req.mode === 'navigate') { e.respondWith(networkFirstPage(req)); return; }
+  if (req.mode === 'navigate') { e.respondWith(cachedFirstPage(req)); return; }
   e.respondWith(staleWhileRevalidate(req));
 });
