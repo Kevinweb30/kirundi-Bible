@@ -2114,6 +2114,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // The Bible text changed language: everything that shows verse text is redrawn.
   function textLangChanged(announce){
     try { ttsStop(true); } catch(e){}
+    try { stopVerseAudio(); if (verseAudio){ verseAudio.removeAttribute('src'); verseAudio.load(); } versePlayKey = ''; verseBlobKey = ''; verseBlobUrl = null; } catch(e){}
     try { if (audioIsEn() !== lastAudioEn && state.code && state.chapter) loadAudioForChapter(state.code, state.chapter); } catch(e){}
     try { renderHomeHero(); } catch(e){}
     try { refreshDailyBanner(); } catch(e){}
@@ -3768,8 +3769,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // is left alone. Uses the downloaded copy when there is one.
   var verseAudio = null, verseStopAt = 0, verseEndTimer = null, versePlayKey = '';
   var verseBlobUrl = null, verseBlobKey = '';
+  function verseKey(d){ return (audioIsEn() ? 'en:' : 'rn:') + d.code + '.' + d.ch; }
   function prepareVerseAudio(d){
-    var key = d.code + '.' + d.ch;
+    var key = verseKey(d);
     if (verseBlobKey === key) return;
     verseBlobKey = key;
     verseBlobUrl = null;
@@ -3811,7 +3813,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     if (verseAudio && !verseAudio.paused){ stopVerseAudio(); return; }
     try { if (!audio.paused) audio.pause(); } catch(err){}
     var va = ensureVerseAudio();
-    var key = d.code + '.' + d.ch;
+    var key = verseKey(d);
     var begin = Math.max(0, d.start - 0.05);
     verseStopAt = d.end != null ? d.end : 0;       // 0 = play to the end of the recording
     clearTimeout(verseEndTimer);
