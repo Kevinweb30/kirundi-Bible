@@ -1741,9 +1741,9 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     // ---- home
     'home.subtitle': { rn: 'Mu Kirundi', en: 'In Kirundi', fr: 'En kirundi' },
     'home.tagline': {
-      rn: function(){ var t = textLang(); return t === 'rn' ? 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.' : 'Soma kandi wumve Ijambo ry’Imana. Amajwi ari mu Kirundi, umwandiko uri mu ' + (t === 'en' ? 'Congereza' : 'Gifaransa') + '.'; },
-      en: function(){ var t = textLang(); return t === 'rn' ? 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.' : 'Read and listen to the Word of God. The audio is in Kirundi; the text is in ' + (t === 'en' ? 'English' : 'French') + '.'; },
-      fr: function(){ var t = textLang(); return t === 'rn' ? 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.' : 'Lisez et écoutez la Parole de Dieu. L’audio est en kirundi ; le texte est en ' + (t === 'en' ? 'anglais' : 'français') + '.'; } },
+      rn: function(){ var t = textLang(); return t === 'rn' ? 'Soma kandi wumve Ijambo ry’Imana mu rurimi rwawe. Vyanditswe kandi vyerekanwa mu Kirundi.' : (t === 'en' && EN_AUDIO_BASE) ? 'Soma kandi wumve Ijambo ry’Imana. Amajwi n’umwandiko biri mu Congereza.' : 'Soma kandi wumve Ijambo ry’Imana. Amajwi ari mu Kirundi, umwandiko uri mu ' + (t === 'en' ? 'Congereza' : 'Gifaransa') + '.'; },
+      en: function(){ var t = textLang(); return t === 'rn' ? 'Read and listen to the Word of God in your own language. The text and the audio are in Kirundi.' : (t === 'en' && EN_AUDIO_BASE) ? 'Read and listen to the Word of God. The audio and the text are in English.' : 'Read and listen to the Word of God. The audio is in Kirundi; the text is in ' + (t === 'en' ? 'English' : 'French') + '.'; },
+      fr: function(){ var t = textLang(); return t === 'rn' ? 'Lisez et écoutez la Parole de Dieu dans votre langue. Le texte et l’audio sont en kirundi.' : (t === 'en' && EN_AUDIO_BASE) ? 'Lisez et écoutez la Parole de Dieu. L’audio et le texte sont en anglais.' : 'Lisez et écoutez la Parole de Dieu. L’audio est en kirundi ; le texte est en ' + (t === 'en' ? 'anglais' : 'français') + '.'; } },
     'home.resume': { rn: 'Subira aho War’ugeze', en: 'Continue where you left off', fr: 'Reprendre là où vous en étiez' },
     'ot':          { rn: 'Isezerano rya Kera', en: 'Old Testament', fr: 'Ancien Testament' },
     'nt':          { rn: 'Isezerano Rishasha', en: 'New Testament', fr: 'Nouveau Testament' },
@@ -2438,8 +2438,18 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     return Promise.all([loadBookRn(code), fetchDataJson(textUrl(tl, 'books/' + code + '.json'))]).then(function(a){
       var merged = mergeBookText(a[0], a[1]);
       if (tl === 'en' && EN_AUDIO_BASE){
-        Object.keys(merged.chapters).forEach(function(c){
-          merged.chapters[c].verses.forEach(function(v){ v.start = null; v.end = null; });
+        // the Kirundi verse times do not fit the English recording: use its own times, if we have them
+        return fetch('data/en-timing/' + code + '.json').then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }).then(function(tm){
+          Object.keys(merged.chapters).forEach(function(c){
+            var vs = merged.chapters[c].verses, st = tm && tm[c];
+            var good = st && st.length === vs.length;
+            vs.forEach(function(v, i){
+              v.start = good ? st[i] : null;
+              v.end = good && i + 1 < st.length ? st[i + 1] : null;
+            });
+          });
+          state.bookCache[key] = merged;
+          return merged;
         });
       }
       state.bookCache[key] = merged;
@@ -3971,6 +3981,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   function textUrlsFor(code){
     var urls = ['data/books/' + code + '.json'], tl = textLang();
     if (tl !== 'rn') urls.push(textUrl(tl, 'books/' + code + '.json'));
+    if (tl === 'en' && EN_AUDIO_BASE) urls.push('data/en-timing/' + code + '.json');
     return urls;
   }
   function offlineText(code){
