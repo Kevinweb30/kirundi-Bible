@@ -1628,8 +1628,17 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
 
   function pad3(n){ n = String(n); return n.length>=3?n:('000'+n).slice(-3); }
 
+  // English text plays the English recording (Berean Standard Bible, read by Barry Hays),
+  // kept in its own site so this one stays small. Set EN_AUDIO_BASE to '' to switch it off.
+  // (Two sites, because one site may not hold more than about 1 GB: Genesis-Psalms and Proverbs-Revelation.)
+  var EN_AUDIO_BASE = 'https://kevinweb30.github.io/kirundi-bible-english-';
+  var EN_FIRST_HALF = 'GEN EXO LEV NUM DEU JOS JDG RUT 1SA 2SA 1KI 2KI 1CH 2CH EZR NEH EST JOB PSA';
+  var lastAudioEn = false;
+  function audioIsEn(){ return !!EN_AUDIO_BASE && textLang() === 'en'; }
   function audioPathFor(code, chapterNum){
-    return 'audio/' + code + '_' + pad3(chapterNum) + '.mp3';
+    var base = 'audio/';
+    if (audioIsEn()) base = EN_AUDIO_BASE + (EN_FIRST_HALF.split(' ').indexOf(code) !== -1 ? '1' : '2') + '/audio/';
+    return base + code + '_' + pad3(chapterNum) + '.mp3';
   }
 
   function fmtTime(sec){
@@ -2105,6 +2114,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   // The Bible text changed language: everything that shows verse text is redrawn.
   function textLangChanged(announce){
     try { ttsStop(true); } catch(e){}
+    try { if (audioIsEn() !== lastAudioEn && state.code && state.chapter) loadAudioForChapter(state.code, state.chapter); } catch(e){}
     try { renderHomeHero(); } catch(e){}
     try { refreshDailyBanner(); } catch(e){}
     try { rerenderCurrentChapter(); } catch(e){}
@@ -2427,6 +2437,11 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     if (state.bookCache[key]) return Promise.resolve(state.bookCache[key]);
     return Promise.all([loadBookRn(code), fetchDataJson(textUrl(tl, 'books/' + code + '.json'))]).then(function(a){
       var merged = mergeBookText(a[0], a[1]);
+      if (tl === 'en' && EN_AUDIO_BASE){
+        Object.keys(merged.chapters).forEach(function(c){
+          merged.chapters[c].verses.forEach(function(v){ v.start = null; v.end = null; });
+        });
+      }
       state.bookCache[key] = merged;
       return merged;
     });
@@ -4414,7 +4429,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
   })();
   function ttsSynth(){ try { return window.speechSynthesis || null; } catch(e){ return null; } }
   function ttsSupported(){ return !!ttsSynth() && typeof window.SpeechSynthesisUtterance === 'function'; }
-  function ttsWanted(){ var t = textLang(); return (t === 'en' || t === 'fr') && ttsSupported(); }
+  function ttsWanted(){ var t = textLang(); return (t === 'fr' || (t === 'en' && !EN_AUDIO_BASE)) && ttsSupported(); }
   function ttsPickVoice(){
     var s = ttsSynth(), want = textLang(), list = [];
     if (!s) return { voice: null, any: false };
@@ -4563,6 +4578,7 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
     audio.removeAttribute('src');
     setNoAudioText('loading');
     audioKey = code + '.' + chNum;
+    lastAudioEn = audioIsEn();
     var url = audioPathFor(code, chNum);
     getPlayableUrl(url).then(function(playUrl){
       audio.src = playUrl;
@@ -5027,7 +5043,8 @@ button.lang-quick-btn svg{width:10px;height:10px;flex:none}
           '<a href="https://www.biblica.com" target="_blank" rel="noopener">biblica.com</a> and ' +
           '<a href="https://open.bible" target="_blank" rel="noopener">open.bible</a>.' +
           '<br><br>' +
-          'English Bible text: <strong>Berean Standard Bible</strong> (BSB), public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a>' +
+          'English Bible text: <strong>Berean Standard Bible</strong> (BSB), public domain. <a href="https://berean.bible" target="_blank" rel="noopener">berean.bible</a><br>' +
+          'English audio: Berean Standard Bible, read by Barry Hays.' +
           '<br><br>' +
           'French Bible text: <strong>J. N. Darby</strong> (traduction française, <em>La Bible</em>), public domain.' +
           '<br><br>' +
